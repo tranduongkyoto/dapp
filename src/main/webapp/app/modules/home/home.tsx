@@ -1,10 +1,8 @@
 import './home.scss';
-
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Translate } from 'react-jhipster';
 import { connect } from 'react-redux';
-import { Row, Col, Alert } from 'reactstrap';
+import { Row, Col, Alert, Button } from 'reactstrap';
 
 export type IHomeProp = StateProps;
 
@@ -12,92 +10,191 @@ export const Home = (props: IHomeProp) => {
   const { account } = props;
 
   return (
-    <Row>
-      <Col md="3" className="pad">
-        <span className="hipster rounded" />
-      </Col>
-      <Col md="9">
-        <h2>
-          <Translate contentKey="home.title">Welcome, Java Hipster!</Translate>
-        </h2>
-        <p className="lead">
-          <Translate contentKey="home.subtitle">This is your homepage</Translate>
-        </p>
-        {account && account.login ? (
-          <div>
-            <Alert color="success">
-              <Translate contentKey="home.logged.message" interpolate={{ username: account.login }}>
-                You are logged in as user {account.login}.
-              </Translate>
-            </Alert>
+    <>
+      <div className="row main">
+        <div className="col-md-6 col-sm-12 pt-5 pl-5">
+          <p className="h1  text-center">Change Our World, with Crypto</p>
+          <div className=" text-center">
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Eum reiciendis illum eius nisi temporibus aliquid sit quis quasi, non
+            assumenda ab quaerat eos natus blanditiis in soluta exercitationem optio enim!
           </div>
-        ) : (
-          <div>
-            <Alert color="warning">
-              <Translate contentKey="global.messages.info.authenticated.prefix">If you want to </Translate>
-
-              <Link to="/login" className="alert-link">
-                <Translate contentKey="global.messages.info.authenticated.link"> sign in</Translate>
-              </Link>
-              <Translate contentKey="global.messages.info.authenticated.suffix">
-                , you can try the default accounts:
-                <br />- Administrator (login=&quot;admin&quot; and password=&quot;admin&quot;)
-                <br />- User (login=&quot;user&quot; and password=&quot;user&quot;).
-              </Translate>
-            </Alert>
-
-            <Alert color="warning">
-              <Translate contentKey="global.messages.info.register.noaccount">You do not have an account yet?</Translate>&nbsp;
-              <Link to="/account/register" className="alert-link">
-                <Translate contentKey="global.messages.info.register.link">Register a new account</Translate>
-              </Link>
-            </Alert>
+          <div className="row">
+            <div className="col-sm-12 col-md-6 text-right pt-5">
+              <button className="btn btn-lg btn-warning">Create</button>
+            </div>
+            <div className="col-sm-12 col-md-6 text-left pt-5">
+              <button className="btn btn-lg btn-info">Donate</button>
+            </div>
           </div>
-        )}
-        <p>
-          <Translate contentKey="home.question">If you have any question on JHipster or NHipster:</Translate>
-        </p>
+        </div>
+        <div className="col-md-6 col-sm-12">
+          <img
+            style={{
+              maxWidth: '60%',
+              height: 'auto',
+            }}
+            alt=""
+            src="content/images/bluezoneApp.png"
+          ></img>
+        </div>
+      </div>
+      <div className="row text-center">
+        <div className="col-md-4"></div>
+        <div className="col-md-4">
+          <div className="h1">Why should you donate with cryptocurrency?</div>
+          <div className="">
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Eum reiciendis illum eius nisi temporibus aliquid sit quis quasi, non
+            assumenda ab quaerat eos natus blanditiis in soluta exercitationem optio enim!
+          </div>
+        </div>
+      </div>
+      <div className="row text-center">
+        <div className="col-md-4 col-sm-12">
+          <img src="content/images/transparent.png"></img>
+          <div className="h1">Transparent</div>
+          <div>Maximum privacy protect for donors</div>
+          <div>
+            Lorem ipsum dolor sit, amet consectetur adipisicing elit. Magnam ullam dolor, debitis veniam non adipisci corporis saepe
+            dignissimos similique consequuntur quia quae, quo exercitationem et mollitia necessitatibus impedit recusandae incidunt!
+          </div>
+        </div>
+        <div className="col-md-4 col-sm-12">
+          <img src="content/images/donate.png"></img>
+          <div className="h1">Easy to Donate</div>
+          <div>Maximum privacy protect for donors</div>
+          <div>
+            Lorem ipsum dolor sit, amet consectetur adipisicing elit. Magnam ullam dolor, debitis veniam non adipisci corporis saepe
+            dignissimos similique consequuntur quia quae, quo exercitationem et mollitia necessitatibus impedit recusandae incidunt!
+          </div>
+        </div>
+        <div className="col-md-4 col-sm-12">
+          <img src="content/images/nftItem.png"></img>
+          <div className="h1">Funny & Value</div>
+          <div>Maximum privacy protect for donors</div>
+          <div>
+            Lorem ipsum dolor sit, amet consectetur adipisicing elit. Magnam ullam dolor, debitis veniam non adipisci corporis saepe
+            dignissimos similique consequuntur quia quae, quo exercitationem et mollitia necessitatibus impedit recusandae incidunt!
+          </div>
+        </div>
+      </div>
 
-        <ul>
-          <li>
-            <a href="https://www.jhipster.tech/" target="_blank" rel="noopener noreferrer">
-              <Translate contentKey="home.link.homepage">JHipster homepage</Translate>
-            </a>
-          </li>
-          <li>
-            <a href="http://stackoverflow.com/tags/jhipster/info" target="_blank" rel="noopener noreferrer">
-              <Translate contentKey="home.link.stackoverflow">JHipster on Stack Overflow</Translate>
-            </a>
-          </li>
-          <li>
-            <a href="https://github.com/jhipster/generator-jhipster-nodejs/issues?state=open" target="_blank" rel="noopener noreferrer">
-              <Translate contentKey="home.link.bugtracker">NHipster bug tracker</Translate>
-            </a>
-          </li>
-          <li>
-            <a href="https://gitter.im/jhipster/generator-jhipster-nodejs" target="_blank" rel="noopener noreferrer">
-              <Translate contentKey="home.link.chat">NHipster public chat room</Translate>
-            </a>
-          </li>
-          <li>
-            <a href="https://twitter.com/java_hipster" target="_blank" rel="noopener noreferrer">
-              <Translate contentKey="home.link.follow">follow @java_hipster on Twitter</Translate>
-            </a>
-          </li>
-        </ul>
-
-        <p>
-          <Translate contentKey="home.like">If you like NHipster, do not forget to give us a star on</Translate>{' '}
-          <a href="https://github.com/jhipster/generator-jhipster-nodejs" target="_blank" rel="noopener noreferrer">
-            Github
-          </a>
-          !
-        </p>
-      </Col>
-      <Col md="3" className="pad">
-        <span className="hipster rounded" />
-      </Col>
-    </Row>
+      <div className="row mt-5 middle justify-content-center">
+        <div className="col-md-4"></div>
+        <div className="col-md-4 col-sm-12 my-5">
+          <div className="h1">What can you do?</div>
+          <div className="my-5">
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Eum reiciendis illum eius nisi temporibus aliquid sit quis quasi, non
+            assumenda ab quaerat eos natus blanditiis in soluta exercitationem optio enim!
+          </div>
+        </div>
+        <div className="col-md-4"></div>
+        <div className="col-md-4 col-sm-12 my-5">
+          <div className="row">
+            <div className="col-md-4">
+              <img src="content/icons/cryptoBlack.svg"></img>
+            </div>
+            <div className="col-md-8">
+              <div className="h3">Donate by Crypto</div>
+              <div>Donate cryptocurrency to public wallet</div>
+              <button className="btn btn-primary">View More</button>
+            </div>
+          </div>
+        </div>
+        <div className="col-md-4 col-sm-12 my-5">
+          <div className="row">
+            <div className="col-md-4">
+              <img src="content/icons/imageBlack.svg"></img>
+            </div>
+            <div className="col-md-8">
+              <div className="h3">Donate by NFTs</div>
+              <div>Donate your NFTs for ours</div>
+              <button className="btn btn-primary">View More</button>
+            </div>
+          </div>
+        </div>
+        <div className="col-md-4 col-sm-12 my-5">
+          <div className="row">
+            <div className="col-md-4">
+              <img src="content/icons/imageBlack.svg"></img>
+            </div>
+            <div className="col-md-8">
+              <div className="h3">Min Random NFT</div>
+              <div>Donate cryptocurrency to public wallet</div>
+              <button className="btn btn-primary">View More</button>
+            </div>
+          </div>
+        </div>
+        <div className="col-md-8 tran-lastest my-5">
+          <div className="row py-3 justify-content-center">
+            <div className="col-md-auto col-sm-4">
+              <img src="content/icons/cryptoPurple.svg" className="pb-1"></img>
+            </div>
+            <div className="col-md-auto col-sm-8">0x6C35Bae9EC2C7Bbbb366AD5008444A6D354334ee</div>
+            <div className="col-md-auto col-sm-4 text-warning">10 ETH</div>
+            <div className="col-md-auto col-sm-4 font-weight-bold">Lastest</div>
+            <div className="col-md-auto col-sm-4 font-italic">Thank for great action!</div>
+          </div>
+        </div>
+      </div>
+      <div className="row justify-content-center mt-5"></div>
+      <div className="row justify-content-center text-center my-5">
+        <div className="h1">Testimotional</div>
+      </div>
+      <div className="row justify-content-center ">
+        <div className="col-md-8 text-center">
+          Lorem ipsum dolor sit amet consectetur adipisicing elit. Eum reiciendis illum eius nisi temporibus aliquid sit quis quasi, non
+          assumenda ab quaerat eos natus blanditiis in soluta exercitationem optio enim!
+        </div>
+      </div>
+      <div className="row mt-5">
+        <div className="col-md-6 col-sm-12">
+          <div className="row">
+            <div className="col-md-2">
+              <img
+                src="content/images/quotes.png"
+                style={{
+                  width: '30px',
+                  marginRight: '20px',
+                }}
+              ></img>
+            </div>
+            <div className="col-md-10">
+              Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nesciunt ipsam fuga fugit iusto laudantium, ut voluptatum,
+              voluptatibus amet recusandae dicta veritatis quas maiores! Illo quo consequatur dignissimos ad officia voluptates.
+              <div className="row justify-content-center">
+                <div className="col-md-5 guest-icon py-2 text-center my-3">
+                  <img src="content/images/designerAvatar.png" alt="" />
+                  <span className="ml-1">Khoi Doan, Cohost</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="col-md-6 col-sm-12">
+          <div className="row">
+            <div className="col-md-2">
+              <img
+                src="content/images/quotes.png"
+                style={{
+                  width: '30px',
+                  marginRight: '20px',
+                }}
+              ></img>
+            </div>
+            <div className="col-md-10">
+              Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nesciunt ipsam fuga fugit iusto laudantium, ut voluptatum,
+              voluptatibus amet recusandae dicta veritatis quas maiores! Illo quo consequatur dignissimos ad officia voluptates.
+              <div className="row justify-content-center">
+                <div className="col-md-4 guest-icon py-2 text-center my-3">
+                  <img src="content/images/designerAvatar.png" alt="" />
+                  <span className="ml-1">Le Dung, Cohost</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
   );
 };
 

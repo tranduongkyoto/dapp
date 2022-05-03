@@ -14,6 +14,8 @@ import PrivateRoute from 'app/shared/auth/private-route';
 import ErrorBoundaryRoute from 'app/shared/error/error-boundary-route';
 import PageNotFound from 'app/shared/error/page-not-found';
 import { AUTHORITIES } from 'app/config/constants';
+import Campaigns from './modules/campaign/campaigns';
+import Campaign from './modules/campaign/campaign';
 
 const Account = Loadable({
   loader: () => import(/* webpackChunkName: "account" */ 'app/modules/account'),
@@ -27,21 +29,21 @@ const Admin = Loadable({
 
 const Routes = () => {
   return (
-    <div className="view-routes">
-      <Switch>
-        <ErrorBoundaryRoute path="/login" component={Login} />
-        <ErrorBoundaryRoute path="/logout" component={Logout} />
-        <ErrorBoundaryRoute path="/account/register" component={Register} />
-        <ErrorBoundaryRoute path="/account/activate/:key?" component={Activate} />
-        <ErrorBoundaryRoute path="/account/reset/request" component={PasswordResetInit} />
-        <ErrorBoundaryRoute path="/account/reset/finish/:key?" component={PasswordResetFinish} />
-        <PrivateRoute path="/admin" component={Admin} hasAnyAuthorities={[AUTHORITIES.ADMIN]} />
-        <PrivateRoute path="/account" component={Account} hasAnyAuthorities={[AUTHORITIES.ADMIN, AUTHORITIES.USER]} />
-        <ErrorBoundaryRoute path="/" exact component={Home} />
-        <PrivateRoute path="/" component={Entities} hasAnyAuthorities={[AUTHORITIES.USER]} />
-        <ErrorBoundaryRoute component={PageNotFound} />
-      </Switch>
-    </div>
+    <Switch>
+      <ErrorBoundaryRoute path="/login" component={Login} />
+      <ErrorBoundaryRoute path="/logout" component={Logout} />
+      <ErrorBoundaryRoute path="/account/register" component={Register} />
+      <ErrorBoundaryRoute path="/account/activate/:key?" component={Activate} />
+      <ErrorBoundaryRoute path="/account/reset/request" component={PasswordResetInit} />
+      <ErrorBoundaryRoute path="/account/reset/finish/:key?" component={PasswordResetFinish} />
+      <ErrorBoundaryRoute path="/campaigns" component={Campaigns} />
+      <ErrorBoundaryRoute path="/campaign/:id" component={Campaign} />
+      <PrivateRoute path="/admin" component={Admin} hasAnyAuthorities={[AUTHORITIES.ADMIN]} />
+      <PrivateRoute path="/account" component={Account} hasAnyAuthorities={[AUTHORITIES.ADMIN, AUTHORITIES.USER]} />
+      <ErrorBoundaryRoute path="/" exact component={Home} />
+      <PrivateRoute path="/" component={Entities} hasAnyAuthorities={[AUTHORITIES.USER]} />
+      <ErrorBoundaryRoute component={PageNotFound} />
+    </Switch>
   );
 };
 

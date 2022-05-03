@@ -240,7 +240,6 @@ const Campaigns = () => {
         <div className="col-md-6 col-sm-12">
           <img
             style={{
-              //objectFit: 'cover',
               maxWidth: '60%',
               height: 'auto',
             }}
@@ -254,7 +253,7 @@ const Campaigns = () => {
           const numberOfTransaction = wallets.reduce((pre: number, cur: any) => (pre += cur.numberOfTransaction), 0);
           return (
             <div className="col-md-6 mt-5" key={index}>
-              <Link to={`/project/campaign/${item._id}`}>
+              <Link to={`/campaign/${item._id}`}>
                 <div
                   style={{
                     position: 'relative',
@@ -274,7 +273,6 @@ const Campaigns = () => {
                       position: 'absolute',
                       bottom: '0px',
                       width: '70%',
-                      //opacity: '25%',
                       backgroundColor: 'rgba(10, 10, 10, 0.25)',
                     }}
                   >
