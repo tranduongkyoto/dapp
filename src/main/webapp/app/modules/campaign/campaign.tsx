@@ -175,7 +175,6 @@ const Campaign = () => {
         <div className="col-md-6 col-sm-12">
           <img
             style={{
-              //objectFit: 'cover',
               maxWidth: '60%',
               height: 'auto',
             }}
