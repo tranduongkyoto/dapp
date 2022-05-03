@@ -4,17 +4,24 @@ import { AuthModule } from './module/auth.module';
 import { ormConfig } from './orm.config';
 import { config } from './config';
 import { ServeStaticModule } from '@nestjs/serve-static';
+import { MailModule } from './module/mail.module';
+import { ConfigModule } from '@nestjs/config';
 // jhipster-needle-add-entity-module-to-main-import - JHipster will import entity modules here, do not remove
 // jhipster-needle-add-controller-module-to-main-import - JHipster will import controller modules here, do not remove
 // jhipster-needle-add-service-module-to-main-import - JHipster will import service modules here, do not remove
 
 @Module({
     imports: [
+        ConfigModule.forRoot({
+            isGlobal: true,
+            cache: true
+        }),
         TypeOrmModule.forRootAsync({ useFactory: ormConfig }),
         ServeStaticModule.forRoot({
             rootPath: config.getClientPath(),
         }),
         AuthModule,
+        MailModule,
         // jhipster-needle-add-entity-module-to-main - JHipster will add entity modules here, do not remove
     ],
     controllers: [

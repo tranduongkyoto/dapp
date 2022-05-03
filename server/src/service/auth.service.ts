@@ -1,4 +1,4 @@
-import { Injectable, HttpException, HttpStatus, Logger } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus, Logger, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { JwtService } from '@nestjs/jwt';
 import { UserLoginDTO } from '../service/dto/user-login.dto';
@@ -8,6 +8,8 @@ import { AuthorityRepository } from '../repository/authority.repository';
 import { UserService } from '../service/user.service';
 import { UserDTO } from './dto/user.dto';
 import { FindManyOptions } from 'typeorm';
+import { MailerService } from '@nestjs-modules/mailer';
+import { MailService } from './mail.service';
 
 @Injectable()
 export class AuthService {
@@ -16,7 +18,8 @@ export class AuthService {
         private readonly jwtService: JwtService,
         @InjectRepository(AuthorityRepository) private authorityRepository: AuthorityRepository,
         private userService: UserService,
-    ) {}
+        private mailService: MailService
+    ) { }
 
     async login(userLogin: UserLoginDTO): Promise<any> {
         const loginUserName = userLogin.username;
@@ -37,12 +40,24 @@ export class AuthService {
         const payload: Payload = { id: user.id, username: user.login, authorities: user.authorities };
 
         /* eslint-disable */
-    return {
-      id_token: this.jwtService.sign(payload),
-    };
-  }
+        return {
+            id_token: this.jwtService.sign(payload),
+        };
+    }
 
-  /* eslint-enable */
+    async activateNewUser(token: string) {
+        const payload: Payload = this.jwtService.verify(token, {
+            secret: ""
+        });
+        console.log("50", payload);
+        const user = await this.validateUser(payload);
+        if (!user) {
+            return new UnauthorizedException({ message: 'Token is Invalid' });
+        }
+        user.activated = true;
+        return await this.userService.save(user, user.firstName);
+    }
+    /* eslint-enable */
     async validateUser(payload: Payload): Promise<UserDTO | undefined> {
         return await this.findUserWithAuthById(payload.id);
     }
@@ -85,6 +100,9 @@ export class AuthService {
         }
         newUser.authorities = ['ROLE_USER'];
         const user: UserDTO = await this.userService.save(newUser, newUser.login, true);
+        const payload: Payload = { id: user.id, username: user.login, authorities: user.authorities };
+        const token: string = this.jwtService.sign(payload);
+        this.mailService.sendConfirmationEmail(token, user.email);
         return user;
     }
 

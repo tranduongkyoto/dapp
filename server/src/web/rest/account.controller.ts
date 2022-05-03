@@ -40,17 +40,18 @@ export class AccountController {
         return await this.authService.registerNewUser(userDTO);
     }
 
-    @Get('/activate')
-    @ApiBearerAuth()
-    @UseGuards(AuthGuard, RolesGuard)
-    @Roles(RoleType.ADMIN)
+    @Get('/activate/:token')
+    // @ApiBearerAuth()
+    // @UseGuards(AuthGuard, RolesGuard)
+    // @Roles(RoleType.ADMIN)
     @ApiOperation({ title: 'Activate an account' })
     @ApiResponse({
         status: 200,
         description: 'activated',
     })
-    activateAccount(@Param() key: string, @Res() res: Response): any {
-        throw new InternalServerErrorException();
+    async activateAccount(@Param('token') token: string, @Res() res: Response): Promise<any> {
+        await this.authService.activateNewUser(token);
+        return;
     }
 
     @Get('/authenticate')

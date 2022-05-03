@@ -41,14 +41,17 @@ function ormConfig(): TypeOrmModuleOptions {
         };
     }
 
-    if (process.env.BACKEND_ENV === 'test') {
+    if (process.env.BACKEND_ENV === 'dev') {
         ormconfig = {
             name: 'default',
-            type: 'sqlite',
-            database: ':memory:',
-            keepConnectionAlive: true,
-            logging: true,
-            synchronize: true,
+            type: 'mysql',
+            database: 'be_api',
+            host: 'localhost',
+            port: 3306,
+            username: 'root',
+            password: 'root',
+            logging: false,
+            synchronize: commonConf.SYNCRONIZE,
             entities: commonConf.ENTITIES,
             migrations: commonConf.MIGRATIONS,
             cli: commonConf.CLI,
