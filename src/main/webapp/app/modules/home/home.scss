@@ -1,0 +1,28 @@
+/* ==========================================================================
+Main page styles
+========================================================================== */
+.hipster {
+  display: inline-block;
+  width: 100%;
+  height: 497px;
+  background: url('../../../content/images/jhipster_family_member_2.svg') no-repeat center top;
+  background-size: contain;
+}
+
+.main {
+  background: linear-gradient(to right top, #f1d2ec 21.32%, #e7edfd 65.29%);
+}
+
+.tran-lastest {
+  border-radius: 40px;
+  background-color: #fef2d3;
+}
+
+.middle {
+  background: linear-gradient(to right top, #f1d2ec 21.32%, #e7edfd 65.29%);
+}
+
+.guest-icon {
+  border-radius: 30px;
+  background: linear-gradient(to right top, #f1d2ec 21.32%, #e7edfd 65.29%);
+}
