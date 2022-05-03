@@ -27,7 +27,7 @@ import { AuthService } from '../../service/auth.service';
 export class AccountController {
     logger = new Logger('AccountController');
 
-    constructor(private readonly authService: AuthService) {}
+    constructor(private readonly authService: AuthService) { }
 
     @Post('/register')
     @ApiOperation({ title: 'Register user' })
@@ -51,7 +51,7 @@ export class AccountController {
     })
     async activateAccount(@Param('token') token: string, @Res() res: Response): Promise<any> {
         await this.authService.activateNewUser(token);
-        return;
+        return "Activated";
     }
 
     @Get('/authenticate')
