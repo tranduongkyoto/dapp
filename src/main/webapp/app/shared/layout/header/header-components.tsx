@@ -6,6 +6,7 @@ import { NavLink as Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import appConfig from 'app/config/constants';
+import MenuItem from '../menus/menu-item';
 
 export const BrandIcon = props => (
   <div {...props} className="brand-icon">
@@ -27,7 +28,7 @@ export const Home = props => (
   <NavItem>
     <NavLink tag={Link} to="/" className="d-flex align-items-center">
       {/* <FontAwesomeIcon icon="home" /> */}
-      <span>
+      <span className="font-weight-bold h4">
         <Translate contentKey="global.menu.home">Home</Translate>
       </span>
     </NavLink>
@@ -38,7 +39,7 @@ export const Campagins = props => (
   <NavItem>
     <NavLink tag={Link} to="/campaigns" className="d-flex align-items-center">
       {/* <FontAwesomeIcon icon="home" /> */}
-      <span>
+      <span className="font-weight-bold h4">
         <Translate contentKey="global.menu.campaigns">Campaigns</Translate>
       </span>
     </NavLink>

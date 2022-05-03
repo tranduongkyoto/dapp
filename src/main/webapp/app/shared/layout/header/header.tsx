@@ -7,7 +7,7 @@ import { Navbar, Nav, NavbarToggler, Collapse } from 'reactstrap';
 import LoadingBar from 'react-redux-loading-bar';
 
 import { Home, Brand, Campagins } from './header-components';
-import { AdminMenu, EntitiesMenu, AccountMenu, LocaleMenu } from '../menus';
+import { AdminMenu, AccountMenu, LocaleMenu, Campaign } from '../menus';
 
 export interface IHeaderProps {
   isAuthenticated: boolean;
@@ -45,14 +45,14 @@ const Header = (props: IHeaderProps) => {
     <div id="app-header">
       {/* {renderDevRibbon()} */}
       <LoadingBar className="loading-bar" />
-      <Navbar data-cy="navbar" dark expand="sm" fixed="top" className="jh-navbar">
+      <Navbar data-cy="navbar" expand="sm" fixed="top" className="jh-navbar" color="light">
         <NavbarToggler aria-label="Menu" onClick={toggleMenu} />
         <Brand />
         <Collapse isOpen={menuOpen} navbar>
           <Nav id="header-tabs" className="ml-auto" navbar>
             <Home />
-            <Campagins />
-            {/* {props.isAuthenticated && <EntitiesMenu />} */}
+            {/* <Campagins /> */}
+            {props.isAuthenticated && <Campaign />}
             {props.isAuthenticated && props.isAdmin && <AdminMenu showOpenAPI="true" />}
             <LocaleMenu currentLocale={props.currentLocale} onClick={handleLocaleChange} />
             <AccountMenu isAuthenticated={props.isAuthenticated} />

@@ -9,8 +9,8 @@ Main page styles
   background-size: contain;
 }
 
-.main {
-  background: linear-gradient(to right top, #f1d2ec 21.32%, #e7edfd 65.29%);
+.bg-top {
+  background: linear-gradient(to right top, rgb(155, 155, 252) 21.32%, #e7edfd 65.29%);
 }
 
 .tran-lastest {
@@ -18,11 +18,11 @@ Main page styles
   background-color: #fef2d3;
 }
 
-.middle {
-  background: linear-gradient(to right top, #f1d2ec 21.32%, #e7edfd 65.29%);
-}
-
 .guest-icon {
   border-radius: 30px;
-  background: linear-gradient(to right top, #f1d2ec 21.32%, #e7edfd 65.29%);
+  background: linear-gradient(to right top, rgb(155, 155, 252) 21.32%, #e7edfd 65.29%);
+}
+
+.btn-border {
+  border-radius: 30px;
 }

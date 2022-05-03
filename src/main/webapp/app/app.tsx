@@ -33,7 +33,12 @@ export const App = (props: IAppProps) => {
   const paddingTop = '60px';
   return (
     <Router basename={baseHref}>
-      <div className="app-container">
+      <div
+        className="app-container"
+        style={{
+          paddingTop,
+        }}
+      >
         <ToastContainer position={toast.POSITION.TOP_LEFT} className="toastify-container" toastClassName="toastify-toast" />
         <ErrorBoundary>
           <Header

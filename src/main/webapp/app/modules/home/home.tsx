@@ -11,7 +11,7 @@ export const Home = (props: IHomeProp) => {
 
   return (
     <>
-      <div className="row main">
+      <div className="row bg-top">
         <div className="col-md-6 col-sm-12 pt-5 pl-5">
           <p className="h1  text-center">Change Our World, with Crypto</p>
           <div className=" text-center">
@@ -20,10 +20,10 @@ export const Home = (props: IHomeProp) => {
           </div>
           <div className="row">
             <div className="col-sm-12 col-md-6 text-right pt-5">
-              <button className="btn btn-lg btn-warning">Create</button>
+              <button className="btn btn-lg btn-warning btn-border">Create</button>
             </div>
             <div className="col-sm-12 col-md-6 text-left pt-5">
-              <button className="btn btn-lg btn-info">Donate</button>
+              <button className="btn btn-lg btn-info btn-border">Donate</button>
             </div>
           </div>
         </div>
@@ -78,7 +78,7 @@ export const Home = (props: IHomeProp) => {
         </div>
       </div>
 
-      <div className="row mt-5 middle justify-content-center">
+      <div className="row mt-5 bg-top justify-content-center">
         <div className="col-md-4"></div>
         <div className="col-md-4 col-sm-12 my-5">
           <div className="h1">What can you do?</div>
@@ -96,7 +96,7 @@ export const Home = (props: IHomeProp) => {
             <div className="col-md-8">
               <div className="h3">Donate by Crypto</div>
               <div>Donate cryptocurrency to public wallet</div>
-              <button className="btn btn-primary">View More</button>
+              <button className="btn btn-primary btn-border">View More</button>
             </div>
           </div>
         </div>
@@ -108,7 +108,7 @@ export const Home = (props: IHomeProp) => {
             <div className="col-md-8">
               <div className="h3">Donate by NFTs</div>
               <div>Donate your NFTs for ours</div>
-              <button className="btn btn-primary">View More</button>
+              <button className="btn btn-primary btn-border">View More</button>
             </div>
           </div>
         </div>
@@ -120,7 +120,7 @@ export const Home = (props: IHomeProp) => {
             <div className="col-md-8">
               <div className="h3">Min Random NFT</div>
               <div>Donate cryptocurrency to public wallet</div>
-              <button className="btn btn-primary">View More</button>
+              <button className="btn btn-primary btn-border">View More</button>
             </div>
           </div>
         </div>

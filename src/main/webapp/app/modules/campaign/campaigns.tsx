@@ -301,7 +301,7 @@ const Campaigns = () => {
                 <div className="row">
                   <div className="col-md-6">{numberOfTransaction} Donation</div>
                   <div className="col-md-6">
-                    <button className="btn btn-primary">Donate</button>
+                    <button className="btn btn-primary btn-border">Donate</button>
                   </div>
                 </div>
               </div>

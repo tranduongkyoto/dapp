@@ -193,7 +193,7 @@ const Campaign = () => {
             <div className="col-md-2 mt-2">Network</div>
             <div className="col-md-2 mt-2">Amount</div>
             <div className="col-md-2">
-              <button className="btn btn-warning mt-4">Donate</button>
+              <button className="btn btn-warning mt-4 btn-border">Donate</button>
             </div>
           </div>
         </div>

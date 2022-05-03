@@ -16,6 +16,7 @@ import PageNotFound from 'app/shared/error/page-not-found';
 import { AUTHORITIES } from 'app/config/constants';
 import Campaigns from './modules/campaign/campaigns';
 import Campaign from './modules/campaign/campaign';
+import CreateCampaign from './modules/campaign/createcampaign';
 
 const Account = Loadable({
   loader: () => import(/* webpackChunkName: "account" */ 'app/modules/account'),
@@ -37,6 +38,7 @@ const Routes = () => {
       <ErrorBoundaryRoute path="/account/reset/request" component={PasswordResetInit} />
       <ErrorBoundaryRoute path="/account/reset/finish/:key?" component={PasswordResetFinish} />
       <ErrorBoundaryRoute path="/campaigns" component={Campaigns} />
+      <ErrorBoundaryRoute path="/campaign/create" component={CreateCampaign} />
       <ErrorBoundaryRoute path="/campaign/:id" component={Campaign} />
       <PrivateRoute path="/admin" component={Admin} hasAnyAuthorities={[AUTHORITIES.ADMIN]} />
       <PrivateRoute path="/account" component={Account} hasAnyAuthorities={[AUTHORITIES.ADMIN, AUTHORITIES.USER]} />

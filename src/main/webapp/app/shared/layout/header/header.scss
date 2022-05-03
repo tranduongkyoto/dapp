@@ -77,7 +77,7 @@ Navbar styles
 }
 .navbar-version {
   font-size: 10px;
-  color: $header-color-secondary;
+  //color: $header-color-secondary;
   padding: 0 0 0 10px;
 }
 
@@ -97,7 +97,7 @@ Navbar styles
 
 .brand-title {
   font-size: 24px;
-  color: $header-color;
+  //color: $header-color;
   &:hover {
     color: $header-color-hover;
     text-decoration: none;
