@@ -51,7 +51,7 @@ function ormConfig(): TypeOrmModuleOptions {
             username: 'root',
             password: 'root',
             logging: false,
-            synchronize: commonConf.SYNCRONIZE,
+            synchronize: true,
             entities: commonConf.ENTITIES,
             migrations: commonConf.MIGRATIONS,
             cli: commonConf.CLI,

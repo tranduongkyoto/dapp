@@ -8,7 +8,7 @@ import { ConfigService } from '@nestjs/config';
     imports: [
         MailerModule.forRootAsync({
             inject: [ConfigService],
-            useFactory: (config: ConfigService) => ({
+            useFactory: () => ({
                 transport: {
                     host: 'outlook.office365.com',
                     port: 587,

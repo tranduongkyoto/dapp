@@ -1,5 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { Input, Button, DatePicker, Select } from 'web3uikit';
+import { useMoralis, useMoralisWeb3Api, useWeb3ExecuteFunction } from 'react-moralis';
 
 const Campaigns = () => {
   const campaigns = [
@@ -227,6 +229,16 @@ const Campaigns = () => {
       },
     },
   ];
+  const { Moralis } = useMoralis();
+  const getCampaign = async () => {
+    const campaign = Moralis.Object.extend('Campaign');
+    const query = new Moralis.Query(campaign);
+
+    //query.limit(25);
+
+    const results = await query.find(); // [ Monster, Monster, ...]
+    console.log(results);
+  };
   return (
     <>
       <div className="row main">
@@ -236,6 +248,7 @@ const Campaigns = () => {
             Lorem ipsum dolor sit amet consectetur adipisicing elit. Eum reiciendis illum eius nisi temporibus aliquid sit quis quasi, non
             assumenda ab quaerat eos natus blanditiis in soluta exercitationem optio enim!
           </div>
+          <Button id="test-button-primary" onClick={getCampaign} text="Create" theme="primary" type="button" />
         </div>
         <div className="col-md-6 col-sm-12">
           <img

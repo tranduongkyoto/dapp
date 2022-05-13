@@ -8,6 +8,8 @@ import LoadingBar from 'react-redux-loading-bar';
 
 import { Home, Brand, Campagins } from './header-components';
 import { AdminMenu, AccountMenu, LocaleMenu, Campaign } from '../menus';
+import { Input, Button, ConnectButton } from 'web3uikit';
+import { useMoralis, useMoralisWeb3Api, useMoralisFile } from 'react-moralis';
 
 export interface IHeaderProps {
   isAuthenticated: boolean;
@@ -21,7 +23,7 @@ export interface IHeaderProps {
 
 const Header = (props: IHeaderProps) => {
   const [menuOpen, setMenuOpen] = useState(false);
-
+  const { isAuthenticated } = useMoralis();
   const handleLocaleChange = event => {
     const langKey = event.target.value;
     Storage.session.set('locale', langKey);
@@ -51,11 +53,11 @@ const Header = (props: IHeaderProps) => {
         <Collapse isOpen={menuOpen} navbar>
           <Nav id="header-tabs" className="ml-auto" navbar>
             <Home />
-            {/* <Campagins /> */}
-            {props.isAuthenticated && <Campaign />}
-            {props.isAuthenticated && props.isAdmin && <AdminMenu showOpenAPI="true" />}
+            {isAuthenticated && <Campaign />}
+            {isAuthenticated && props.isAdmin && <AdminMenu showOpenAPI="true" />}
             <LocaleMenu currentLocale={props.currentLocale} onClick={handleLocaleChange} />
-            <AccountMenu isAuthenticated={props.isAuthenticated} />
+            <AccountMenu isAuthenticated={isAuthenticated} />
+            <ConnectButton />
           </Nav>
         </Collapse>
       </Navbar>

@@ -14,7 +14,7 @@ import { ConfigModule } from '@nestjs/config';
     imports: [
         ConfigModule.forRoot({
             isGlobal: true,
-            cache: true
+            cache: true,
         }),
         TypeOrmModule.forRootAsync({ useFactory: ormConfig }),
         ServeStaticModule.forRoot({

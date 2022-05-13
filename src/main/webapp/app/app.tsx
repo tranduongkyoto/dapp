@@ -39,7 +39,7 @@ export const App = (props: IAppProps) => {
           paddingTop,
         }}
       >
-        <ToastContainer position={toast.POSITION.TOP_LEFT} className="toastify-container" toastClassName="toastify-toast" />
+        {/* <ToastContainer position={toast.POSITION.TOP_LEFT} className="toastify-container" toastClassName="toastify-toast" /> */}
         <ErrorBoundary>
           <Header
             isAuthenticated={props.isAuthenticated}
