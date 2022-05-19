@@ -15,7 +15,7 @@ import ErrorBoundaryRoute from 'app/shared/error/error-boundary-route';
 import PageNotFound from 'app/shared/error/page-not-found';
 import { AUTHORITIES } from 'app/config/constants';
 import Campaigns from './modules/campaign/campaigns';
-import Campaign from './modules/campaign/campaign';
+import Campaign from 'app/modules/campaign/campaign';
 import CreateCampaign from './modules/campaign/createcampaign';
 
 const Account = Loadable({

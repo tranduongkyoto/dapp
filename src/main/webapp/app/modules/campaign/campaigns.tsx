@@ -1,9 +1,13 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { Attributes, useState } from 'react';
+import { Link, useHistory, useLocation } from 'react-router-dom';
 import { Input, Button, DatePicker, Select } from 'web3uikit';
-import { useMoralis, useMoralisWeb3Api, useWeb3ExecuteFunction } from 'react-moralis';
+import { useMoralis, useMoralisWeb3Api, useWeb3ExecuteFunction, useMoralisQuery } from 'react-moralis';
 
 const Campaigns = () => {
+  const { Moralis } = useMoralis();
+  const [list, setList] = useState<any>();
+  const { data, isLoading, error } = useMoralisQuery('Campaign');
+  const history = useHistory();
   const campaigns = [
     {
       _id: '615db44061c08b12f6b79cc6',
@@ -185,65 +189,18 @@ const Campaigns = () => {
         ],
       },
     },
-    {
-      _id: '61be4047ab01db34394b52c5',
-      name: 'Project Carry Forward',
-      description: 'TBD',
-      goal: 5000,
-      startedAt: 1640970000000,
-      endedAt: 1643475600000,
-      coverImgUrl:
-        'https://images.unsplash.com/photo-1591522810850-58128c5fb089?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1740&q=80',
-      thumbnailImgUrl:
-        'https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=640&q=426',
-      type: 'NFT',
-      createdAt: 1639858247095,
-      updatedAt: 1639858247095,
-      userId: '61be3e2fdc0d573388429360',
-      wallets: [
-        {
-          _id: '61be4106f1affd348b499689',
-          address: '0x03481D9C1546b8289E9eF93828dFA834a533c4D3',
-          balance: 0,
-          numberOfTransaction: 0,
-        },
-      ],
-      nftMetadata: {
-        _id: '61be42603d9ca93566419d6c',
-        campaignId: '61be4047ab01db34394b52c5',
-        nftMetaData: {
-          folderId: 'QmYL7JcP6aiXDPa7w9HAH419KQ16iRUZKpaK2v1X5bcyAG',
-          startNumber: '1',
-          total: 7,
-        },
-        ipfsBaseUrl: 'ipfs://QmYL7JcP6aiXDPa7w9HAH419KQ16iRUZKpaK2v1X5bcyAG/metadata',
-        nftUrls: [
-          'https://ipfs.moralis.io:2053/ipfs/QmYL7JcP6aiXDPa7w9HAH419KQ16iRUZKpaK2v1X5bcyAG/metadata/1.json',
-          'https://ipfs.moralis.io:2053/ipfs/QmYL7JcP6aiXDPa7w9HAH419KQ16iRUZKpaK2v1X5bcyAG/metadata/2.json',
-          'https://ipfs.moralis.io:2053/ipfs/QmYL7JcP6aiXDPa7w9HAH419KQ16iRUZKpaK2v1X5bcyAG/metadata/3.json',
-          'https://ipfs.moralis.io:2053/ipfs/QmYL7JcP6aiXDPa7w9HAH419KQ16iRUZKpaK2v1X5bcyAG/metadata/4.json',
-          'https://ipfs.moralis.io:2053/ipfs/QmYL7JcP6aiXDPa7w9HAH419KQ16iRUZKpaK2v1X5bcyAG/metadata/5.json',
-          'https://ipfs.moralis.io:2053/ipfs/QmYL7JcP6aiXDPa7w9HAH419KQ16iRUZKpaK2v1X5bcyAG/metadata/6.json',
-          'https://ipfs.moralis.io:2053/ipfs/QmYL7JcP6aiXDPa7w9HAH419KQ16iRUZKpaK2v1X5bcyAG/metadata/7.json',
-        ],
-      },
-    },
   ];
-  const { Moralis } = useMoralis();
-  const getCampaign = async () => {
-    const campaign = Moralis.Object.extend('Campaign');
-    const query = new Moralis.Query(campaign);
-
-    //query.limit(25);
-
-    const results = await query.find(); // [ Monster, Monster, ...]
-    console.log(results);
+  const getCampaign = () => {
+    console.log(data);
+  };
+  const donate = id => {
+    history.push(`/campaign/${id}`);
   };
   return (
     <>
       <div className="row main">
         <div className="col-md-6 col-sm-12 pt-5 pl-5">
-          <p className="h1  text-center">All Campaigns</p>
+          <div className="h1  text-center">All Campaigns</div>
           <div className=" text-center">
             Lorem ipsum dolor sit amet consectetur adipisicing elit. Eum reiciendis illum eius nisi temporibus aliquid sit quis quasi, non
             assumenda ab quaerat eos natus blanditiis in soluta exercitationem optio enim!
@@ -260,7 +217,7 @@ const Campaigns = () => {
             src="content/images/bluezoneApp.png"
           ></img>
         </div>
-        {campaigns.map((item, index: number) => {
+        {/* {campaigns.map((item, index: number) => {
           const { wallets } = item;
           const balance = wallets.reduce((pre: number, cur: any) => (pre += cur.balance), 0);
           const numberOfTransaction = wallets.reduce((pre: number, cur: any) => (pre += cur.numberOfTransaction), 0);
@@ -317,6 +274,68 @@ const Campaigns = () => {
                     <button className="btn btn-primary btn-border">Donate</button>
                   </div>
                 </div>
+              </div>
+            </div>
+          );
+        })} */}
+        {data.map((item, index: number) => {
+          //const { wallets } = item;
+          //const balance = wallets.reduce((pre: number, cur: any) => (pre += cur.balance), 0);
+          //const numberOfTransaction = wallets.reduce((pre: number, cur: any) => (pre += cur.numberOfTransaction), 0);
+          return (
+            <div className="col-md-6 mt-5" key={index}>
+              <Link to={`/campaign/${item.attributes?.uid}`}>
+                <div
+                  style={{
+                    position: 'relative',
+                  }}
+                >
+                  <img
+                    src={item.attributes?.coverImgUrl}
+                    alt=""
+                    className="ml-5"
+                    style={{
+                      width: '483px',
+                      height: '300px',
+                      objectFit: 'cover',
+                      maxWidth: '70%',
+                    }}
+                  ></img>
+                  <div
+                    className="ml-5 font-bold"
+                    style={{
+                      position: 'absolute',
+                      bottom: '0px',
+                      width: '70%',
+                      backgroundColor: 'rgba(10, 10, 10, 0.25)',
+                    }}
+                  >
+                    <div
+                      className="text-white ml-2"
+                      style={{
+                        opacity: '100%',
+                      }}
+                    >
+                      {item.attributes?.name}
+                    </div>
+                    <div
+                      className="text-white text-truncate ml-2"
+                      style={{
+                        maxWidth: '400px',
+                      }}
+                    >
+                      {item.attributes?.description}
+                    </div>
+                  </div>
+                </div>
+              </Link>
+              <div className="ml-5">
+                <span className="h3">Total Raised : </span>
+                <span className="h3 text-success">{Math.round(item.attributes?.total) / 100000}</span>
+                {/* <div className="col-md-6">{numberOfTransaction} Donation</div> */}
+                <button className="btn btn-primary btn-border ml-5" onClick={() => donate(item.attributes?.uid)}>
+                  Donate
+                </button>
               </div>
             </div>
           );

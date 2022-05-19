@@ -1,8 +1,13 @@
 import './campaign.scss';
-import React from 'react';
-import { convertDateTimeFromServer } from 'app/shared/util/date-utils';
+import React, { useState, useEffect } from 'react';
+import { convertDateTimeFromServer, convertDateTimeToServer, convertTimeStampToDate } from 'app/shared/util/date-utils';
 import { Table } from 'reactstrap';
+import { Loading } from 'web3uikit';
+import { useMoralis, useMoralisWeb3Api, useWeb3ExecuteFunction, useMoralisQuery } from 'react-moralis';
+import { useParams } from 'react-router-dom';
 const Campaign = () => {
+  const { id } = useParams<{ id: string }>();
+  const { data, isLoading, error, fetch, isFetching } = useMoralisQuery('Campaign', query => query.contains('uid', id));
   const campaign = {
     _id: '615db44061c08b12f6b79cc6',
     name: 'nft4charity Demo Campaign',
@@ -162,93 +167,108 @@ const Campaign = () => {
       createdAt: 1636650340486,
     },
   ];
+  useEffect(() => {}, [data]);
   return (
     <>
-      <div className="row  justify-content-center main">
-        <div className="col-md-1"></div>
-        <div className="col-md-5 col-sm-12 pt-5 pl-5">
-          <div className="h1">{campaign.name}</div>
-          <div className="">{campaign.description}</div>
-          <div className="h1">Campagin Start</div>
-          <div>{convertDateTimeFromServer(campaign.createdAt)}</div>
+      {data.length === 0 ? (
+        <div
+          style={{
+            // backgroundColor: '#ECECFE',
+            borderRadius: '8px',
+            padding: '20px',
+          }}
+        >
+          <Loading />
         </div>
-        <div className="col-md-6 col-sm-12">
-          <img
-            style={{
-              maxWidth: '60%',
-              height: 'auto',
-            }}
-            alt=""
-            src="content/images/bluezoneApp.png"
-          ></img>
-        </div>
-        <div className="col-md-8 donate">
-          <div className="row">
-            <div className="col-md-2 ml-5 mt-3">
-              <img src="content/icons/cryptoYellow.svg"></img>
+      ) : (
+        <>
+          <div className="row  justify-content-center main">
+            <div className="col-md-1"></div>
+            <div className="col-md-5 col-sm-12 pt-5 pl-5">
+              <div className="h1">{data[0].attributes?.name}</div>
+              <div className="">{data[0].attributes?.description}</div>
+              <div className="h1">Campaign Start</div>
+              <div>{new Date(parseInt(data[0].attributes?.startedAt)).toString()}</div>
             </div>
-            <div className="col-md-2">
-              <img src="content/icons/qrCode.svg" alt="" />
+            <div className="col-md-6 col-sm-12">
+              <img
+                style={{
+                  maxWidth: '60%',
+                  height: 'auto',
+                }}
+                alt=""
+                src="content/images/bluezoneApp.png"
+              ></img>
             </div>
-            <div className="col-md-2 mt-2">Network</div>
-            <div className="col-md-2 mt-2">Amount</div>
-            <div className="col-md-2">
-              <button className="btn btn-warning mt-4 btn-border">Donate</button>
+            <div className="col-md-8 donate">
+              <div className="row">
+                <div className="col-md-2 ml-5 mt-3">
+                  <img src="content/icons/cryptoYellow.svg"></img>
+                </div>
+                <div className="col-md-2">
+                  <img src="content/icons/qrCode.svg" alt="" />
+                </div>
+                <div className="col-md-2 mt-2">Network</div>
+                <div className="col-md-2 mt-2">Amount</div>
+                <div className="col-md-2">
+                  <button className="btn btn-warning mt-4 btn-border">Donate</button>
+                </div>
+              </div>
+            </div>
+            <div className="col-md-8 tran-lastest my-5">
+              <div className="row py-3 justify-content-center">
+                <div className="col-md-auto col-sm-4">
+                  <img src="content/icons/cryptoPurple.svg" className="pb-1"></img>
+                </div>
+                <div className="col-md-auto col-sm-8">0x6C35Bae9EC2C7Bbbb366AD5008444A6D354334ee</div>
+                <div className="col-md-auto col-sm-4 text-warning">10 ETH</div>
+                <div className="col-md-auto col-sm-4 font-weight-bold">Lastest</div>
+                <div className="col-md-auto col-sm-4 font-italic">Thank for great action!</div>
+              </div>
+            </div>
+            <div className="col-md-8 h1 text-center">Recent Donate</div>
+            <div className="col-md-10">
+              <Table responsive striped>
+                <thead>
+                  <tr>
+                    <th className="hand">
+                      ID
+                      {/* <FontAwesomeIcon icon="sort" /> */}
+                    </th>
+                    <th className="hand">
+                      Wallet Address
+                      {/* <FontAwesomeIcon icon="sort" /> */}
+                    </th>
+                    <th className="hand">
+                      Amount
+                      {/* <FontAwesomeIcon icon="sort" /> */}
+                    </th>
+                    {/* <th /> */}
+                    <th>Sent Date</th>
+                    <th className="hand">
+                      Description
+                      {/* <FontAwesomeIcon icon="sort" /> */}
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {transactions.map((item, i) => (
+                    <tr id={item._id} key={`user-${i}`}>
+                      <td>
+                        <button color="link">{item._id}</button>
+                      </td>
+                      <td>{item.sourceAddress}</td>
+                      <td>{item.amount}</td>
+                      <td>{convertDateTimeFromServer(item.createdAt)}</td>
+                      <td>{item.description}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </Table>
             </div>
           </div>
-        </div>
-        <div className="col-md-8 tran-lastest my-5">
-          <div className="row py-3 justify-content-center">
-            <div className="col-md-auto col-sm-4">
-              <img src="content/icons/cryptoPurple.svg" className="pb-1"></img>
-            </div>
-            <div className="col-md-auto col-sm-8">0x6C35Bae9EC2C7Bbbb366AD5008444A6D354334ee</div>
-            <div className="col-md-auto col-sm-4 text-warning">10 ETH</div>
-            <div className="col-md-auto col-sm-4 font-weight-bold">Lastest</div>
-            <div className="col-md-auto col-sm-4 font-italic">Thank for great action!</div>
-          </div>
-        </div>
-        <div className="col-md-8 h1 text-center">Recent Donate</div>
-        <div className="col-md-10">
-          <Table responsive striped>
-            <thead>
-              <tr>
-                <th className="hand">
-                  ID
-                  {/* <FontAwesomeIcon icon="sort" /> */}
-                </th>
-                <th className="hand">
-                  Wallet Address
-                  {/* <FontAwesomeIcon icon="sort" /> */}
-                </th>
-                <th className="hand">
-                  Amount
-                  {/* <FontAwesomeIcon icon="sort" /> */}
-                </th>
-                {/* <th /> */}
-                <th>Sent Date</th>
-                <th className="hand">
-                  Description
-                  {/* <FontAwesomeIcon icon="sort" /> */}
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {transactions.map((item, i) => (
-                <tr id={item._id} key={`user-${i}`}>
-                  <td>
-                    <button color="link">{item._id}</button>
-                  </td>
-                  <td>{item.sourceAddress}</td>
-                  <td>{item.amount}</td>
-                  <td>{convertDateTimeFromServer(item.createdAt)}</td>
-                  <td>{item.description}</td>
-                </tr>
-              ))}
-            </tbody>
-          </Table>
-        </div>
-      </div>
+        </>
+      )}
     </>
   );
 };

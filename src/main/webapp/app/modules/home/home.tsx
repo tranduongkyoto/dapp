@@ -1,6 +1,6 @@
 import './home.scss';
 import React, { useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { Row, Col, Alert, Button } from 'reactstrap';
 
@@ -8,12 +8,11 @@ export type IHomeProp = StateProps;
 
 export const Home = (props: IHomeProp) => {
   const { account } = props;
-
   return (
     <>
       <div className="row bg-top">
         <div className="col-md-6 col-sm-12 pt-5 pl-5">
-          <p className="h1  text-center">Change Our World, with Crypto</p>
+          <div className="h1  text-center">Change Our World, with Crypto</div>
           <div className=" text-center">
             Lorem ipsum dolor sit amet consectetur adipisicing elit. Eum reiciendis illum eius nisi temporibus aliquid sit quis quasi, non
             assumenda ab quaerat eos natus blanditiis in soluta exercitationem optio enim!

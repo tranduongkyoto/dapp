@@ -29,19 +29,19 @@ const rootEl = document.getElementById('root');
 const render = Component =>
   // eslint-disable-next-line react/no-render-return-value
   ReactDOM.render(
-    <ErrorBoundary>
-      <Provider store={store}>
-        <MoralisProvider appId="bwcCPmbEhZV58isIMJ58KJOyqwDqzHbvorgxmRRj" serverUrl="https://bikkhd1t110y.usemoralis.com:2053/server">
-          <NotificationProvider>
+    <MoralisProvider appId="bwcCPmbEhZV58isIMJ58KJOyqwDqzHbvorgxmRRj" serverUrl="https://bikkhd1t110y.usemoralis.com:2053/server">
+      <NotificationProvider>
+        <ErrorBoundary>
+          <Provider store={store}>
             <div>
               {/* If this slows down the app in dev disable it and enable when required  */}
               {devTools}
               <Component />
             </div>
-          </NotificationProvider>
-        </MoralisProvider>
-      </Provider>
-    </ErrorBoundary>,
+          </Provider>
+        </ErrorBoundary>
+      </NotificationProvider>
+    </MoralisProvider>,
     rootEl
   );
 
