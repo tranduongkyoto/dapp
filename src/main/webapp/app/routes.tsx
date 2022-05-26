@@ -17,6 +17,8 @@ import { AUTHORITIES } from 'app/config/constants';
 import Campaigns from './modules/campaign/campaigns';
 import Campaign from 'app/modules/campaign/campaign';
 import CreateCampaign from './modules/campaign/createcampaign';
+import Campaign2 from './modules/campaign/campaign2';
+import CreateNftCampaign from './modules/campaign/createnftcampaign';
 
 const Account = Loadable({
   loader: () => import(/* webpackChunkName: "account" */ 'app/modules/account'),
@@ -38,7 +40,9 @@ const Routes = () => {
       <ErrorBoundaryRoute path="/account/reset/request" component={PasswordResetInit} />
       <ErrorBoundaryRoute path="/account/reset/finish/:key?" component={PasswordResetFinish} />
       <ErrorBoundaryRoute path="/campaigns" component={Campaigns} />
-      <ErrorBoundaryRoute path="/campaign/create" component={CreateCampaign} />
+      <ErrorBoundaryRoute path="/campaign/create/traditional" component={CreateCampaign} />
+      <ErrorBoundaryRoute path="/campaign/create/nft" component={CreateNftCampaign} />
+      <ErrorBoundaryRoute path="/campaign/create" component={Campaign2} />
       <ErrorBoundaryRoute path="/campaign/:id" component={Campaign} />
       <PrivateRoute path="/admin" component={Admin} hasAnyAuthorities={[AUTHORITIES.ADMIN]} />
       <PrivateRoute path="/account" component={Account} hasAnyAuthorities={[AUTHORITIES.ADMIN, AUTHORITIES.USER]} />

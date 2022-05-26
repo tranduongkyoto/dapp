@@ -21,7 +21,6 @@ export const Login = (props: ILoginProps) => {
     setShowModal(false);
     props.history.push('/');
   };
-
   const { location, isAuthenticated } = props;
   const { from } = (location.state as any) || { from: { pathname: '/', search: location.search } };
   if (isAuthenticated) {

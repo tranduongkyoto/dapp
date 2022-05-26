@@ -51,6 +51,7 @@
     "@fortawesome/fontawesome-svg-core": "1.2.35",
     "@fortawesome/free-solid-svg-icons": "5.15.3",
     "@fortawesome/react-fontawesome": "0.1.14",
+    "@pancakeswap/uikit": "^0.64.0",
     "availity-reactstrap-validation": "2.7.1",
     "axios": "0.21.1",
     "bootstrap": "4.6.0",

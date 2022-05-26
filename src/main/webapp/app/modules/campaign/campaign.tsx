@@ -2,37 +2,20 @@ import './campaign.scss';
 import React, { useState, useEffect } from 'react';
 import { convertDateTimeFromServer, convertDateTimeToServer, convertTimeStampToDate } from 'app/shared/util/date-utils';
 import { Table } from 'reactstrap';
-import { Loading } from 'web3uikit';
-import { useMoralis, useMoralisWeb3Api, useWeb3ExecuteFunction, useMoralisQuery } from 'react-moralis';
+import { Loading, CryptoCards } from 'web3uikit';
+import { useMoralis, useMoralisWeb3Api, useWeb3ExecuteFunction, useMoralisQuery, useWeb3Transfer } from 'react-moralis';
 import { useParams } from 'react-router-dom';
+import { useForm } from 'react-hook-form';
+
 const Campaign = () => {
   const { id } = useParams<{ id: string }>();
-  const { data, isLoading, error, fetch, isFetching } = useMoralisQuery('Campaign', query => query.contains('uid', id));
-  const campaign = {
-    _id: '615db44061c08b12f6b79cc6',
-    name: 'nft4charity Demo Campaign',
-    description: 'Raise $1M worth of medical device & vaccine for COVID-19 in Ho Chi Minh City, Donate easy to public wallets',
-    goal: 1000000,
-    startedAt: 1633091705613,
-    endedAt: 1669857077727,
-    coverImgUrl:
-      'https://images.unsplash.com/photo-1532629345422-7515f3d16bb6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxOTc1MzF8MHwxfHNlYXJjaHwxfHxjaGFyaXR5fGVufDB8MHx8fDE2Mzc3NzQ4Mjg&ixlib=rb-1.2.1&q=80&w=1080',
-    thumbnailImgUrl:
-      'https://images.unsplash.com/photo-1532629345422-7515f3d16bb6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxOTc1MzF8MHwxfHNlYXJjaHwxfHxjaGFyaXR5fGVufDB8MHx8fDE2Mzc3NzQ4Mjg&ixlib=rb-1.2.1&q=80&w=200',
-    type: 'FUND_RAISE',
-    createdAt: 1633530944950,
-    updatedAt: 1633530944950,
-    userId: '615db44061c08b12f6b79cc3',
-    wallets: [
-      {
-        _id: '618d4d64a193433621496d00',
-        address: '0x9d1a9c75b643db4cff39dad5e2cacbeda6df85ae',
-        balance: 0.0007899999999999999,
-        numberOfTransaction: 11,
-      },
-    ],
-    nftMetadata: null,
-  };
+  const { data, error } = useMoralisQuery('Campaign', query => query.contains('uid', id));
+  const { Moralis } = useMoralis();
+  const { fetch, error: error2, isFetching } = useWeb3Transfer();
+  const contractProcessor = useWeb3ExecuteFunction();
+
+  const Web3Api = useMoralisWeb3Api();
+  const [price, setPrice] = useState<number>();
   const transactions = [
     {
       _id: '618d4d66a193433621496d0b',
@@ -167,7 +150,27 @@ const Campaign = () => {
       createdAt: 1636650340486,
     },
   ];
-  useEffect(() => {}, [data]);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    mode: 'onTouched',
+  });
+  const onSubmit = async (data, e) => {
+    console.log(data);
+    console.log(parseInt(data.amount));
+    await fetch({
+      params: {
+        type: 'erc20',
+        amount: Moralis.Units.Token(data.amount, 6),
+        receiver: id,
+        contractAddress: '0x07865c6E87B9F70255377e024ace6630C1Eaa37F',
+      },
+    });
+
+    e.target.reset();
+  };
   return (
     <>
       {data.length === 0 ? (
@@ -189,6 +192,8 @@ const Campaign = () => {
               <div className="">{data[0].attributes?.description}</div>
               <div className="h1">Campaign Start</div>
               <div>{new Date(parseInt(data[0].attributes?.startedAt)).toString()}</div>
+              <div>{data[0].attributes.total}</div>
+              <div>{Moralis.Units.FromWei(data[0].attributes.goal)}</div>
             </div>
             <div className="col-md-6 col-sm-12">
               <img
@@ -200,18 +205,48 @@ const Campaign = () => {
                 src="content/images/bluezoneApp.png"
               ></img>
             </div>
-            <div className="col-md-8 donate">
-              <div className="row">
+            <div className="col-md-6 donate">
+              <div className="row justify-content-center">
                 <div className="col-md-2 ml-5 mt-3">
                   <img src="content/icons/cryptoYellow.svg"></img>
                 </div>
                 <div className="col-md-2">
                   <img src="content/icons/qrCode.svg" alt="" />
                 </div>
-                <div className="col-md-2 mt-2">Network</div>
-                <div className="col-md-2 mt-2">Amount</div>
-                <div className="col-md-2">
-                  <button className="btn btn-warning mt-4 btn-border">Donate</button>
+                <div className="col-md-4">
+                  <form onSubmit={handleSubmit(onSubmit)}>
+                    <div className="h4">Amount</div>
+                    {errors.amount && <p>{errors.amount.message}</p>}
+                    <input
+                      type="number"
+                      //placeholder="Amount"
+                      {...register('amount', {
+                        required: 'Required',
+                        min: {
+                          value: 2,
+                          message: 'Min is 2',
+                        },
+                      })}
+                      style={{
+                        borderRadius: '15px',
+                        width: '100px',
+                        height: '40px',
+                      }}
+                    />
+
+                    <input
+                      type="submit"
+                      className="mt-2 ml-3"
+                      style={{
+                        borderRadius: '15px',
+                        width: '100px',
+                        height: '40px',
+                        backgroundColor: '#21BF96',
+                        color: 'white',
+                        border: 'hidden',
+                      }}
+                    />
+                  </form>
                 </div>
               </div>
             </div>

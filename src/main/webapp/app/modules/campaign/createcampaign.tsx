@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Translate, translate } from 'react-jhipster';
 import './create-campaign.scss';
 import { useNotification } from 'web3uikit';
@@ -11,20 +11,24 @@ import { useLocation } from 'react-router-dom';
 import { useForm, Controller, SubmitHandler } from 'react-hook-form';
 
 const CreateCampaign = () => {
-  const location = useLocation();
   const inputFile = useRef(null);
   const [selectedFile, setSelectedFile] = useState(defaultImgs[1]);
   const [theFile, setTheFile] = useState<any>();
-  const [name, setName] = useState<any>();
-  const [description, setDescription] = useState<any>();
-  const [goal, setGoal] = useState<String>();
-  const [type, setType] = useState<String | Number>();
-  const [startedAt, setStartedAt] = useState<Number>();
-  const [endAt, setEndAt] = useState<Number>();
   const { Moralis } = useMoralis();
   const Web3Api = useMoralisWeb3Api();
   const contractProcessor = useWeb3ExecuteFunction();
   const dispatch = useNotification();
+  // const [price, setPrice] = useState<number>();
+  const getETHPrice = async () => {
+    const price = await Web3Api.token.getTokenPrice({
+      address: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
+      chain: 'eth',
+      exchange: 'uniswap-v3',
+    });
+    //console.log(price);
+    //setPrice(parseInt(price.usdPrice.toString()));
+  };
+  // useEffect(() => {}, []);
   const onBannerClick = () => {
     inputFile.current.click();
   };
@@ -43,7 +47,7 @@ const CreateCampaign = () => {
       position: position || 'bottomL',
     });
   };
-  Moralis.Units;
+
   const {
     register,
     handleSubmit,
@@ -52,21 +56,27 @@ const CreateCampaign = () => {
   } = useForm({
     mode: 'onTouched',
   });
+
   const onSubmit = async (data, e) => {
+    const priceData = await Web3Api.token.getTokenPrice({
+      address: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
+      chain: 'eth',
+      exchange: 'uniswap-v3',
+    });
+    const price = priceData.usdPrice;
     console.log(data);
     if (!theFile) {
       handleNewNotification('error', 'Please select image banner for Campaign');
       return;
     } else {
-      e.target.reset();
       const imgFile = theFile;
       const file = new Moralis.File(imgFile.name, imgFile);
       await file.saveIPFS();
-      var coverImgUrl = 'https://ipfs.moralis.io:2053/ipfs/' + file.name().slice(0, file.name().length - 5);
+      const coverImgUrl = 'https://ipfs.moralis.io:2053/ipfs/' + file.name().slice(0, file.name().length - 5);
       setSelectedFile(defaultImgs[1]);
       setTheFile(null);
-      let options = {
-        contractAddress: '0xa135d59a6B102A1512769f8eDA393198cd7AD0B2',
+      const options = {
+        contractAddress: '0x75e8E1898d1b74fb369e5C68aEA30A4dB2004Fc3',
         functionName: 'createCampaign',
         abi: [
           {
@@ -116,7 +126,7 @@ const CreateCampaign = () => {
         params: {
           name: data?.name,
           description: data?.des,
-          goal: data?.goal,
+          goal: Moralis.Units.Token(data.goal, 6),
           startedAt: new Date(data?.startTime).getTime(),
           endedAt: new Date(data?.endTime).getTime(),
           coverImgUrl: coverImgUrl,
@@ -126,7 +136,7 @@ const CreateCampaign = () => {
       console.log(options);
       await contractProcessor.fetch({
         params: options,
-        onSuccess: data => {
+        onSuccess: res => {
           console.log('Success');
         },
         onError: error => {
@@ -134,6 +144,7 @@ const CreateCampaign = () => {
           console.log(error);
         },
       });
+      e.target.reset();
     }
   };
 
@@ -183,7 +194,7 @@ const CreateCampaign = () => {
                     height: '40px',
                   }}
                 />
-                {errors.Name && <p>{errors.Name.message}</p>}
+                {errors.name && <p>{errors.name.message}</p>}
               </div>
               <div>
                 <div className="h4">Description</div>
@@ -207,11 +218,30 @@ const CreateCampaign = () => {
                     height: '40px',
                   }}
                 />
-                {errors.Description && <p>{errors.Description.message}</p>}
+                {errors.description && <p>{errors.description.message}</p>}
               </div>
               <div>
                 <div className="h4">Goal</div>
-                <input type="range" {...register('goal', { required: true, min: 10, max: 999 })} />
+                <input
+                  type="number"
+                  //placeholder="Amount"
+                  {...register('goal', {
+                    required: 'This field is required',
+                    min: {
+                      value: 100,
+                      message: 'Min value is 100',
+                    },
+                    max: {
+                      value: 999999,
+                      message: 'Max value is 999999',
+                    },
+                  })}
+                  style={{
+                    borderRadius: '15px',
+                    width: '500px',
+                    height: '40px',
+                  }}
+                />
               </div>
               <div>
                 <div className="h4">Type</div>
@@ -231,7 +261,7 @@ const CreateCampaign = () => {
                   <option value="Art">Arts/Culture</option>
                   <option value="Social">Social Justice</option>
                 </select>
-                {errors.Type && <p>{errors.Type.message}</p>}
+                {errors.type && <p>{errors.type.message}</p>}
               </div>
               <div>
                 <div className="h4">Start Time</div>

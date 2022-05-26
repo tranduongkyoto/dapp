@@ -11,3 +11,12 @@
 .btn-border {
   border-radius: 30px;
 }
+
+p {
+  color: #bf1650;
+}
+
+p::before {
+  display: inline;
+  content: '⚠ ';
+}
