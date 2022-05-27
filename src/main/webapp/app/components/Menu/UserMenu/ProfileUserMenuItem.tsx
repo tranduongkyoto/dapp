@@ -1,9 +1,11 @@
 import styled from 'styled-components';
 import { Flex, Skeleton, UserMenuItem } from '@pancakeswap/uikit';
 import { useWeb3React } from '@web3-react/core';
-import { useTranslation } from 'contexts/Localization';
-import { nftsBaseUrl } from 'views/Nft/market/constants';
-import { useRouter } from 'next/router';
+// import { useTranslation } from 'contexts/Localization'
+// import { nftsBaseUrl } from 'views/Nft/market/constants';
+// import { useRouter } from 'next/router';
+import React from 'react';
+import { useHistory } from 'react-router-dom';
 
 interface ProfileUserMenuItemProps {
   isLoading: boolean;
@@ -20,15 +22,17 @@ const Dot = styled.div`
 
 const ProfileUserMenuItem: React.FC<ProfileUserMenuItemProps> = ({ isLoading, hasProfile, disabled }) => {
   const { account } = useWeb3React();
-  const router = useRouter();
-  const { t } = useTranslation();
+  const history = useHistory();
+  // const router = useRouter();
+  // const { t } = useTranslation();
 
   const handleClick = () => {
-    router.push(`${nftsBaseUrl}/profile/${account.toLowerCase()}/achievements`);
+    //router.push(`${nftsBaseUrl}/profile/${account.toLowerCase()}/achievements`);
   };
 
   const handleNoProfileClick = () => {
-    router.push('/create-profile');
+    //router.push('/create-profile');
+    history.push('/account/settings');
   };
 
   if (isLoading) {
@@ -43,7 +47,7 @@ const ProfileUserMenuItem: React.FC<ProfileUserMenuItemProps> = ({ isLoading, ha
     return (
       <UserMenuItem as="button" disabled={disabled} onClick={handleNoProfileClick}>
         <Flex alignItems="center" justifyContent="space-between" width="100%">
-          {t('Make a Profile')}
+          {'Make a Profile'}
           <Dot />
         </Flex>
       </UserMenuItem>
@@ -52,7 +56,7 @@ const ProfileUserMenuItem: React.FC<ProfileUserMenuItemProps> = ({ isLoading, ha
 
   return (
     <UserMenuItem as="button" disabled={disabled} onClick={handleClick}>
-      {t('Your Profile')}
+      {'Your Profile'}
     </UserMenuItem>
   );
 };

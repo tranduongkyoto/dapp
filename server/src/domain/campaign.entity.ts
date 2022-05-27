@@ -12,10 +12,9 @@ export class Campaign extends BaseEntity {
     @Column({ nullable: false })
     coverImgUrl: string;
     @Column({ nullable: false })
-    type: String;
+    type: string;
     @Column({ nullable: false })
     wallets: string;
     @Column({ nullable: false })
     total: number;
-
 }

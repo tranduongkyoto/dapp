@@ -266,24 +266,11 @@ const Campaign = () => {
               <Table responsive striped>
                 <thead>
                   <tr>
-                    <th className="hand">
-                      ID
-                      {/* <FontAwesomeIcon icon="sort" /> */}
-                    </th>
-                    <th className="hand">
-                      Wallet Address
-                      {/* <FontAwesomeIcon icon="sort" /> */}
-                    </th>
-                    <th className="hand">
-                      Amount
-                      {/* <FontAwesomeIcon icon="sort" /> */}
-                    </th>
-                    {/* <th /> */}
+                    <th className="hand">ID</th>
+                    <th className="hand">Wallet Address</th>
+                    <th className="hand">Amount</th>
                     <th>Sent Date</th>
-                    <th className="hand">
-                      Description
-                      {/* <FontAwesomeIcon icon="sort" /> */}
-                    </th>
+                    <th className="hand">Description</th>
                   </tr>
                 </thead>
                 <tbody>

@@ -1,7 +1,8 @@
 import { Box, Flex, FlexProps } from '@pancakeswap/uikit';
 import styled from 'styled-components';
-import { useTranslation } from 'contexts/Localization';
-import { CopyButton } from '../../CopyButton';
+// import { useTranslation } from 'contexts/Localization'
+// import { CopyButton } from '../../CopyButton';
+import React from 'react';
 
 interface CopyAddressProps extends FlexProps {
   account: string;
@@ -47,7 +48,7 @@ const Address = styled.div`
 `;
 
 const CopyAddress: React.FC<CopyAddressProps> = ({ account, ...props }) => {
-  const { t } = useTranslation();
+  // const { t } = useTranslation()
   return (
     <Box position="relative" {...props}>
       <Wrapper>
@@ -55,7 +56,8 @@ const CopyAddress: React.FC<CopyAddressProps> = ({ account, ...props }) => {
           <input type="text" readOnly value={account} />
         </Address>
         <Flex margin="12px">
-          <CopyButton width="24px" text={account} tooltipMessage={t('Copied')} tooltipTop={-40} />
+          {/* <CopyButton width="24px" text={account} tooltipMessage={'Copied'} tooltipTop={-40} /> */}
+          Copy
         </Flex>
       </Wrapper>
     </Box>

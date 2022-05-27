@@ -28,10 +28,10 @@ import { UserService } from '../../service/user.service';
 export class CampaignController {
     logger = new Logger('CampaignController');
 
-    constructor(private readonly userService: UserService) { }
+    constructor(private readonly userService: UserService) {}
 
     @Get('/')
-    //@Roles(RoleType.ADMIN)
+    // @Roles(RoleType.ADMIN)
     @ApiOperation({ title: 'Get the list of campaign' })
     @ApiResponse({
         status: 200,
@@ -49,5 +49,4 @@ export class CampaignController {
         HeaderUtil.addPaginationHeaders(req.res, new Page(results, count, pageRequest));
         return results;
     }
-
 }

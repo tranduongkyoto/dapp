@@ -12,13 +12,14 @@ import {
   ModalTitle,
 } from '@pancakeswap/uikit';
 import { parseUnits } from '@ethersproject/units';
-import { useTranslation } from 'contexts/Localization';
+// import { useTranslation } from 'contexts/Localization'
 import styled from 'styled-components';
-import { useGetBnbBalance } from 'hooks/useTokenBalance';
-import { FetchStatus } from 'config/constants/types';
+// import { useGetBnbBalance } from 'hooks/useTokenBalance'
+// import { FetchStatus } from 'config/constants/types'
 import WalletInfo from './WalletInfo';
 import WalletTransactions from './WalletTransactions';
 import WalletWrongNetwork from './WalletWrongNetwork';
+import React from 'react';
 
 export enum WalletView {
   WALLET_INFO,
@@ -44,9 +45,11 @@ const Tabs = styled.div`
 
 const WalletModal: React.FC<WalletModalProps> = ({ initialView = WalletView.WALLET_INFO, onDismiss }) => {
   const [view, setView] = useState(initialView);
-  const { t } = useTranslation();
-  const { balance, fetchStatus } = useGetBnbBalance();
-  const hasLowBnbBalance = fetchStatus === FetchStatus.Fetched && balance.lte(LOW_BNB_BALANCE);
+  // const { t } = useTranslation();
+  //  const { balance, fetchStatus } = useGetBnbBalance();
+  // const { balance, fetchStatus } = useGetBnbBalance();
+  // const hasLowBnbBalance = fetchStatus === FetchStatus.Fetched && balance.lte(LOW_BNB_BALANCE);
+  const hasLowBnbBalance = false;
 
   const handleClick = (newIndex: number) => {
     setView(newIndex);
@@ -55,17 +58,17 @@ const WalletModal: React.FC<WalletModalProps> = ({ initialView = WalletView.WALL
   const TabsComponent: React.FC = () => (
     <Tabs>
       <ButtonMenu scale="sm" variant="subtle" onItemClick={handleClick} activeIndex={view} fullWidth>
-        <ButtonMenuItem>{t('Wallet')}</ButtonMenuItem>
-        <ButtonMenuItem>{t('Transactions')}</ButtonMenuItem>
+        <ButtonMenuItem>{'Wallet'}</ButtonMenuItem>
+        <ButtonMenuItem>{'Transactions'}</ButtonMenuItem>
       </ButtonMenu>
     </Tabs>
   );
 
   return (
-    <ModalContainer title={t('Welcome!')} minWidth="320px">
+    <ModalContainer title={'Welcome!'} minWidth="320px">
       <ModalHeader>
         <ModalTitle>
-          <Heading>{t('Your Wallet')}</Heading>
+          <Heading>{'Your Wallet'}</Heading>
         </ModalTitle>
         <IconButton variant="text" onClick={onDismiss}>
           <CloseIcon width="24px" color="text" />

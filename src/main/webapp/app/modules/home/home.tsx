@@ -3,7 +3,6 @@ import React, { useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { Row, Col, Alert, Button } from 'reactstrap';
-
 export type IHomeProp = StateProps;
 
 export const Home = (props: IHomeProp) => {

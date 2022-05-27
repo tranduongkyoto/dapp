@@ -19,6 +19,7 @@ import Campaign from 'app/modules/campaign/campaign';
 import CreateCampaign from './modules/campaign/createcampaign';
 import Campaign2 from './modules/campaign/campaign2';
 import CreateNftCampaign from './modules/campaign/createnftcampaign';
+import Nfts from './modules/nft/nfts';
 
 const Account = Loadable({
   loader: () => import(/* webpackChunkName: "account" */ 'app/modules/account'),
@@ -44,6 +45,7 @@ const Routes = () => {
       <ErrorBoundaryRoute path="/campaign/create/nft" component={CreateNftCampaign} />
       <ErrorBoundaryRoute path="/campaign/create" component={Campaign2} />
       <ErrorBoundaryRoute path="/campaign/:id" component={Campaign} />
+      <ErrorBoundaryRoute path="/nft/:id" component={Nfts} />
       <PrivateRoute path="/admin" component={Admin} hasAnyAuthorities={[AUTHORITIES.ADMIN]} />
       <PrivateRoute path="/account" component={Account} hasAnyAuthorities={[AUTHORITIES.ADMIN, AUTHORITIES.USER]} />
       <ErrorBoundaryRoute path="/" exact component={Home} />
