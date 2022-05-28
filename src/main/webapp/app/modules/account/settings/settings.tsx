@@ -12,12 +12,12 @@ import { saveAccountSettings, reset } from './settings.reducer';
 export interface IUserSettingsProps extends StateProps, DispatchProps {}
 
 export const SettingsPage = (props: IUserSettingsProps) => {
-  useEffect(() => {
-    props.getSession();
-    return () => {
-      props.reset();
-    };
-  }, []);
+  // useEffect(() => {
+  //   props.getSession();
+  //   return () => {
+  //     props.reset();
+  //   };
+  // }, []);
 
   const handleValidSubmit = (event, values) => {
     const account = {

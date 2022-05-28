@@ -11,7 +11,11 @@ const ConnectWalletButton = ({ children, ...props }: ButtonProps) => {
     console.log('LogIn');
     let user = Moralis.User.current();
     if (!user) {
-      user = await authenticate();
+      user = await authenticate({
+        onSuccess: () => {
+          window.localStorage.setItem('provider', 'metamask');
+        },
+      });
     }
     console.log('logged in user:', user);
   }
@@ -19,6 +23,7 @@ const ConnectWalletButton = ({ children, ...props }: ButtonProps) => {
   async function logOut() {
     await Moralis.User.logOut();
     console.log('logged out');
+    window.localStorage.removeItem('provider');
   }
 
   const { onPresentConnectModal } = useWalletModal(logIn, logOut, (key: string) => key);
