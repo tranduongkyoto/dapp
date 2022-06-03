@@ -20,6 +20,9 @@ import CreateCampaign from './modules/campaign/createcampaign';
 import Campaign2 from './modules/campaign/campaign2';
 import CreateNftCampaign from './modules/campaign/createnftcampaign';
 import Nfts from './modules/nft/nfts';
+import Profile from './modules/profile/profile';
+import PrivateRouteCustom from './shared/auth/private-route-custom';
+import Video from './modules/video/video';
 
 const Account = Loadable({
   loader: () => import(/* webpackChunkName: "account" */ 'app/modules/account'),
@@ -45,7 +48,9 @@ const Routes = () => {
       <ErrorBoundaryRoute path="/campaign/create/nft" component={CreateNftCampaign} />
       <ErrorBoundaryRoute path="/campaign/create" component={Campaign2} />
       <ErrorBoundaryRoute path="/campaign/:id" component={Campaign} />
-      <ErrorBoundaryRoute path="/nft/:id" component={Nfts} />
+      <ErrorBoundaryRoute path="/video" component={Video} />
+      <PrivateRouteCustom path="/nfts/:id" component={Nfts} />
+      <PrivateRouteCustom path="/account/profile" component={Profile} />
       <PrivateRoute path="/admin" component={Admin} hasAnyAuthorities={[AUTHORITIES.ADMIN]} />
       <PrivateRoute path="/account" component={Account} hasAnyAuthorities={[AUTHORITIES.ADMIN, AUTHORITIES.USER]} />
       <ErrorBoundaryRoute path="/" exact component={Home} />

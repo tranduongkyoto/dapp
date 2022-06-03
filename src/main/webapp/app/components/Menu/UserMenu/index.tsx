@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useWeb3React, UnsupportedChainIdError } from '@web3-react/core';
 import { default as MoralisType } from 'moralis/types';
 import {
@@ -28,6 +28,7 @@ import WalletUserMenuItem from './WalletUserMenuItem';
 import { useMoralis } from 'react-moralis';
 import React from 'react';
 import { useHistory } from 'react-router-dom';
+import { AppContext } from 'app/provider/appContext';
 type web3StatusType = 'disconnected' | 'pending' | 'only_web3';
 const UserMenu = () => {
   //   const router = useRouter();
@@ -48,24 +49,19 @@ const UserMenu = () => {
     authenticate,
     Moralis,
   } = useMoralis();
-  // const { account, error } = useWeb3React();
-  //   const { hasPendingTransactions, pendingNumber } = usePendingTransactions();
-  //  const { isInitialized, isLoading, profile } = useProfile();
   const isLoading = false,
     profile = null;
   const [onPresentWalletModal] = useModal(<WalletModal initialView={WalletView.WALLET_INFO} />);
   const [onPresentTransactionModal] = useModal(<WalletModal initialView={WalletView.TRANSACTIONS} />);
   const [onPresentWrongNetworkModal] = useModal(<WalletModal initialView={WalletView.WRONG_NETWORK} />);
-  // const hasProfile = isInitialized && !!profile;
   const hasProfile = false;
   const avatarSrc = profile?.nft?.image?.thumbnail;
   const [userMenuText, setUserMenuText] = useState<string>('');
   const [userMenuVariable, setUserMenuVariable] = useState<UserMenuVariant>('default');
-  // const isWrongNetwork: boolean = error && error instanceof UnsupportedChainIdError;
   const isWrongNetwork = false;
   const [web3Status, setWeb3Status] = useState<web3StatusType>('disconnected');
+  const { setUser, setIsAdmin } = useContext(AppContext);
   useEffect(() => {
-    // to avoid problems in Next.JS apps because of window object
     if (typeof window == 'undefined') return;
 
     const provider = window.localStorage.getItem('provider') as MoralisType.Web3ProviderType;
@@ -74,10 +70,8 @@ const UserMenu = () => {
       setWeb3Status('pending');
       enableWeb3({
         provider,
-        //chainId,
         onSuccess: () => setWeb3Status('only_web3'),
       });
-      console.log('TEST');
     }
   }, [isWeb3Enabled, isWeb3EnableLoading, web3Status]);
 
@@ -150,7 +144,15 @@ const UserMenu = () => {
         </UserMenuItem>
         <ProfileUserMenuItem isLoading={isLoading} hasProfile={hasProfile} disabled={isWrongNetwork} />
         <UserMenuDivider />
-        <UserMenuItem as="button" onClick={logout}>
+        <UserMenuItem
+          as="button"
+          onClick={() => {
+            setUser(null);
+            setIsAdmin(false);
+            window.localStorage.removeItem('isAdmin');
+            logout();
+          }}
+        >
           <Flex alignItems="center" justifyContent="space-between" width="100%">
             {'Disconnect'}
             <LogoutIcon />
@@ -160,19 +162,7 @@ const UserMenu = () => {
     );
   };
 
-  // if (account) {
-  //   return (
-  //     <div className="">
-  //       <UIKitUserMenu account={account} avatarSrc={avatarSrc} text={userMenuText} variant={userMenuVariable}>
-  //         {/* {({ isOpen }) => (isOpen ? <UserMenuItems /> : null)} */}
-  //         <UserMenuItems />
-  //       </UIKitUserMenu>
-  //     </div>
-  //   );
-  // }
-
   if (!account || (isInitialized && !isAuthenticated)) {
-    console.log(account, isInitialized, isAuthenticated);
     return (
       <ConnectWalletButton scale="sm">
         <Box display={['none', , , 'block']}>Connect Wallet</Box>
@@ -191,12 +181,6 @@ const UserMenu = () => {
     );
   }
 
-  // return (
-  //   <ConnectWalletButton scale="sm">
-  //     <Box display={['none', , , 'block']}>Connect Wallet</Box>
-  //     <Box display={['block', , , 'none']}>Connect</Box>
-  //   </ConnectWalletButton>
-  // );
   return (
     <div className="">
       <UIKitUserMenu account={account} avatarSrc={avatarSrc} text={userMenuText} variant={userMenuVariable}>

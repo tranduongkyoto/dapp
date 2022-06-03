@@ -32,7 +32,7 @@ const ProfileUserMenuItem: React.FC<ProfileUserMenuItemProps> = ({ isLoading, ha
 
   const handleNoProfileClick = () => {
     //router.push('/create-profile');
-    history.push('/account/settings');
+    history.push('/account/profile');
   };
 
   if (isLoading) {

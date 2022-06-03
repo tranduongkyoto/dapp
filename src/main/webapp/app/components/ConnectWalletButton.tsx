@@ -1,14 +1,15 @@
 import { Button, useWalletModal, ButtonProps } from '@pancakeswap/uikit';
 // import useAuth from 'hooks/useAuth';
 import { useMoralis, useMoralisWeb3Api, useWeb3ExecuteFunction, useMoralisQuery, useWeb3Transfer } from 'react-moralis';
-import React from 'react';
+import React, { useContext } from 'react';
+import { AppContext } from 'app/provider/appContext';
 
 const ConnectWalletButton = ({ children, ...props }: ButtonProps) => {
   //const { t } = useTranslation();
   //const { login, logout } = useAuth();
-  const { Moralis, authenticate, isAuthenticated } = useMoralis();
+  const { Moralis, authenticate, isAuthenticated, account } = useMoralis();
+  const { setIsAdmin } = useContext(AppContext);
   async function logIn() {
-    console.log('LogIn');
     let user = Moralis.User.current();
     if (!user) {
       user = await authenticate({
@@ -16,8 +17,13 @@ const ConnectWalletButton = ({ children, ...props }: ButtonProps) => {
           window.localStorage.setItem('provider', 'metamask');
         },
       });
+      console.log(user);
+      const isAdmin = user.attributes?.isAdmin ? user.attributes?.isAdmin : false;
+      setIsAdmin(isAdmin);
+      if (isAdmin) {
+        window.localStorage.setItem('isAdmin', isAdmin);
+      }
     }
-    console.log('logged in user:', user);
   }
 
   async function logOut() {
