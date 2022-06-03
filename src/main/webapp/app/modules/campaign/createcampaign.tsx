@@ -18,17 +18,6 @@ const CreateCampaign = () => {
   const Web3Api = useMoralisWeb3Api();
   const contractProcessor = useWeb3ExecuteFunction();
   const dispatch = useNotification();
-  // const [price, setPrice] = useState<number>();
-  const getETHPrice = async () => {
-    const price = await Web3Api.token.getTokenPrice({
-      address: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
-      chain: 'eth',
-      exchange: 'uniswap-v3',
-    });
-    //console.log(price);
-    //setPrice(parseInt(price.usdPrice.toString()));
-  };
-  // useEffect(() => {}, []);
   const onBannerClick = () => {
     inputFile.current.click();
   };
@@ -42,7 +31,7 @@ const CreateCampaign = () => {
     dispatch({
       type,
       message,
-      title: 'Error Notification',
+      title: 'Notification',
       icon,
       position: position || 'bottomL',
     });
@@ -58,12 +47,6 @@ const CreateCampaign = () => {
   });
 
   const onSubmit = async (data, e) => {
-    const priceData = await Web3Api.token.getTokenPrice({
-      address: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
-      chain: 'eth',
-      exchange: 'uniswap-v3',
-    });
-    const price = priceData.usdPrice;
     console.log(data);
     if (!theFile) {
       handleNewNotification('error', 'Please select image banner for Campaign');
@@ -249,7 +232,7 @@ const CreateCampaign = () => {
                   {...register('type', { required: 'This field is required' })}
                   style={{
                     borderRadius: '15px',
-                    width: '100px',
+                    width: '120px',
                     height: '40px',
                   }}
                 >
@@ -263,7 +246,7 @@ const CreateCampaign = () => {
                 </select>
                 {errors.type && <p>{errors.type.message}</p>}
               </div>
-              <div>
+              {/* <div>
                 <div className="h4">Start Time</div>
                 <input
                   type="datetime-local"
@@ -276,7 +259,7 @@ const CreateCampaign = () => {
                   }}
                 />
                 {errors.startTime && <p>{errors.startTime.message}</p>}
-              </div>
+              </div> */}
               <div>
                 <div className="h4">End Time</div>
                 <input
@@ -292,7 +275,7 @@ const CreateCampaign = () => {
                 {errors.endTime && <p>{errors.endTime.message}</p>}
               </div>
 
-              <input
+              <button
                 type="submit"
                 className="mt-2"
                 style={{
@@ -303,8 +286,10 @@ const CreateCampaign = () => {
                   color: 'white',
                   border: 'hidden',
                 }}
-              />
-              <input
+              >
+                Create
+              </button>
+              <button
                 type="reset"
                 className=" ml-1 mt-2"
                 style={{
@@ -315,7 +300,9 @@ const CreateCampaign = () => {
                   color: 'white',
                   border: 'hidden',
                 }}
-              />
+              >
+                Clear
+              </button>
             </form>
           </div>
         </div>

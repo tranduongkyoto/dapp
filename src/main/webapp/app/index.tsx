@@ -16,6 +16,7 @@ import { NotificationProvider } from 'web3uikit';
 import { ThemeProvider } from 'styled-components';
 import { Web3ReactProvider } from '@web3-react/core';
 import { Web3Provider } from '@ethersproject/providers';
+import { AppProvider } from './provider/appProvider';
 
 const devTools = process.env.NODE_ENV === 'development' ? <DevTools /> : null;
 
@@ -41,15 +42,17 @@ const render = Component =>
         <NotificationProvider>
           <ThemeProvider theme={light}>
             <ModalProvider>
-              <ErrorBoundary>
-                <Provider store={store}>
-                  <div>
-                    {/* If this slows down the app in dev disable it and enable when required  */}
-                    {devTools}
-                    <Component />
-                  </div>
-                </Provider>
-              </ErrorBoundary>
+              <AppProvider>
+                <ErrorBoundary>
+                  <Provider store={store}>
+                    <div>
+                      {/* If this slows down the app in dev disable it and enable when required  */}
+                      {devTools}
+                      <Component />
+                    </div>
+                  </Provider>
+                </ErrorBoundary>
+              </AppProvider>
             </ModalProvider>
           </ThemeProvider>
         </NotificationProvider>

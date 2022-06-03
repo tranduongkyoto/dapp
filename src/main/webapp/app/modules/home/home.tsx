@@ -1,12 +1,12 @@
 import './home.scss';
-import React, { useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import React, { useEffect, useContext } from 'react';
 import { connect } from 'react-redux';
-import { Row, Col, Alert, Button } from 'reactstrap';
+import { AppContext } from 'app/provider/appContext';
 export type IHomeProp = StateProps;
 
 export const Home = (props: IHomeProp) => {
-  const { account } = props;
+  const { isAdmin } = useContext(AppContext);
+
   return (
     <>
       <div className="row bg-top">

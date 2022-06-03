@@ -35,13 +35,11 @@ export const Home = props => (
   </NavItem>
 );
 
-// export const Campagins = props => (
-//   <NavItem>
-//     <NavLink tag={Link} to="/campaigns" className="d-flex align-items-center">
-//       {/* <FontAwesomeIcon icon="home" /> */}
-//       <span className="font-weight-bold h5">
-//         <Translate contentKey="global.menu.campaigns">Campaigns</Translate>
-//       </span>
-//     </NavLink>
-//   </NavItem>
-// );
+export const Video = props => (
+  <NavItem>
+    <NavLink tag={Link} to="/video" className="d-flex align-items-center">
+      {/* <FontAwesomeIcon icon="home" /> */}
+      <span className="font-weight-bold h5">Video</span>
+    </NavLink>
+  </NavItem>
+);

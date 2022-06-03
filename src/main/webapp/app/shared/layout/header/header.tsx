@@ -1,16 +1,17 @@
 import './header.scss';
 
-import React, { useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { Translate, Storage } from 'react-jhipster';
 import { Navbar, Nav, NavbarToggler, Collapse } from 'reactstrap';
 
 import LoadingBar from 'react-redux-loading-bar';
 
-import { Home, Brand } from './header-components';
+import { Home, Brand, Video } from './header-components';
 import { AdminMenu, AccountMenu, LocaleMenu, Campaign } from '../menus';
 import { Input, Button, ConnectButton } from 'web3uikit';
 import { useMoralis, useMoralisWeb3Api, useMoralisFile } from 'react-moralis';
 import UserMenu from 'app/components/Menu/UserMenu';
+import { AppContext } from 'app/provider/appContext';
 
 export interface IHeaderProps {
   isAuthenticated: boolean;
@@ -25,6 +26,7 @@ export interface IHeaderProps {
 const Header = (props: IHeaderProps) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const { isAuthenticated } = useMoralis();
+  const { isAdmin } = useContext(AppContext);
   const handleLocaleChange = event => {
     const langKey = event.target.value;
     Storage.session.set('locale', langKey);
@@ -43,7 +45,10 @@ const Header = (props: IHeaderProps) => {
   const toggleMenu = () => setMenuOpen(!menuOpen);
 
   /* jhipster-needle-add-element-to-menu - JHipster will add new menu items here */
-
+  useEffect(() => {
+    console.log(isAdmin);
+    return () => {};
+  }, [isAdmin]);
   return (
     <div id="app-header">
       {/* {renderDevRibbon()} */}
@@ -55,7 +60,8 @@ const Header = (props: IHeaderProps) => {
           <Nav id="header-tabs" className="ml-auto" navbar>
             <Home />
             {isAuthenticated && <Campaign />}
-            {isAuthenticated && <AdminMenu showOpenAPI="true" />}
+            {isAuthenticated && <Video />}
+            {isAuthenticated && isAdmin && <AdminMenu showOpenAPI="true" />}
             <LocaleMenu currentLocale={props.currentLocale} onClick={handleLocaleChange} />
             <AccountMenu isAuthenticated={isAuthenticated} />
             {/* <ConnectButton /> */}

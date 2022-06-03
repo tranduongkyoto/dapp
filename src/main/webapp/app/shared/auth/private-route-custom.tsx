@@ -1,24 +1,61 @@
-import React from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { Route, Redirect, RouteProps } from 'react-router-dom';
 import { Translate } from 'react-jhipster';
 import { IRootState } from 'app/shared/reducers';
 import ErrorBoundary from 'app/shared/error/error-boundary';
-
+import { useMoralis } from 'react-moralis';
+import { IPosition, notifyType } from 'web3uikit/dist/components/Notification/types';
+import { TIconType } from 'web3uikit/dist/components/Icon/collection';
 interface IOwnProps extends RouteProps {
   hasAnyAuthorities?: string[];
 }
 
 export interface IPrivateRouteProps extends IOwnProps, StateProps {}
+import { useNotification } from 'web3uikit';
 
 export const PrivateRouteComponent = ({
   component: Component,
-  isAuthenticated,
+  //isAuthenticated,
   sessionHasBeenFetched,
-  isAuthorized,
+  //isAuthorized,
   hasAnyAuthorities = [],
   ...rest
 }: IPrivateRouteProps) => {
+  const {
+    account,
+    isAuthenticated,
+    logout,
+    deactivateWeb3,
+    enableWeb3,
+    isWeb3Enabled,
+    isInitialized,
+    isWeb3EnableLoading,
+    isAuthenticating,
+    authenticate,
+    Moralis,
+    user,
+  } = useMoralis();
+  const [isAuthorized, setisAthorized] = useState(false);
+  useEffect(() => {
+    if (user !== null && hasAnyAuthorities.length !== 0) {
+      setisAthorized(user.attributes?.isAdmin ? user.attributes?.isAdmin : isAuthorized);
+    }
+    if (hasAnyAuthorities.length == 0) {
+      setisAthorized(true);
+    }
+    return () => {};
+  }, [user, isAuthorized]);
+  const dispatch = useNotification();
+  const handleNewNotification = (type: notifyType, message?: string, icon?: TIconType, position?: IPosition) => {
+    dispatch({
+      type,
+      message,
+      title: 'Notification',
+      icon,
+      position: position || 'bottomL',
+    });
+  };
   const checkAuthorities = props =>
     isAuthorized ? (
       <ErrorBoundary>
@@ -31,7 +68,6 @@ export const PrivateRouteComponent = ({
         </div>
       </div>
     );
-
   const renderRedirect = props => {
     if (!sessionHasBeenFetched) {
       return <div></div>;
@@ -39,13 +75,16 @@ export const PrivateRouteComponent = ({
       return isAuthenticated ? (
         checkAuthorities(props)
       ) : (
-        <Redirect
-          to={{
-            pathname: '/login',
-            search: props.location.search,
-            state: { from: props.location },
-          }}
-        />
+        <>
+          {handleNewNotification('error', 'You need Login to access this route.')}
+          <Redirect
+            to={{
+              pathname: '/',
+              search: props.location.search,
+              state: { from: props.location },
+            }}
+          />
+        </>
       );
     }
   };
@@ -55,7 +94,8 @@ export const PrivateRouteComponent = ({
   return <Route {...rest} render={renderRedirect} />;
 };
 
-export const hasAnyAuthority = (authorities: string[], hasAnyAuthorities: string[]) => {
+export const hasAnyAuthority = (authorities, hasAnyAuthorities: string[]) => {
+  console.log(authorities);
   if (authorities && authorities.length !== 0) {
     if (hasAnyAuthorities.length === 0) {
       return true;
@@ -69,8 +109,8 @@ const mapStateToProps = (
   { authentication: { isAuthenticated, account, sessionHasBeenFetched } }: IRootState,
   { hasAnyAuthorities = [] }: IOwnProps
 ) => ({
-  isAuthenticated,
-  isAuthorized: hasAnyAuthority(account.authorities, hasAnyAuthorities),
+  // isAuthenticated,
+  // isAuthorized: hasAnyAuthority(Moralis.User.current(), hasAnyAuthorities),
   sessionHasBeenFetched,
 });
 
@@ -81,6 +121,6 @@ type StateProps = ReturnType<typeof mapStateToProps>;
  * Accepts same props as React router Route.
  * The route also checks for authorization if hasAnyAuthorities is specified.
  */
-export const PrivateRoute = connect(mapStateToProps, null, null, { pure: false })(PrivateRouteComponent);
+export const PrivateRouteCustom = connect(mapStateToProps, null, null, { pure: false })(PrivateRouteComponent);
 
-export default PrivateRoute;
+export default PrivateRouteCustom;

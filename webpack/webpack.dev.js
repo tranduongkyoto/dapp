@@ -52,6 +52,12 @@ module.exports = options =>
           secure: false,
           changeOrigin: options.tls,
         },
+        {
+          context: ['/jmreport'],
+          target: `http${options.tls ? 's' : ''}://localhost:8000`,
+          secure: false,
+          changeOrigin: options.tls,
+        },
       ],
       watchOptions: {
         ignore: [/node_modules/, utils.root('src/test')],
