@@ -35,11 +35,8 @@ export default function ProfileSetting() {
 
   const onSubmit = async (data, e) => {
     console.log(data);
-    // const User = Moralis.Object.extend('_User');
-    // const user = new User();
     let user = Moralis.User.current();
-    console.log(user);
-    user
+    await user
       .save({
         username: data.name,
         email: data.email,
@@ -58,7 +55,7 @@ export default function ProfileSetting() {
           handleNewNotification('error', error.message);
         }
       );
-    e.target.reset();
+    //e.target.reset();
   };
 
   return (
