@@ -1,0 +1,28 @@
+// .banner-border {
+//   // border: 3px dashed rgb(204, 204, 204);
+//   // border-radius: 5px;
+//   width: 500px;
+//   height: 200px;
+//   //object-fit: cover;
+// }
+img {
+  width: 200px;
+  height: 200px;
+  object-fit: cover;
+}
+.banner {
+  border-radius: 10px;
+}
+
+.banner:hover {
+  cursor: pointer;
+}
+
+p {
+  color: #bf1650;
+}
+
+p::before {
+  display: inline;
+  content: '⚠ ';
+}

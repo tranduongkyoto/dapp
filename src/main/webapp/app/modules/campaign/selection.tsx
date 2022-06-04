@@ -1,10 +1,10 @@
 import React from 'react';
 import { Link, useHistory, useLocation } from 'react-router-dom';
 
-export default function Campaign2() {
+export default function Selection() {
   return (
     <>
-      <div className="row">
+      <div className="row justify-content-center">
         <div className="col-md-8 col-sm-12 pt-5 pl-5">
           <div className="h1  text-center">Change Our World, with Crypto</div>
           <div className=" text-center">
@@ -33,7 +33,8 @@ export default function Campaign2() {
 
         <div className="col-md-4 col-sm-12">
           <Link to={`/campaign/create/traditional`} style={{ textDecoration: 'none' }}>
-            <img src="content/images/transparent.png"></img>
+            {/* <img src="content/images/transparent.png"></img> */}
+            <img src="content/images/donate.png"></img>
             <div className="h1">Truyền thống</div>
             <div>Nhận quyên góp bằng tiền điện tử</div>
             <div>
@@ -44,7 +45,7 @@ export default function Campaign2() {
         </div>
         <div className="col-md-4 col-sm-12">
           <Link to={`/campaign/create/nft`} style={{ textDecoration: 'none' }}>
-            <img src="content/images/donate.png"></img>
+            <img src="content/images/nftItem.png"></img>
             <div className="h1">NFTs</div>
             <div>Nhận quyên góp bằng việc bán hoặc đấu giá NFTs</div>
             <div>
@@ -53,14 +54,13 @@ export default function Campaign2() {
             </div>
           </Link>
         </div>
-        <div className="col-md-4 col-sm-12">
+        {/* <div className="col-md-4 col-sm-12">
           <Link to={`/campaign/create/1`} style={{ textDecoration: 'none' }}>
-            <img src="content/images/nftItem.png"></img>
             <div className="h1">Tổ chức hoạt động</div>
             <div>Tổ chức hoạt động để nhận quyên góp</div>
             <div></div>
           </Link>
-        </div>
+        </div> */}
       </div>
     </>
   );

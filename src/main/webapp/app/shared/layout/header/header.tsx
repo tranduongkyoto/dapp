@@ -12,6 +12,7 @@ import { Input, Button, ConnectButton } from 'web3uikit';
 import { useMoralis, useMoralisWeb3Api, useMoralisFile } from 'react-moralis';
 import UserMenu from 'app/components/Menu/UserMenu';
 import { AppContext } from 'app/provider/appContext';
+import { Nft } from '../menus/nft';
 
 export interface IHeaderProps {
   isAuthenticated: boolean;
@@ -61,6 +62,7 @@ const Header = (props: IHeaderProps) => {
             <Home />
             {isAuthenticated && <Campaign />}
             {isAuthenticated && <Video />}
+            {isAuthenticated && <Nft />}
             {isAuthenticated && isAdmin && <AdminMenu showOpenAPI="true" />}
             <LocaleMenu currentLocale={props.currentLocale} onClick={handleLocaleChange} />
             <AccountMenu isAuthenticated={isAuthenticated} />

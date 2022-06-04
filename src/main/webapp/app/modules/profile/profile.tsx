@@ -8,7 +8,7 @@ import { TIconType } from 'web3uikit/dist/components/Icon/collection';
 import { useLocation } from 'react-router-dom';
 import { useForm, Controller, SubmitHandler } from 'react-hook-form';
 
-export default function Profile() {
+export default function ProfileSetting() {
   const { Moralis } = useMoralis();
   const Web3Api = useMoralisWeb3Api();
   const contractProcessor = useWeb3ExecuteFunction();
@@ -43,6 +43,8 @@ export default function Profile() {
       .save({
         username: data.name,
         email: data.email,
+        phoneNumber: data.phone,
+        work: data.work,
         isUpdateProfile: true,
       })
       .then(
@@ -127,7 +129,54 @@ export default function Profile() {
                     height: '40px',
                   }}
                 />
-                {errors.description && <p>{errors.description.message}</p>}
+                {errors.email && <p>{errors.email.message}</p>}
+              </div>
+              <div>
+                <div className="h4">Phone Number</div>
+                <input
+                  type="tel"
+                  {...register('phone', {
+                    required: 'This field is required',
+                    minLength: {
+                      value: 10,
+                      message: 'Min length is 10',
+                    },
+                    maxLength: {
+                      value: 10,
+                      message: 'Max length is 10',
+                    },
+                  })}
+                  style={{
+                    borderRadius: '15px',
+                    width: '500px',
+                    height: '40px',
+                  }}
+                />
+                {errors.phone && <p>{errors.phone.message}</p>}
+              </div>
+              <div>
+                <div className="h4">Work</div>
+                <input
+                  type="text"
+                  //placeholder="Name"
+                  {...register('work', {
+                    required: 'This field is required',
+                    minLength: {
+                      value: 2,
+                      message: 'Min length is 5',
+                    },
+                    maxLength: {
+                      value: 50,
+                      message: 'Max length is 50',
+                    },
+                  })}
+                  style={{
+                    borderRadius: '15px',
+                    width: '500px',
+                    height: '40px',
+                  }}
+                />
+                {errors.work && <p>{errors.work.message}</p>}
               </div>
               <button
                 type="submit"

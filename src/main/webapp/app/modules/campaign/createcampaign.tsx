@@ -110,7 +110,7 @@ const CreateCampaign = () => {
           name: data?.name,
           description: data?.des,
           goal: Moralis.Units.Token(data.goal, 6),
-          startedAt: new Date(data?.startTime).getTime(),
+          //startedAt: new Date(data?.startTime).getTime(),
           endedAt: new Date(data?.endTime).getTime(),
           coverImgUrl: coverImgUrl,
           campaignType: data?.name,

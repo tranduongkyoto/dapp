@@ -205,7 +205,7 @@ const Campaigns = () => {
             Lorem ipsum dolor sit amet consectetur adipisicing elit. Eum reiciendis illum eius nisi temporibus aliquid sit quis quasi, non
             assumenda ab quaerat eos natus blanditiis in soluta exercitationem optio enim!
           </div>
-          <Button id="test-button-primary" onClick={getCampaign} text="Create" theme="primary" type="button" />
+          {/* <Button id="test-button-primary" onClick={getCampaign} text="Create" theme="primary" type="button" /> */}
         </div>
         <div className="col-md-6 col-sm-12">
           <img

@@ -110,7 +110,7 @@ export const Home = (props: IHomeProp) => {
             </div>
           </div>
         </div>
-        <div className="col-md-4 col-sm-12 my-5">
+        {/* <div className="col-md-4 col-sm-12 my-5">
           <div className="row">
             <div className="col-md-4">
               <img src="content/icons/imageBlack.svg"></img>
@@ -121,7 +121,7 @@ export const Home = (props: IHomeProp) => {
               <button className="btn btn-primary btn-border">View More</button>
             </div>
           </div>
-        </div>
+        </div> */}
         <div className="col-md-8 tran-lastest my-5">
           <div className="row py-3 justify-content-center">
             <div className="col-md-auto col-sm-4">

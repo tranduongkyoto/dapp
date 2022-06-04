@@ -136,7 +136,7 @@ const UserMenu = () => {
           as="button"
           disabled={isWrongNetwork}
           onClick={
-            () => history.push(`/nfts/${account}`)
+            () => history.push(`/nft/${account}`)
             //router.push(`${nftsBaseUrl}/profile/${account.toLowerCase()}`)
           }
         >

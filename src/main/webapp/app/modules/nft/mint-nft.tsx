@@ -1,48 +1,44 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Translate, translate } from 'react-jhipster';
-import './create-campaign.scss';
+import './mint-nft.scss';
 import { useNotification } from 'web3uikit';
 import { useMoralis, useMoralisWeb3Api, useWeb3ExecuteFunction } from 'react-moralis';
 import { defaultImgs } from '../../shared/util/defaultImgs';
 import { messages } from 'app/config/constants';
 import { IPosition, notifyType } from 'web3uikit/dist/components/Notification/types';
 import { TIconType } from 'web3uikit/dist/components/Icon/collection';
-import { useLocation } from 'react-router-dom';
-import { useForm, Controller, SubmitHandler } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
+import { encode } from 'base-64';
 
-const CreateNftCampaign = () => {
+const MintNft = () => {
+  const { account } = useMoralis();
   const inputFile = useRef(null);
+  const [isImage, setIsImage] = useState<boolean>(false);
   const [selectedFile, setSelectedFile] = useState(defaultImgs[1]);
   const [theFile, setTheFile] = useState<any>();
   const { Moralis } = useMoralis();
   const Web3Api = useMoralisWeb3Api();
   const contractProcessor = useWeb3ExecuteFunction();
   const dispatch = useNotification();
-  // const [price, setPrice] = useState<number>();
-  const getETHPrice = async () => {
-    const price = await Web3Api.token.getTokenPrice({
-      address: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
-      chain: 'eth',
-      exchange: 'uniswap-v3',
-    });
-    //console.log(price);
-    //setPrice(parseInt(price.usdPrice.toString()));
-  };
-  // useEffect(() => {}, []);
   const onBannerClick = () => {
     inputFile.current.click();
   };
 
   const changeHandler = event => {
-    const img = event.target.files[0];
-    setTheFile(img);
-    setSelectedFile(URL.createObjectURL(img));
+    const file = event.target.files[0];
+    console.log(file);
+    console.log(file.type.slice(0, 5));
+    if (file.type.slice(0, 5) !== 'image') {
+      setIsImage(true);
+    }
+    setTheFile(file);
+    setSelectedFile(URL.createObjectURL(file));
   };
   const handleNewNotification = (type: notifyType, message?: string, icon?: TIconType, position?: IPosition) => {
     dispatch({
       type,
       message,
-      title: 'Error Notification',
+      title: 'Notification',
       icon,
       position: position || 'bottomL',
     });
@@ -58,13 +54,8 @@ const CreateNftCampaign = () => {
   });
 
   const onSubmit = async (data, e) => {
-    const priceData = await Web3Api.token.getTokenPrice({
-      address: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
-      chain: 'eth',
-      exchange: 'uniswap-v3',
-    });
-    const price = priceData.usdPrice;
     console.log(data);
+    console.log(theFile);
     if (!theFile) {
       handleNewNotification('error', 'Please select image banner for Campaign');
       return;
@@ -72,65 +63,50 @@ const CreateNftCampaign = () => {
       const imgFile = theFile;
       const file = new Moralis.File(imgFile.name, imgFile);
       await file.saveIPFS();
-      const coverImgUrl = 'https://ipfs.moralis.io:2053/ipfs/' + file.name().slice(0, file.name().length - 5);
+      const nftImageJ = 'https://ipfs.moralis.io:2053/ipfs/' + file.name().slice(0, file.name().length - 5);
       setSelectedFile(defaultImgs[1]);
       setTheFile(null);
+      const metadata = {
+        description: data.des,
+        image: nftImageJ,
+        name: data.name,
+      };
+      const base64 = encode(JSON.stringify(metadata));
+      const res = new Moralis.File('test.json', { base64 });
+      await res.saveIPFS();
+      const uri = 'https://ipfs.moralis.io:2053/ipfs/' + res.name().slice(0, file.name().length - 5);
       const options = {
-        contractAddress: '0x75e8E1898d1b74fb369e5C68aEA30A4dB2004Fc3',
-        functionName: 'createCampaign',
+        contractAddress: '0xfab34f6db9657a74f7ea96a5308c84c4f34b9a91',
+        functionName: 'mintNFT',
         abi: [
           {
             inputs: [
               {
-                internalType: 'string',
-                name: 'name',
-                type: 'string',
+                internalType: 'address',
+                name: 'recipient',
+                type: 'address',
               },
               {
                 internalType: 'string',
-                name: 'description',
-                type: 'string',
-              },
-              {
-                internalType: 'uint256',
-                name: 'goal',
-                type: 'uint256',
-              },
-              {
-                internalType: 'uint256',
-                name: 'startedAt',
-                type: 'uint256',
-              },
-              {
-                internalType: 'uint256',
-                name: 'endedAt',
-                type: 'uint256',
-              },
-              {
-                internalType: 'string',
-                name: 'coverImgUrl',
-                type: 'string',
-              },
-              {
-                internalType: 'string',
-                name: 'campaignType',
+                name: 'tokenURI',
                 type: 'string',
               },
             ],
-            name: 'createCampaign',
-            outputs: [],
+            name: 'mintNFT',
+            outputs: [
+              {
+                internalType: 'uint256',
+                name: '',
+                type: 'uint256',
+              },
+            ],
             stateMutability: 'nonpayable',
             type: 'function',
           },
         ],
         params: {
-          name: data?.name,
-          description: data?.des,
-          goal: Moralis.Units.Token(data.goal, 6),
-          startedAt: new Date(data?.startTime).getTime(),
-          endedAt: new Date(data?.endTime).getTime(),
-          coverImgUrl: coverImgUrl,
-          campaignType: data?.name,
+          recipient: account,
+          tokenURI: uri,
         },
       };
       console.log(options);
@@ -147,10 +123,18 @@ const CreateNftCampaign = () => {
       e.target.reset();
     }
   };
-
+  const test = async () => {
+    const base64 =
+      'ewoiYXR0cmlidXRlcyI6IFsKewoidHJhaXRfdHlwZSI6ICJCcmVlZCIsCiJ2YWx1ZSI6ICJNYWx0aXBvbyIKfSwKewoidHJhaXRfdHlwZSI6ICJFeWUgY29sb3IiLAoidmFsdWUiOiAiTW9jaGEiCn0KXSwKImRlc2NyaXB0aW9uIjogIlRoZSB3b3JsZCdzIG1vc3QgYWRvcmFibGUgYW5kIHNlbnNpdGl2ZSBwdXAuIiwKImltYWdlIjogImh0dHBzOi8vZ2F0ZXdheS5waW5hdGEuY2xvdWQvaXBmcy9RbVdtdlRKbUpVM3BvelI5WkhGbVFDMkRORHdpMlhKdGYzUUd5WWlpYWdGU1diIiwKIm5hbWUiOiAiUmFtc2VzIgp9';
+    const file = new Moralis.File('test.json', { base64 });
+    console.log(file);
+    await file.saveIPFS();
+    console.log(file);
+  };
   return (
     <>
       <div className="row mt-5">
+        {/* <button onClick={() => test()}>TEST</button> */}
         <div className="col-md-4 col-sm-12">
           <img
             style={{
@@ -164,13 +148,33 @@ const CreateNftCampaign = () => {
         <div className="col-md-8 col-sm-12">
           {/* <div className=" text-center font-weight-bold ">Create Campaign</div> */}
           <div className="settingsPage justify-content-center ">
-            <div className="pfp">
-              <div className="h4 font-weight-bold">Campaign NFT Banner</div>
-              <div className="pfpOptions">
-                <img src={selectedFile} onClick={onBannerClick} className="banner"></img>
-                <input type="file" name="file" ref={inputFile} onChange={changeHandler} style={{ display: 'none' }} required />
-              </div>
+            <div className="h4 font-weight-bold">Mint NFT</div>
+            <div className="banner-border">
+              <img src={selectedFile} onClick={onBannerClick} className="banner"></img>
+              <input
+                //accept="image/*"
+                type="file"
+                name="file"
+                ref={inputFile}
+                onChange={changeHandler}
+                style={{ display: 'none' }}
+                required
+              />
+              {/* {isImage && <p>Please select image file</p>} */}
             </div>
+            {/* <div className="banner-border">
+              <img src={selectedFile} onClick={onBannerClick} className="banner"></img>
+              <input
+                //accept="image/*"
+                type="file"
+                name="file"
+                ref={inputFile}
+                onChange={changeHandler}
+                style={{ display: 'none' }}
+                required
+              />
+              {isImage && <p>Please select image file</p>}
+            </div> */}
             <form onSubmit={handleSubmit(onSubmit)}>
               <div>
                 <div className="h4">Name</div>
@@ -197,12 +201,11 @@ const CreateNftCampaign = () => {
                 {errors.name && <p>{errors.name.message}</p>}
               </div>
               <div>
-                <div className="h4">Description</div>
+                <div className="h4">External Link</div>
                 <input
                   type="text"
-                  //placeholder="Description"
-                  {...register('des', {
-                    required: 'This field is required',
+                  {...register('link', {
+                    //required: 'This field is required',
                     minLength: {
                       value: 5,
                       message: 'Min length is 5',
@@ -218,71 +221,30 @@ const CreateNftCampaign = () => {
                     height: '40px',
                   }}
                 />
-                {errors.description && <p>{errors.description.message}</p>}
+                {errors.link && <p>{errors.link.message}</p>}
               </div>
               <div>
-                <div className="h4">Starting Price</div>
-                <input
-                  type="number"
-                  //placeholder="Amount"
-                  {...register('price', {
+                <div className="h4">Description</div>
+                <textarea
+                  {...register('des', {
                     required: 'This field is required',
-                    min: {
-                      value: 100,
-                      message: 'Min value is 100',
+                    minLength: {
+                      value: 5,
+                      message: 'Min length is 5',
                     },
-                    max: {
-                      value: 999999,
-                      message: 'Max value is 999999',
+                    maxLength: {
+                      value: 200,
+                      message: 'Max length is 200',
                     },
                   })}
                   style={{
                     borderRadius: '15px',
                     width: '500px',
-                    height: '40px',
+                    height: '100px',
                   }}
                 />
-                {errors.price && <p>{errors.price.message}</p>}
+                {errors.des && <p>{errors.des.message}</p>}
               </div>
-              <div>
-                <div className="h4">Discount Rate(%)</div>
-                <input
-                  type="number"
-                  //placeholder="Amount"
-                  {...register('rate', {
-                    required: 'This field is required',
-                    min: {
-                      value: 100,
-                      message: 'Min value is 100',
-                    },
-                    max: {
-                      value: 999999,
-                      message: 'Max value is 999999',
-                    },
-                  })}
-                  style={{
-                    borderRadius: '15px',
-                    width: '500px',
-                    height: '40px',
-                  }}
-                />
-                {errors.rate && <p>{errors.rate.message}</p>}
-              </div>
-              <div>
-                <div className="h4">End Time</div>
-                <input
-                  type="datetime-local"
-                  //placeholder="End Date"
-                  {...register('endTime', { required: 'This field is required' })}
-                  style={{
-                    borderRadius: '15px',
-                    width: '300px',
-                    height: '40px',
-                  }}
-                />
-                {errors.endTime && <p>{errors.endTime.message}</p>}
-              </div>
-
               <button
                 type="submit"
                 className="mt-2"
@@ -319,4 +281,4 @@ const CreateNftCampaign = () => {
   );
 };
 
-export default CreateNftCampaign;
+export default MintNft;

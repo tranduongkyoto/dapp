@@ -37,7 +37,7 @@ const ConnectWalletButton = ({ children, ...props }: ButtonProps) => {
   return (
     <div className="mt-1">
       <Button onClick={onPresentConnectModal} {...props}>
-        {children || 'Connect Wallet'}
+        {children || 'Kết nối ví'}
       </Button>
     </div>
   );
