@@ -52,6 +52,7 @@
     "@fortawesome/free-solid-svg-icons": "5.15.3",
     "@fortawesome/react-fontawesome": "0.1.14",
     "@pancakeswap/uikit": "^0.64.0",
+    "@storybook/react": "^6.5.8",
     "@web3-react/core": "^6.1.9",
     "availity-reactstrap-validation": "2.7.1",
     "axios": "0.21.1",

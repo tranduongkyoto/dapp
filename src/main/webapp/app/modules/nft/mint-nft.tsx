@@ -63,9 +63,8 @@ const MintNft = () => {
       const imgFile = theFile;
       const file = new Moralis.File(imgFile.name, imgFile);
       await file.saveIPFS();
-      const nftImageJ = 'https://ipfs.moralis.io:2053/ipfs/' + file.name().slice(0, file.name().length - 5);
-      setSelectedFile(defaultImgs[1]);
-      setTheFile(null);
+      const nftImageJ = 'https://ipfs.moralis.io:2053/ipfs/' + file.name().slice(0, file.name().length - 4);
+
       const metadata = {
         description: data.des,
         image: nftImageJ,
@@ -74,7 +73,7 @@ const MintNft = () => {
       const base64 = encode(JSON.stringify(metadata));
       const res = new Moralis.File('test.json', { base64 });
       await res.saveIPFS();
-      const uri = 'https://ipfs.moralis.io:2053/ipfs/' + res.name().slice(0, file.name().length - 5);
+      const uri = 'https://ipfs.moralis.io:2053/ipfs/' + res.name().slice(0, file.name().length - 4);
       const options = {
         contractAddress: '0xfab34f6db9657a74f7ea96a5308c84c4f34b9a91',
         functionName: 'mintNFT',
@@ -120,6 +119,8 @@ const MintNft = () => {
           console.log(error);
         },
       });
+      setSelectedFile(defaultImgs[1]);
+      setTheFile(null);
       e.target.reset();
     }
   };

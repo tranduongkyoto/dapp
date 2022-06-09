@@ -14,6 +14,9 @@ export const Campaign = props => (
     <MenuItem icon="user-plus" to="/campaign/create" data-cy="create">
       <Translate contentKey="global.menu.campaign.create">Create Campaign</Translate>
     </MenuItem>
+    <MenuItem icon="user-plus" to="/my-campaign" data-cy="create">
+      My Campaign
+    </MenuItem>
     <MenuItem icon="user-plus" to="/campaigns" data-cy="all">
       <Translate contentKey="global.menu.campaign.all">All Campaigns</Translate>
     </MenuItem>

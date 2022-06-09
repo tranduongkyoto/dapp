@@ -16,8 +16,8 @@ import PageNotFound from 'app/shared/error/page-not-found';
 import { AUTHORITIES } from 'app/config/constants';
 import Campaigns from './modules/campaign/campaigns';
 import Campaign from 'app/modules/campaign/campaign';
-import CreateCampaign from './modules/campaign/createcampaign';
-import CreateNftCampaign from './modules/campaign/createnftcampaign';
+import CreateCampaign from './modules/campaign/create-campaign';
+import CreateNftCampaign from './modules/campaign/create-nft-campaign';
 import Nfts from './modules/nft/nfts';
 import PrivateRouteCustom from './shared/auth/private-route-custom';
 import Video from './modules/video/video';
@@ -25,6 +25,8 @@ import Selection from './modules/campaign/selection';
 import ProfileSetting from './modules/profile/profile';
 import Profile from './modules/account/profile';
 import MintNft from './modules/nft/mint-nft';
+import MyCampaign from './modules/campaign/my-campaign';
+import NftDetail from './modules/nft/nft-details';
 
 const Account = Loadable({
   loader: () => import(/* webpackChunkName: "account" */ 'app/modules/account'),
@@ -45,6 +47,7 @@ const Routes = () => {
       <ErrorBoundaryRoute path="/account/activate/:key?" component={Activate} />
       <ErrorBoundaryRoute path="/account/reset/request" component={PasswordResetInit} />
       <ErrorBoundaryRoute path="/account/reset/finish/:key?" component={PasswordResetFinish} />
+      <ErrorBoundaryRoute path="/my-campaign" component={MyCampaign} />
       <ErrorBoundaryRoute path="/campaigns" component={Campaigns} />
       <ErrorBoundaryRoute path="/campaign/create/traditional" component={CreateCampaign} />
       <ErrorBoundaryRoute path="/campaign/create/nft" component={CreateNftCampaign} />
@@ -52,7 +55,8 @@ const Routes = () => {
       <ErrorBoundaryRoute path="/campaign/:id" component={Campaign} />
       <ErrorBoundaryRoute path="/video" component={Video} />
       <PrivateRouteCustom path="/nft/mint" component={MintNft} />
-      <PrivateRouteCustom path="/nft/:id" component={Nfts} />
+      <PrivateRouteCustom path="/my-nft/:id" component={Nfts} />
+      <PrivateRouteCustom path="/nft/:id" component={NftDetail} />
       <PrivateRouteCustom path="/account/profile" component={ProfileSetting} />
       <PrivateRouteCustom path="/account/:id" component={Profile} />
       <PrivateRoute path="/admin" component={Admin} hasAnyAuthorities={[AUTHORITIES.ADMIN]} />

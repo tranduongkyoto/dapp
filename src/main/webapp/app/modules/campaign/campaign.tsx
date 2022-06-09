@@ -1,8 +1,8 @@
 import './campaign.scss';
 import React, { useState, useEffect } from 'react';
 import { convertDateTimeFromServer, convertDateTimeToServer, convertTimeStampToDate } from 'app/shared/util/date-utils';
-import { Table } from 'reactstrap';
-import { Loading, CryptoCards } from 'web3uikit';
+// import { Table } from 'reactstrap';
+import { Loading, CryptoCards, Table } from 'web3uikit';
 import { useMoralis, useMoralisWeb3Api, useWeb3ExecuteFunction, useMoralisQuery, useWeb3Transfer, useERC20Balances } from 'react-moralis';
 import { useParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
@@ -96,6 +96,26 @@ const Campaign = () => {
       );
     } else return;
   };
+  const dataTable =
+    transaction &&
+    transaction
+      .filter(item => item.from !== '0x95f82f63b1d3eb775e37d7d2e401700ff395128f')
+      .map((item, key) => [
+        <a
+          href={'https://ropsten.etherscan.io/tx/' + `${item?.hash}`}
+          target="_blank"
+          style={{
+            textDecoration: 'none',
+          }}
+        >
+          {item?.hash.slice(0, 4) + '...' + item?.hash.slice(item?.hash.length - 4, item?.hash.length)}
+        </a>,
+        item.timeStamp,
+        item.from,
+        item.to,
+        parseInt(item?.value) / 1000000,
+        item.tokenSymbol,
+      ]);
   return (
     <>
       {data.length === 0 ? (
@@ -111,8 +131,8 @@ const Campaign = () => {
       ) : (
         <>
           <div className="row  justify-content-center main">
-            <div className="col-md-1"></div>
-            <div className="col-md-5 col-sm-12 pt-5 pl-5">
+            <div className="col-md-2"></div>
+            <div className="col-md-4 col-sm-12 pt-5 pl-5">
               <div className="h1">{data[0].attributes?.name}</div>
               <div className="">{data[0].attributes?.description}</div>
               <div className="h1">Campaign Start</div>
@@ -123,7 +143,7 @@ const Campaign = () => {
             <div className="col-md-6 col-sm-12">
               <img
                 style={{
-                  maxWidth: '60%',
+                  maxWidth: '50%',
                   height: 'auto',
                 }}
                 alt=""
@@ -178,43 +198,21 @@ const Campaign = () => {
             <div className="col-md-8 tran-lastest my-5">{lastestTxn()}</div>
             <div className="col-md-8 h1 text-center">Recent Donate</div>
             <div className="col-md-10">
-              <Table responsive striped>
-                <thead>
-                  <tr>
-                    <th className="hand">Txn Hash</th>
-                    <th>Time</th>
-                    <th className="hand">From</th>
-                    <th className="hand">To</th>
-                    <th className="hand">Value</th>
-                    <th className="hand">Token</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {transaction &&
-                    transaction
-                      .filter(item => item.from !== '0x95f82f63b1d3eb775e37d7d2e401700ff395128f')
-                      .map((item, key) => (
-                        <tr key={`${key}`}>
-                          <th className="hand">
-                            <a
-                              href={'https://ropsten.etherscan.io/tx/' + `${item.hash}`}
-                              target="_blank"
-                              style={{
-                                textDecoration: 'none',
-                              }}
-                            >
-                              {item.hash.slice(0, 4) + '...' + item.hash.slice(item.hash.length - 4, item.hash.length)}
-                            </a>
-                          </th>
-                          <th>{item.timeStamp}</th>
-                          <th className="hand">{item.from}</th>
-                          <th className="hand">{item.to}</th>
-                          <th className="hand">{parseInt(item.value) / 1000000}</th>
-                          <th className="hand">{item.tokenSymbol}</th>
-                        </tr>
-                      ))}
-                </tbody>
-              </Table>
+              <Table
+                columnsConfig="1fr 1fr 4fr 4fr 1fr 1fr"
+                data={dataTable}
+                header={[
+                  <span>TxT Hash</span>,
+                  <span>Time</span>,
+                  <span>From</span>,
+                  <span>To</span>,
+                  <span>Value</span>,
+                  <span>Token</span>,
+                ]}
+                maxPages={3}
+                onPageNumberChanged={function noRefCheck() {}}
+                pageSize={10}
+              />
             </div>
           </div>
         </>

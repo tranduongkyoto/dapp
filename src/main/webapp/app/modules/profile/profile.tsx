@@ -61,6 +61,7 @@ export default function ProfileSetting() {
   return (
     <>
       <div className="row mt-5">
+        <div className="col-md-1"></div>
         <div className="col-md-4 col-sm-12">
           <img
             style={{
@@ -71,7 +72,7 @@ export default function ProfileSetting() {
             src="content/images/bluezoneApp.png"
           ></img>
         </div>
-        <div className="col-md-8 col-sm-12">
+        <div className="col-md-7 col-sm-12">
           {/* <div className=" text-center font-weight-bold ">Create Campaign</div> */}
           <div className="h1">Profile Setup</div>
           <div className=" justify-content-center ">

@@ -217,71 +217,8 @@ const Campaigns = () => {
             src="content/images/bluezoneApp.png"
           ></img>
         </div>
-        {/* {campaigns.map((item, index: number) => {
-          const { wallets } = item;
-          const balance = wallets.reduce((pre: number, cur: any) => (pre += cur.balance), 0);
-          const numberOfTransaction = wallets.reduce((pre: number, cur: any) => (pre += cur.numberOfTransaction), 0);
-          return (
-            <div className="col-md-6 mt-5" key={index}>
-              <Link to={`/campaign/${item._id}`}>
-                <div
-                  style={{
-                    position: 'relative',
-                  }}
-                >
-                  <img
-                    src={item.coverImgUrl}
-                    alt=""
-                    className="ml-5"
-                    style={{
-                      width: '70%',
-                    }}
-                  ></img>
-                  <div
-                    className="ml-5 font-bold"
-                    style={{
-                      position: 'absolute',
-                      bottom: '0px',
-                      width: '70%',
-                      backgroundColor: 'rgba(10, 10, 10, 0.25)',
-                    }}
-                  >
-                    <p
-                      className="text-white"
-                      style={{
-                        opacity: '100%',
-                      }}
-                    >
-                      {item.name}
-                    </p>
-                    <p
-                      className="text-white text-truncate"
-                      style={{
-                        maxWidth: '400px',
-                      }}
-                    >
-                      {item.description}
-                    </p>
-                  </div>
-                </div>
-              </Link>
-              <div className="ml-5">
-                <span className="h3">Total Raised : </span>
-                <span className="h3 text-success">{Math.round(balance * 100000) / 100000}</span>
-                <div className="row">
-                  <div className="col-md-6">{numberOfTransaction} Donation</div>
-                  <div className="col-md-6">
-                    <button className="btn btn-primary btn-border">Donate</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          );
-        })} */}
+
         {data.map((item, index: number) => {
-          //const { wallets } = item;
-          //const balance = wallets.reduce((pre: number, cur: any) => (pre += cur.balance), 0);
-          //const numberOfTransaction = wallets.reduce((pre: number, cur: any) => (pre += cur.numberOfTransaction), 0);
           return (
             <div className="col-md-6 mt-5" key={index}>
               <Link to={`/campaign/${item.attributes?.uid}`}>

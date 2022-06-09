@@ -10,7 +10,7 @@ import { TIconType } from 'web3uikit/dist/components/Icon/collection';
 import { useLocation } from 'react-router-dom';
 import { useForm, Controller, SubmitHandler } from 'react-hook-form';
 
-const CreateNftCampaign = () => {
+const CreateCampaign = () => {
   const inputFile = useRef(null);
   const [selectedFile, setSelectedFile] = useState(defaultImgs[1]);
   const [theFile, setTheFile] = useState<any>();
@@ -18,17 +18,6 @@ const CreateNftCampaign = () => {
   const Web3Api = useMoralisWeb3Api();
   const contractProcessor = useWeb3ExecuteFunction();
   const dispatch = useNotification();
-  // const [price, setPrice] = useState<number>();
-  const getETHPrice = async () => {
-    const price = await Web3Api.token.getTokenPrice({
-      address: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
-      chain: 'eth',
-      exchange: 'uniswap-v3',
-    });
-    //console.log(price);
-    //setPrice(parseInt(price.usdPrice.toString()));
-  };
-  // useEffect(() => {}, []);
   const onBannerClick = () => {
     inputFile.current.click();
   };
@@ -42,7 +31,7 @@ const CreateNftCampaign = () => {
     dispatch({
       type,
       message,
-      title: 'Error Notification',
+      title: 'Notification',
       icon,
       position: position || 'bottomL',
     });
@@ -58,12 +47,6 @@ const CreateNftCampaign = () => {
   });
 
   const onSubmit = async (data, e) => {
-    const priceData = await Web3Api.token.getTokenPrice({
-      address: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
-      chain: 'eth',
-      exchange: 'uniswap-v3',
-    });
-    const price = priceData.usdPrice;
     console.log(data);
     if (!theFile) {
       handleNewNotification('error', 'Please select image banner for Campaign');
@@ -73,8 +56,7 @@ const CreateNftCampaign = () => {
       const file = new Moralis.File(imgFile.name, imgFile);
       await file.saveIPFS();
       const coverImgUrl = 'https://ipfs.moralis.io:2053/ipfs/' + file.name().slice(0, file.name().length - 5);
-      setSelectedFile(defaultImgs[1]);
-      setTheFile(null);
+
       const options = {
         contractAddress: '0x75e8E1898d1b74fb369e5C68aEA30A4dB2004Fc3',
         functionName: 'createCampaign',
@@ -127,7 +109,7 @@ const CreateNftCampaign = () => {
           name: data?.name,
           description: data?.des,
           goal: Moralis.Units.Token(data.goal, 6),
-          startedAt: new Date(data?.startTime).getTime(),
+          //startedAt: new Date(data?.startTime).getTime(),
           endedAt: new Date(data?.endTime).getTime(),
           coverImgUrl: coverImgUrl,
           campaignType: data?.name,
@@ -144,6 +126,8 @@ const CreateNftCampaign = () => {
           console.log(error);
         },
       });
+      setSelectedFile(defaultImgs[1]);
+      setTheFile(null);
       e.target.reset();
     }
   };
@@ -165,7 +149,7 @@ const CreateNftCampaign = () => {
           {/* <div className=" text-center font-weight-bold ">Create Campaign</div> */}
           <div className="settingsPage justify-content-center ">
             <div className="pfp">
-              <div className="h4 font-weight-bold">Campaign NFT Banner</div>
+              <div className="h4 font-weight-bold">Campaign Banner</div>
               <div className="pfpOptions">
                 <img src={selectedFile} onClick={onBannerClick} className="banner"></img>
                 <input type="file" name="file" ref={inputFile} onChange={changeHandler} style={{ display: 'none' }} required />
@@ -221,11 +205,10 @@ const CreateNftCampaign = () => {
                 {errors.description && <p>{errors.description.message}</p>}
               </div>
               <div>
-                <div className="h4">Starting Price</div>
+                <div className="h4">Goal</div>
                 <input
                   type="number"
-                  //placeholder="Amount"
-                  {...register('price', {
+                  {...register('goal', {
                     required: 'This field is required',
                     min: {
                       value: 100,
@@ -242,32 +225,28 @@ const CreateNftCampaign = () => {
                     height: '40px',
                   }}
                 />
-                {errors.price && <p>{errors.price.message}</p>}
               </div>
               <div>
-                <div className="h4">Discount Rate(%)</div>
-                <input
-                  type="number"
-                  //placeholder="Amount"
-                  {...register('rate', {
-                    required: 'This field is required',
-                    min: {
-                      value: 100,
-                      message: 'Min value is 100',
-                    },
-                    max: {
-                      value: 999999,
-                      message: 'Max value is 999999',
-                    },
-                  })}
+                <div className="h4">Type</div>
+                <select
+                  {...register('type', { required: 'This field is required' })}
                   style={{
                     borderRadius: '15px',
-                    width: '500px',
+                    width: '120px',
                     height: '40px',
                   }}
-                />
-                {errors.rate && <p>{errors.rate.message}</p>}
+                >
+                  <option value="">Select One</option>
+                  <option value="Education">Education</option>
+                  <option value="Health">Health/Medical</option>
+                  <option value="Enviromental">Enviromental</option>
+                  <option value="Animal">Animal/Wildlife</option>
+                  <option value="Art">Arts/Culture</option>
+                  <option value="Social">Social Justice</option>
+                </select>
+                {errors.type && <p>{errors.type.message}</p>}
               </div>
+
               <div>
                 <div className="h4">End Time</div>
                 <input
@@ -319,4 +298,4 @@ const CreateNftCampaign = () => {
   );
 };
 
-export default CreateNftCampaign;
+export default CreateCampaign;
