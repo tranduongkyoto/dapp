@@ -48,6 +48,7 @@ const UserMenu = () => {
     isAuthenticating,
     authenticate,
     Moralis,
+    user,
   } = useMoralis();
   const isLoading = false,
     profile = null;
@@ -122,7 +123,7 @@ const UserMenu = () => {
       onPresentWalletModal();
     }
   };
-
+  console.log(user && user.attributes?.isUpdateProfile);
   const UserMenuItems = () => {
     return (
       <>
@@ -136,13 +137,18 @@ const UserMenu = () => {
           as="button"
           disabled={isWrongNetwork}
           onClick={
-            () => history.push(`/nft/${account}`)
+            () => history.push(`/my-nft/${account}`)
             //router.push(`${nftsBaseUrl}/profile/${account.toLowerCase()}`)
           }
         >
           {'Your NFTs'}
         </UserMenuItem>
-        <ProfileUserMenuItem isLoading={isLoading} hasProfile={hasProfile} disabled={isWrongNetwork} />
+        <ProfileUserMenuItem
+          isLoading={isLoading}
+          hasProfile={user && user.attributes?.isUpdateProfile}
+          disabled={isWrongNetwork}
+          address={account}
+        />
         <UserMenuDivider />
         <UserMenuItem
           as="button"

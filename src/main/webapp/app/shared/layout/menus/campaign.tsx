@@ -20,5 +20,8 @@ export const Campaign = props => (
     <MenuItem icon="user-plus" to="/campaigns" data-cy="all">
       <Translate contentKey="global.menu.campaign.all">All Campaigns</Translate>
     </MenuItem>
+    <MenuItem icon="user-plus" to="/nft-campaigns" data-cy="all">
+      NFT Campaigns
+    </MenuItem>
   </NavDropdown>
 );

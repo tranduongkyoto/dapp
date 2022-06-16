@@ -11,6 +11,7 @@ interface ProfileUserMenuItemProps {
   isLoading: boolean;
   hasProfile: boolean;
   disabled: boolean;
+  address: string;
 }
 
 const Dot = styled.div`
@@ -20,14 +21,14 @@ const Dot = styled.div`
   width: 8px;
 `;
 
-const ProfileUserMenuItem: React.FC<ProfileUserMenuItemProps> = ({ isLoading, hasProfile, disabled }) => {
+const ProfileUserMenuItem: React.FC<ProfileUserMenuItemProps> = ({ isLoading, hasProfile, disabled, address }) => {
   const { account } = useWeb3React();
   const history = useHistory();
   // const router = useRouter();
   // const { t } = useTranslation();
 
   const handleClick = () => {
-    //router.push(`${nftsBaseUrl}/profile/${account.toLowerCase()}/achievements`);
+    history.push(`/account/${address}`);
   };
 
   const handleNoProfileClick = () => {

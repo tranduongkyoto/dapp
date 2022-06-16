@@ -26,15 +26,51 @@ const image = (animation?: string, image?: string): React.ReactElement => {
   }
   if (image) {
     if (image.includes('pinata')) {
-      return <img src={image} height="315px" width={'384px'} />;
+      return (
+        <img
+          src={image}
+          height="315px"
+          width={'384px'}
+          style={{
+            objectFit: 'cover',
+          }}
+        />
+      );
     }
-    return <img src={manipulateLink(image)} height="315px" width={'384px'} />;
+    return (
+      <img
+        src={manipulateLink(image)}
+        height="315px"
+        width={'384px'}
+        style={{
+          objectFit: 'cover',
+        }}
+      />
+    );
   }
   if (animation) {
     if (animation.includes('pinata')) {
-      return <img src={animation} height="315px" width={'384px'} />;
+      return (
+        <img
+          src={animation}
+          height="315px"
+          width={'384px'}
+          style={{
+            objectFit: 'cover',
+          }}
+        />
+      );
     }
-    return <img src={manipulateLink(animation)} height="315px" width={'384px'} />;
+    return (
+      <img
+        src={manipulateLink(animation)}
+        height="315px"
+        width={'384px'}
+        style={{
+          objectFit: 'cover',
+        }}
+      />
+    );
   }
   return <Illustration logo="lazyNft" height="315px" width={'100%'} />;
 };

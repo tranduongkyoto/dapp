@@ -22,7 +22,7 @@ export const Nft = props => {
       </MenuItem>
       <MenuItem icon="user-plus" to={`/my-nft/${account}`} data-cy="all">
         {/* <Translate contentKey="global.menu.campaign.all">All Campaigns</Translate> */}
-        Your NFT
+        My NFT
       </MenuItem>
     </NavDropdown>
   );

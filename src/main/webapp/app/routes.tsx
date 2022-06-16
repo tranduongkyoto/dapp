@@ -27,6 +27,8 @@ import Profile from './modules/account/profile';
 import MintNft from './modules/nft/mint-nft';
 import MyCampaign from './modules/campaign/my-campaign';
 import NftDetail from './modules/nft/nft-details';
+import NftCampaign from './modules/campaign/nft-campaign';
+import NftCampaigns from './modules/campaign/nft-campaigns';
 
 const Account = Loadable({
   loader: () => import(/* webpackChunkName: "account" */ 'app/modules/account'),
@@ -49,10 +51,12 @@ const Routes = () => {
       <ErrorBoundaryRoute path="/account/reset/finish/:key?" component={PasswordResetFinish} />
       <ErrorBoundaryRoute path="/my-campaign" component={MyCampaign} />
       <ErrorBoundaryRoute path="/campaigns" component={Campaigns} />
+      <ErrorBoundaryRoute path="/nft-campaigns" component={NftCampaigns} />
       <ErrorBoundaryRoute path="/campaign/create/traditional" component={CreateCampaign} />
       <ErrorBoundaryRoute path="/campaign/create/nft" component={CreateNftCampaign} />
       <ErrorBoundaryRoute path="/campaign/create" component={Selection} />
       <ErrorBoundaryRoute path="/campaign/:id" component={Campaign} />
+      <ErrorBoundaryRoute path="/auction/:id" component={NftCampaign} />
       <ErrorBoundaryRoute path="/video" component={Video} />
       <PrivateRouteCustom path="/nft/mint" component={MintNft} />
       <PrivateRouteCustom path="/my-nft/:id" component={Nfts} />

@@ -55,7 +55,7 @@ const CreateCampaign = () => {
       const imgFile = theFile;
       const file = new Moralis.File(imgFile.name, imgFile);
       await file.saveIPFS();
-      const coverImgUrl = 'https://ipfs.moralis.io:2053/ipfs/' + file.name().slice(0, file.name().length - 5);
+      const coverImgUrl = 'https://ipfs.moralis.io:2053/ipfs/' + file.name().slice(0, file.name().length - 4);
 
       const options = {
         contractAddress: '0x75e8E1898d1b74fb369e5C68aEA30A4dB2004Fc3',
@@ -78,11 +78,11 @@ const CreateCampaign = () => {
                 name: 'goal',
                 type: 'uint256',
               },
-              {
-                internalType: 'uint256',
-                name: 'startedAt',
-                type: 'uint256',
-              },
+              // {
+              //   internalType: 'uint256',
+              //   name: 'startedAt',
+              //   type: 'uint256',
+              // },
               {
                 internalType: 'uint256',
                 name: 'endedAt',

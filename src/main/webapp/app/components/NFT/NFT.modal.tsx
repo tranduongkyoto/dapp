@@ -1,7 +1,8 @@
 import { AppContext } from 'app/provider/appContext';
 import React, { useContext } from 'react';
 import { useForm } from 'react-hook-form';
-import { Information } from 'web3uikit';
+import { useHistory } from 'react-router-dom';
+import { Information, Tag } from 'web3uikit';
 import { Modal } from 'web3uikit';
 import { Typography } from 'web3uikit';
 import token from '../Illustrations/images/various/token';
@@ -20,27 +21,29 @@ const NFTModal: React.FC<INFTModal> = ({ attributes, setShowModal, address, toke
     register,
     handleSubmit,
     reset,
-    formState: { errors },
+    formState: { errors, touchedFields },
+    getValues,
   } = useForm({
     mode: 'onTouched',
   });
   const { nftAution, setnftAution } = useContext(AppContext);
-
+  const history = useHistory();
   const onSubmit = async (data, e) => {
-    const newNftAution = [
-      ...nftAution,
-      {
-        address,
-        tokenId,
-        startingPrice: Number(data.price),
-        discountRate: Number(data.rate),
-        name,
-      },
-    ];
+    const newNftAution = {
+      address,
+      tokenId,
+      startingPrice: Number(data.price),
+      discountRate: Number(data.rate),
+      name,
+    };
     setnftAution(newNftAution);
     window.localStorage.setItem('nftAution', JSON.stringify(newNftAution));
     e.target.reset();
+    history.push('/campaign/create/nft');
   };
+  const isDisable = nftAution !== null;
+  const maxDiscount = getValues().price ? parseInt((getValues().price / 0.6).toString()) : 16;
+  const totalDiscount = getValues().rate ? parseInt((getValues().rate * 0.6).toString()) : 0;
   return (
     <Modal
       isVisible
@@ -77,8 +80,8 @@ const NFTModal: React.FC<INFTModal> = ({ attributes, setShowModal, address, toke
                 {...register('price', {
                   required: 'This field is required',
                   min: {
-                    value: 1,
-                    message: 'Min is 1',
+                    value: 10,
+                    message: 'Min is 10',
                   },
                   max: {
                     value: 99999,
@@ -93,6 +96,7 @@ const NFTModal: React.FC<INFTModal> = ({ attributes, setShowModal, address, toke
               />
               {errors.price && <p>{errors.price.message}</p>}
             </div>
+
             <div className="mt-2">
               <span className="mr-2 ">Discount Rate</span>
               <input
@@ -104,8 +108,8 @@ const NFTModal: React.FC<INFTModal> = ({ attributes, setShowModal, address, toke
                     message: 'Min is 1%',
                   },
                   max: {
-                    value: 99,
-                    message: 'Max is 99%',
+                    value: maxDiscount,
+                    message: `Max is ${maxDiscount}`,
                   },
                 })}
                 style={{
@@ -115,6 +119,9 @@ const NFTModal: React.FC<INFTModal> = ({ attributes, setShowModal, address, toke
                 }}
               />
               {errors.rate && <p>{errors.rate.message}</p>}
+              {/* <div className="">
+                <Tag color="blue" text={` ${totalDiscount}` + ' USD'}></Tag>
+              </div> */}
             </div>
             <button
               type="submit"
@@ -127,6 +134,7 @@ const NFTModal: React.FC<INFTModal> = ({ attributes, setShowModal, address, toke
                 color: 'white',
                 border: 'hidden',
               }}
+              disabled={isDisable}
             >
               Aution
             </button>

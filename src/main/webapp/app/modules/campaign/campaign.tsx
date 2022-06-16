@@ -96,26 +96,26 @@ const Campaign = () => {
       );
     } else return;
   };
-  const dataTable =
-    transaction &&
-    transaction
-      .filter(item => item.from !== '0x95f82f63b1d3eb775e37d7d2e401700ff395128f')
-      .map((item, key) => [
-        <a
-          href={'https://ropsten.etherscan.io/tx/' + `${item?.hash}`}
-          target="_blank"
-          style={{
-            textDecoration: 'none',
-          }}
-        >
-          {item?.hash.slice(0, 4) + '...' + item?.hash.slice(item?.hash.length - 4, item?.hash.length)}
-        </a>,
-        item.timeStamp,
-        item.from,
-        item.to,
-        parseInt(item?.value) / 1000000,
-        item.tokenSymbol,
-      ]);
+  const dataTable = transaction
+    ? transaction
+        .filter(item => item.from !== '0x95f82f63b1d3eb775e37d7d2e401700ff395128f')
+        .map((item, key) => [
+          <a
+            href={'https://ropsten.etherscan.io/tx/' + `${item?.hash}`}
+            target="_blank"
+            style={{
+              textDecoration: 'none',
+            }}
+          >
+            {item?.hash.slice(0, 4) + '...' + item?.hash.slice(item?.hash.length - 4, item?.hash.length)}
+          </a>,
+          item.timeStamp,
+          item.from,
+          item.to,
+          parseInt(item?.value) / 1000000,
+          item.tokenSymbol,
+        ])
+    : [];
   return (
     <>
       {data.length === 0 ? (

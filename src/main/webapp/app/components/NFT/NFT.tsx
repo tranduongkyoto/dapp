@@ -57,8 +57,6 @@ const NFT: React.FC<INFTProps> = ({ address, chain, name, tokenId, fetchMetadata
       </div>
     );
   }
-  if (data) {
-  }
   if (error) {
     return <div data-testid="nft-metadata-error">{error.message}</div>;
   }
@@ -77,66 +75,67 @@ const NFT: React.FC<INFTProps> = ({ address, chain, name, tokenId, fetchMetadata
       </DivStyled>
     );
   }
-  const isDisable = nftAution.map(item => item.tokenId).includes(tokenId);
+  const isDisable = nftAution !== null;
 
   return (
     <div>
-      <Link
-        to={`/nft/${address}/${tokenId}`}
-        style={{
-          textDecoration: 'none',
-        }}
-      >
-        <DivStyled id="nft">
+      <DivStyled id="nft">
+        <Link
+          to={`/nft/${address}/${tokenId}`}
+          style={{
+            textDecoration: 'none',
+          }}
+        >
           {image(
             (JSON.parse(String(data.metadata)) as TNFTMetadata)?.animation_url,
             (JSON.parse(String(data.metadata)) as TNFTMetadata)?.image || (JSON.parse(String(data.metadata)) as TNFTMetadata)?.image_url
           )}
-          <div className="container">
-            <div className="row">
-              <div className="col-md-5">
-                <div id="nft-info">
-                  <div>
-                    <Typography variant="caption14" color={colors.blueDark}>
-                      {(JSON.parse(String(data.metadata)) as TNFTMetadata)?.name || name}
-                    </Typography>
-                    <Typography variant="caption12">{data.contract_type || 'ERC721'}</Typography>
-                  </div>
+        </Link>
+
+        <div className="container">
+          <div className="row">
+            <div className="col-md-5">
+              <div id="nft-info">
+                <div>
+                  <Typography variant="caption14" color={colors.blueDark}>
+                    {(JSON.parse(String(data.metadata)) as TNFTMetadata)?.name || name}
+                  </Typography>
+                  <Typography variant="caption12">{data.contract_type || 'ERC721'}</Typography>
                 </div>
               </div>
-              <div className="col-md-3 mt-2">
-                <Tag color="blue" text={tokenId} />
-              </div>
-              <div className="col-md-4 mt-2">
-                <Button
-                  id="test-button-primary"
-                  onClick={() => setShowModal(true)}
-                  text="Aution"
-                  theme="primary"
-                  type="button"
-                  disabled={isDisable}
-                />
-              </div>
+            </div>
+            <div className="col-md-3 mt-2">
+              <Tag color="blue" text={tokenId} />
+            </div>
+            <div className="col-md-4 mt-2">
+              <Button
+                id="test-button-primary"
+                onClick={() => setShowModal(true)}
+                text="Aution"
+                theme="primary"
+                type="button"
+                disabled={isDisable}
+              />
             </div>
           </div>
+        </div>
 
-          <div id="nft-footer">
-            {/* <Button icon="info" isTransparent iconColor={colors.grey} iconLayout="icon-only" onClick={() => setShowModal(true)} /> */}
-            {showTraits && (
-              <NFTModal
-                attributes={
-                  (JSON.parse(String(data.metadata)) as TNFTMetadata)?.traits ||
-                  (JSON.parse(String(data.metadata)) as TNFTMetadata)?.attributes
-                }
-                setShowModal={setShowModal}
-                address={address}
-                tokenId={tokenId}
-                name={(JSON.parse(String(data.metadata)) as TNFTMetadata)?.name || name}
-              />
-            )}
-          </div>
-        </DivStyled>
-      </Link>
+        <div id="nft-footer">
+          {/* <Button icon="info" isTransparent iconColor={colors.grey} iconLayout="icon-only" onClick={() => setShowModal(true)} /> */}
+          {showTraits && (
+            <NFTModal
+              attributes={
+                (JSON.parse(String(data.metadata)) as TNFTMetadata)?.traits ||
+                (JSON.parse(String(data.metadata)) as TNFTMetadata)?.attributes
+              }
+              setShowModal={setShowModal}
+              address={address}
+              tokenId={tokenId}
+              name={(JSON.parse(String(data.metadata)) as TNFTMetadata)?.name || name}
+            />
+          )}
+        </div>
+      </DivStyled>
     </div>
   );
 };
