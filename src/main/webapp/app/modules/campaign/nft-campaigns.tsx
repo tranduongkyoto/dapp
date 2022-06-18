@@ -28,7 +28,7 @@ const NftCampaigns = () => {
         {auction &&
           auction.map((item, index: number) => {
             return (
-              <div className="col-md-6 mt-5" key={index}>
+              <div className="col-md-4 mt-5" key={index}>
                 <Link to={`/auction/${item.attributes?.campaignAddress}`}>
                   <div
                     style={{

@@ -56,9 +56,9 @@ export const App = (props: IAppProps) => {
         <div className="container-fluid view-container" id="app-view-container">
           <ErrorBoundary>
             <AppRoutes />
+            <Footer />
           </ErrorBoundary>
         </div>
-        <Footer />
       </div>
     </Router>
   );

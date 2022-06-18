@@ -8,6 +8,7 @@ import { useParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import axios from 'axios';
 import { result } from 'lodash';
+import { getEllipsisTxt, timeStampToDateTime } from 'app/web3utils';
 interface transactionType {
   hash: string;
   from: string;
@@ -20,7 +21,7 @@ const Campaign = () => {
   const { id } = useParams<{ id: string }>();
   const [balanceOf, setBalanceOf] = useState<number>();
   const [transaction, setTransaction] = useState<transactionType[]>();
-  const { data, error } = useMoralisQuery('Campaign', query => query.contains('uid', id));
+  const { data, error } = useMoralisQuery('Campaigns', query => query.contains('campaignAddress', id));
   const { Moralis } = useMoralis();
   const { fetch, error: error2, isFetching } = useWeb3Transfer();
   const contractProcessor = useWeb3ExecuteFunction();
@@ -32,6 +33,7 @@ const Campaign = () => {
   } = useForm({
     mode: 'onTouched',
   });
+  console.log(id);
   const onSubmit = async (data, e) => {
     console.log(data);
     console.log(parseInt(data.amount));
@@ -39,20 +41,28 @@ const Campaign = () => {
       params: {
         type: 'erc20',
         amount: Moralis.Units.Token(data.amount, 6),
-        receiver: '0x95f82F63b1d3EB775E37d7D2e401700fF395128F',
+        receiver: `${id}`,
         contractAddress: '0x07865c6E87B9F70255377e024ace6630C1Eaa37F',
       },
-    });
+    })
+      .then(res => {
+        console.log(res);
+      })
+      .catch(err => {
+        console.log(err);
+      });
 
     e.target.reset();
   };
   useEffect(() => {
     const getBalanceOf = async () => {
       const data = await axios.get(
-        'https://api-ropsten.etherscan.io/api?module=account&action=tokenbalance&contractaddress=0x07865c6E87B9F70255377e024ace6630C1Eaa37F&address=0x95f82F63b1d3EB775E37d7D2e401700fF395128F&tag=latest&apikey=FH674SA8K1BFH2SFB7KXYZXFB5GS63IXM4'
+        `https://api-ropsten.etherscan.io/api?module=account&action=tokenbalance&contractaddress=0x07865c6E87B9F70255377e024ace6630C1Eaa37F&address=${id}&tag=latest&apikey=FH674SA8K1BFH2SFB7KXYZXFB5GS63IXM4`
       );
       if (data?.data?.result) {
-        setBalanceOf(parseInt(data?.data?.result) / 1000000);
+        if (data?.data?.result == '0') {
+          setBalanceOf(0);
+        } else setBalanceOf(parseInt(data?.data?.result) / 1000000);
       }
     };
 
@@ -62,7 +72,7 @@ const Campaign = () => {
   useEffect(() => {
     const getTransaction = async () => {
       const data = await axios.get(
-        'https://api-ropsten.etherscan.io/api?module=account&action=tokentx&contractaddress=0x07865c6E87B9F70255377e024ace6630C1Eaa37F&address=0x95f82F63b1d3EB775E37d7D2e401700fF395128F&page=1&offset=100&startblock=0&endblock=99999999&sort=asc&apikey=FH674SA8K1BFH2SFB7KXYZXFB5GS63IXM4'
+        `https://api-ropsten.etherscan.io/api?module=account&action=tokentx&contractaddress=0x07865c6E87B9F70255377e024ace6630C1Eaa37F&address=${id}&page=1&offset=100&startblock=0&endblock=99999999&sort=asc&apikey=FH674SA8K1BFH2SFB7KXYZXFB5GS63IXM4`
       );
       if (data?.data?.result) {
         setTransaction(data?.data?.result);
@@ -71,7 +81,8 @@ const Campaign = () => {
     getTransaction();
   }, []);
   const lastestTxn = () => {
-    if (transaction) {
+    if (transaction && transaction.length != 0) {
+      console.log(transaction);
       const lastest = transaction.filter(item => item.from !== '0x95f82f63b1d3eb775e37d7d2e401700ff395128f')[0];
       return (
         <div className="row py-3 justify-content-center">
@@ -86,7 +97,7 @@ const Campaign = () => {
                 textDecoration: 'none',
               }}
             >
-              {lastest.hash.slice(0, 20) + '...' + lastest.hash.slice(transaction.reverse()[0].hash.length - 20, lastest.hash.length)}
+              {getEllipsisTxt(lastest.hash, 3)}
             </a>
           </div>
           <div className="col-md-auto col-sm-4 text-warning">{parseInt(lastest.value) / 1000000} USDC</div>
@@ -94,7 +105,12 @@ const Campaign = () => {
           <div className="col-md-auto col-sm-4 font-italic">Thank for great action!</div>
         </div>
       );
-    } else return;
+    } else
+      return (
+        <div className="row py-3 justify-content-center">
+          <div className="col-md-auto col-sm-4 text-warning">No data</div>
+        </div>
+      );
   };
   const dataTable = transaction
     ? transaction
@@ -107,11 +123,11 @@ const Campaign = () => {
               textDecoration: 'none',
             }}
           >
-            {item?.hash.slice(0, 4) + '...' + item?.hash.slice(item?.hash.length - 4, item?.hash.length)}
+            {getEllipsisTxt(item.hash)}
           </a>,
-          item.timeStamp,
-          item.from,
-          item.to,
+          new Date(parseInt(item.timeStamp) * 1000).toString().slice(0, 25),
+          getEllipsisTxt(item.from),
+          getEllipsisTxt(item.from),
           parseInt(item?.value) / 1000000,
           item.tokenSymbol,
         ])
@@ -131,34 +147,34 @@ const Campaign = () => {
       ) : (
         <>
           <div className="row  justify-content-center main">
-            <div className="col-md-2"></div>
-            <div className="col-md-4 col-sm-12 pt-5 pl-5">
+            <div className="col-md-1"></div>
+            <div className="col-md-5 col-sm-12 pl-5">
               <div className="h1">{data[0].attributes?.name}</div>
               <div className="">{data[0].attributes?.description}</div>
               <div className="h1">Campaign Start</div>
-              <div>{new Date(parseInt(data[0].attributes?.endedAt)).toString()}</div>
+              <div>{new Date(parseInt(data[0].attributes?.endTime) * 1000).toString().slice(0, 25)}</div>
               <div className=" font-weight-bold">{balanceOf} USD</div>
-              <div>{Moralis.Units.FromWei(data[0].attributes.goal)}</div>
+              <div>{parseInt(data[0].attributes.goal) / 1000000}</div>
             </div>
             <div className="col-md-6 col-sm-12">
               <img
                 style={{
-                  maxWidth: '50%',
+                  //maxWidth: '50%',
                   height: 'auto',
                 }}
                 alt=""
-                src="content/images/bluezoneApp.png"
+                src={`${data[0].attributes?.coverImgUrl}`}
               ></img>
             </div>
             <div className="col-md-6 donate">
               <div className="row justify-content-center">
-                <div className="col-md-2 ml-5 mt-3">
+                <div className="col-md-3 mt-3 text-center">
                   <img src="content/icons/cryptoYellow.svg"></img>
                 </div>
-                <div className="col-md-2">
+                <div className="col-md-4 text-center">
                   <img src="content/icons/qrCode.svg" alt="" />
                 </div>
-                <div className="col-md-4">
+                <div className="col-md-5 text-center">
                   <form onSubmit={handleSubmit(onSubmit)}>
                     <div className="h4">Amount</div>
                     {errors.amount && <p>{errors.amount.message}</p>}
@@ -179,9 +195,9 @@ const Campaign = () => {
                       }}
                     />
 
-                    <input
+                    <button
                       type="submit"
-                      className="mt-2 ml-3"
+                      className="mt-2"
                       style={{
                         borderRadius: '15px',
                         width: '100px',
@@ -189,17 +205,20 @@ const Campaign = () => {
                         backgroundColor: '#21BF96',
                         color: 'white',
                         border: 'hidden',
+                        marginLeft: '20px',
                       }}
-                    />
+                    >
+                      Donate
+                    </button>
                   </form>
                 </div>
               </div>
             </div>
             <div className="col-md-8 tran-lastest my-5">{lastestTxn()}</div>
             <div className="col-md-8 h1 text-center">Recent Donate</div>
-            <div className="col-md-10">
+            <div className="col-md-8">
               <Table
-                columnsConfig="1fr 1fr 4fr 4fr 1fr 1fr"
+                columnsConfig="2fr 3fr 2fr 2fr 2fr 2fr"
                 data={dataTable}
                 header={[
                   <span>TxT Hash</span>,

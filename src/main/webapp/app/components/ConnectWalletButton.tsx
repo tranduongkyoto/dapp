@@ -17,7 +17,6 @@ const ConnectWalletButton = ({ children, ...props }: ButtonProps) => {
           window.localStorage.setItem('provider', 'metamask');
         },
       });
-      console.log(user);
       const isAdmin = user.attributes?.isAdmin ? user.attributes?.isAdmin : false;
       setIsAdmin(isAdmin);
       if (isAdmin) {

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { AppContext } from './appContext';
 import MoralisType from 'moralis';
-import { MyNftProps, NFTAutionProps } from './styles';
+import { MyNftProps, NFTAutionProps, UserCustom } from './styles';
 
 export const AppProvider = ({ children }) => {
   const [user, setUser] = useState<MoralisType.User | null>(null);
@@ -11,6 +11,9 @@ export const AppProvider = ({ children }) => {
   );
   const [myNft, setMyNft] = useState<MyNftProps[]>(
     window.localStorage.getItem('myNft') ? JSON.parse(window.localStorage.getItem('myNft')) : []
+  );
+  const [userList, setUserList] = useState<UserCustom[]>(
+    window.localStorage.getItem('userList') ? JSON.parse(window.localStorage.getItem('userList')) : []
   );
   return (
     <AppContext.Provider
@@ -23,6 +26,8 @@ export const AppProvider = ({ children }) => {
         setnftAution,
         myNft,
         setMyNft,
+        userList,
+        setUserList,
       }}
     >
       {children}

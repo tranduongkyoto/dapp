@@ -2,11 +2,12 @@ import React, { Attributes, useState } from 'react';
 import { Link, useHistory, useLocation } from 'react-router-dom';
 import { Input, Button, DatePicker, Select, TabList, Tab, Icon } from 'web3uikit';
 import { useMoralis, useMoralisWeb3Api, useWeb3ExecuteFunction, useMoralisQuery } from 'react-moralis';
+import axios from 'axios';
 
 const Campaigns = () => {
   const { Moralis } = useMoralis();
   const [list, setList] = useState<any>();
-  const { data, isLoading, error } = useMoralisQuery('Campaign');
+  const { data, isLoading, error } = useMoralisQuery('Campaigns');
   const { data: auction, error: auctinErr } = useMoralisQuery('Auction');
   const history = useHistory();
 
@@ -19,6 +20,15 @@ const Campaigns = () => {
   if (auction) {
     console.log(auction);
   }
+  const getBalanceOf = async (id: string) => {
+    const data = await axios.get(
+      `https://api-ropsten.etherscan.io/api?module=account&action=tokenbalance&contractaddress=0x07865c6E87B9F70255377e024ace6630C1Eaa37F&address=${id}&tag=latest&apikey=FH674SA8K1BFH2SFB7KXYZXFB5GS63IXM4`
+    );
+    if (data?.data?.result) {
+      return parseInt(data?.data?.result) / 1000000;
+    } else return 0;
+  };
+  // console.log(getBalanceOf());
   return (
     <>
       <div className="row main">
@@ -42,8 +52,8 @@ const Campaigns = () => {
         {data &&
           data.map((item, index: number) => {
             return (
-              <div className="col-md-6 mt-5" key={index}>
-                <Link to={`/campaign/${item.attributes?.uid}`}>
+              <div className="col-md-4 mt-5" key={index}>
+                <Link to={`/campaign/${item.attributes?.campaignAddress}`}>
                   <div
                     style={{
                       position: 'relative',
@@ -57,7 +67,7 @@ const Campaigns = () => {
                         width: '487px',
                         height: '300px',
                         objectFit: 'cover',
-                        maxWidth: '70%',
+                        maxWidth: '60%',
                       }}
                     ></img>
                     <div
@@ -90,7 +100,7 @@ const Campaigns = () => {
                 </Link>
                 <div className="ml-5">
                   <span className="h3">Total Raised : </span>
-                  <span className="h3 text-success">{Math.round(item.attributes?.total) / 100000}</span>
+                  <span className="h3 text-success">{}</span>
                   <button className="btn btn-primary btn-border ml-5" onClick={() => donate(item.attributes?.uid)}>
                     Donate
                   </button>

@@ -1,3 +1,57 @@
+.mini-logo {
+  margin-top: 100px;
+}
 .footer {
-  height: 50px;
+  background: #f7f8f8;
+}
+.footer-logo-border {
+  margin-top: 50px;
+}
+
+.footer-des {
+  text-align: left;
+  margin-top: -40px;
+  margin-bottom: 20px;
+}
+.footer-menu {
+  font-family: Open Sans;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 18px;
+  line-height: 30px;
+  color: #0b132a;
+  margin-top: 50px;
+}
+.footer-menu-content {
+  font-family: Rubik;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 16px;
+  line-height: 30px;
+  color: #4f5665;
+  margin-top: 20px;
+}
+.footer-more {
+  color: #0575e6;
+}
+.copyright {
+  font-family: Rubik;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 16px;
+  line-height: 30px;
+  /* identical to box height, or 187% */
+  color: #afb5c0;
+  margin-top: 50px;
+}
+.footer-icon-border {
+  margin-top: 40px;
+}
+.facebook-icon {
+  margin-left: 50px;
+  margin-right: 10px;
+}
+.fa-facebook,
+.fa-instagram {
+  font-size: 30px;
 }

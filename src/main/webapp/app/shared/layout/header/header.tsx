@@ -6,7 +6,7 @@ import { Navbar, Nav, NavbarToggler, Collapse } from 'reactstrap';
 
 import LoadingBar from 'react-redux-loading-bar';
 
-import { Home, Brand, Video } from './header-components';
+import { Home, Brand, Email } from './header-components';
 import { AdminMenu, AccountMenu, LocaleMenu, Campaign } from '../menus';
 import { Input, Button, ConnectButton } from 'web3uikit';
 import { useMoralis, useMoralisWeb3Api, useMoralisFile } from 'react-moralis';
@@ -61,7 +61,7 @@ const Header = (props: IHeaderProps) => {
           <Nav id="header-tabs" className="ml-auto" navbar>
             <Home />
             {isAuthenticated && <Campaign />}
-            {isAuthenticated && <Video />}
+            {isAuthenticated && <Email />}
             {isAuthenticated && <Nft />}
             {isAuthenticated && isAdmin && <AdminMenu showOpenAPI="true" />}
             <LocaleMenu currentLocale={props.currentLocale} onClick={handleLocaleChange} />

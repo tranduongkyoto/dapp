@@ -73,7 +73,6 @@ export default function ProfileSetting() {
           ></img>
         </div>
         <div className="col-md-7 col-sm-12">
-          {/* <div className=" text-center font-weight-bold ">Create Campaign</div> */}
           <div className="h1">Profile Setup</div>
           <div className=" justify-content-center ">
             <form onSubmit={handleSubmit(onSubmit)}>
@@ -81,7 +80,6 @@ export default function ProfileSetting() {
                 <div className="h4">Name</div>
                 <input
                   type="text"
-                  //placeholder="Name"
                   {...register('name', {
                     required: 'This field is required',
                     minLength: {

@@ -22,9 +22,16 @@ export const c2 = new Intl.NumberFormat('en-us', {
  * @param {number} n number of chars to keep at front/end
  * @returns {string}
  */
-export const getEllipsisTxt = (str: string, n = 6) => {
+export const getEllipsisTxt = (str: string, n = 3) => {
   if (str) {
-    return `${str.slice(0, n)}...${str.slice(str.length - n)}`;
+    return `${str.slice(0, n + 2)}...${str.slice(str.length - n)}`;
+  }
+  return '';
+};
+
+export const timeStampToDateTime = (str: string = '2022-06-12T10:31:36.000Z') => {
+  if (str) {
+    return `${str.slice(0, 10)} ${str.slice(11, 16)}`;
   }
   return '';
 };

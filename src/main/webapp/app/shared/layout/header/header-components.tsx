@@ -35,11 +35,11 @@ export const Home = props => (
   </NavItem>
 );
 
-export const Video = props => (
+export const Email = props => (
   <NavItem>
-    <NavLink tag={Link} to="/video" className="d-flex align-items-center">
+    <NavLink tag={Link} to="/email/new-camp" className="d-flex align-items-center">
       {/* <FontAwesomeIcon icon="home" /> */}
-      <span className="font-weight-bold h5">Video</span>
+      <span className="font-weight-bold h5">Email</span>
     </NavLink>
   </NavItem>
 );

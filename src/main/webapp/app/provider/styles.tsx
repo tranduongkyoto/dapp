@@ -5,7 +5,17 @@ export interface NFTAutionProps {
   address: string;
   tokenId: string;
 }
-
+export interface UserCustom {
+  createdAt: string;
+  updatedAt: string;
+  ethAddress: string;
+  email: string;
+  isAdmin: boolean;
+  isUpdateProfile: boolean;
+  username: string;
+  isCryptoWhiteLister: boolean;
+  isNFTWhiteLister: boolean;
+}
 export type MyNftProps =
   | {
       token_address: string;

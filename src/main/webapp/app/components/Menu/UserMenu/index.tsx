@@ -104,7 +104,10 @@ const UserMenu = () => {
     window.localStorage.removeItem('provider');
 
     deactivateWeb3();
-    if (isInitialized) logout();
+    if (isInitialized) {
+      console.log('Log out');
+      logout();
+    }
   }
   //   useEffect(() => {
   //     if (hasPendingTransactions) {
@@ -123,7 +126,6 @@ const UserMenu = () => {
       onPresentWalletModal();
     }
   };
-  console.log(user && user.attributes?.isUpdateProfile);
   const UserMenuItems = () => {
     return (
       <>
@@ -155,8 +157,9 @@ const UserMenu = () => {
           onClick={() => {
             setUser(null);
             setIsAdmin(false);
-            window.localStorage.removeItem('isAdmin');
-            logout();
+            //logout();
+            disconnectWallet();
+            window.localStorage.clear();
           }}
         >
           <Flex alignItems="center" justifyContent="space-between" width="100%">

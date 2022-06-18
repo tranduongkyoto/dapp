@@ -58,7 +58,7 @@ const CreateCampaign = () => {
       const coverImgUrl = 'https://ipfs.moralis.io:2053/ipfs/' + file.name().slice(0, file.name().length - 4);
 
       const options = {
-        contractAddress: '0x75e8E1898d1b74fb369e5C68aEA30A4dB2004Fc3',
+        contractAddress: '0xd9972bFDDd96c182f0Cd85c32a65D26485627a54',
         functionName: 'createCampaign',
         abi: [
           {
@@ -78,14 +78,9 @@ const CreateCampaign = () => {
                 name: 'goal',
                 type: 'uint256',
               },
-              // {
-              //   internalType: 'uint256',
-              //   name: 'startedAt',
-              //   type: 'uint256',
-              // },
               {
                 internalType: 'uint256',
-                name: 'endedAt',
+                name: 'endTime',
                 type: 'uint256',
               },
               {
@@ -109,8 +104,7 @@ const CreateCampaign = () => {
           name: data?.name,
           description: data?.des,
           goal: Moralis.Units.Token(data.goal, 6),
-          //startedAt: new Date(data?.startTime).getTime(),
-          endedAt: new Date(data?.endTime).getTime(),
+          endTime: parseInt(data.endTime),
           coverImgUrl: coverImgUrl,
           campaignType: data?.name,
         },
@@ -120,6 +114,7 @@ const CreateCampaign = () => {
         params: options,
         onSuccess: res => {
           console.log('Success');
+          handleNewNotification('success', 'Contract is pending, please wait!');
         },
         onError: error => {
           console.log('Error');
@@ -249,17 +244,20 @@ const CreateCampaign = () => {
 
               <div>
                 <div className="h4">End Time</div>
-                <input
-                  type="datetime-local"
-                  //placeholder="End Date"
+                <select
                   {...register('endTime', { required: 'This field is required' })}
                   style={{
                     borderRadius: '15px',
-                    width: '300px',
+                    width: '120px',
                     height: '40px',
                   }}
-                />
-                {errors.endTime && <p>{errors.endTime.message}</p>}
+                >
+                  <option value="">Select One</option>
+                  <option value="0">7 days</option>
+                  <option value="1">14 days</option>
+                  <option value="2">30 days</option>{' '}
+                </select>
+                {errors.endTime && <p>{errors.type.endTime}</p>}
               </div>
 
               <button
