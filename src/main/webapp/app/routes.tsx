@@ -23,12 +23,14 @@ import PrivateRouteCustom from './shared/auth/private-route-custom';
 import Video from './modules/video/video';
 import Selection from './modules/campaign/selection';
 import ProfileSetting from './modules/profile/profile';
-import Profile from './modules/account/profile';
+import { Profile } from './modules/account/profile';
 import MintNft from './modules/nft/mint-nft';
 import MyCampaign from './modules/campaign/my-campaign';
 import NftDetail from './modules/nft/nft-details';
 import NftCampaign from './modules/campaign/nft-campaign';
 import NftCampaigns from './modules/campaign/nft-campaigns';
+import UserManage from './modules/administration/user-management/user-manage';
+import SendNewCamp from './modules/email/sendNewCamp';
 
 const Account = Loadable({
   loader: () => import(/* webpackChunkName: "account" */ 'app/modules/account'),
@@ -63,6 +65,8 @@ const Routes = () => {
       <PrivateRouteCustom path="/nft/:id" component={NftDetail} />
       <PrivateRouteCustom path="/account/profile" component={ProfileSetting} />
       <PrivateRouteCustom path="/account/:id" component={Profile} />
+      <PrivateRouteCustom path="/email/new-camp" component={SendNewCamp} />
+      <PrivateRouteCustom path="/admin/user-manage" component={UserManage} />
       <PrivateRoute path="/admin" component={Admin} hasAnyAuthorities={[AUTHORITIES.ADMIN]} />
       <PrivateRoute path="/account" component={Account} hasAnyAuthorities={[AUTHORITIES.ADMIN, AUTHORITIES.USER]} />
       <ErrorBoundaryRoute path="/" exact component={Home} />
