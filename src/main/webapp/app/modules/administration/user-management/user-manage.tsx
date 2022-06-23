@@ -67,8 +67,8 @@ export default function UserManage() {
         onSuccess: (data: UserCustom[]) => {
           console.log(data);
           if (data && userList.length == 0) {
-            setUserList(data);
             window.localStorage.setItem('userList', JSON.stringify(data));
+            setUserList(window.localStorage.getItem('userList') ? JSON.parse(window.localStorage.getItem('userList')) : []);
           }
         },
       });
@@ -77,7 +77,9 @@ export default function UserManage() {
       getUser();
     }
   }, []);
-  console.log(userList);
+  if (userList.length > 1) {
+    console.log(userList);
+  }
   return (
     <>
       {userList.length == 0 ? (
@@ -95,27 +97,32 @@ export default function UserManage() {
           <div className="col-md-12">
             <Table
               columnsConfig="0.75fr 1fr 1fr 0.75fr 0.5fr 1fr 1fr 1fr 1fr"
-              data={userList
-                .filter(item => item.username != 'coreservices')
-                .map(item => [
-                  getEllipsisTxt(item.ethAddress) || '---',
-                  item.username.length > 10 ? item.username.slice(0, 10) + '...' : item.username || '---',
-                  item.email || '---',
-                  item.isUpdateProfile.toString(),
-                  item.isAdmin.toString(),
-                  timeStampToDateTime(item.createdAt),
-                  timeStampToDateTime(item.updatedAt),
-                  !item.isCryptoWhiteLister ? (
-                    <Button id="test-button-primary" onClick={function noRefCheck() {}} text="Add" theme="primary" type="button" />
-                  ) : (
-                    'V'
-                  ),
-                  !item.isNFTWhiteLister ? (
-                    <Button id="test-button-primary" onClick={function noRefCheck() {}} text="Add" theme="primary" type="button" />
-                  ) : (
-                    'V'
-                  ),
-                ])}
+              data={
+                userList.length > 1
+                  ? userList
+                      .filter(item => item.username != 'coreservices')
+                      .map(item => [
+                        getEllipsisTxt(item.ethAddress) || '---',
+                        item.username.toString().length > 10 ? item.username.slice(0, 10) + '...' : item.username || '---',
+                        //item.username || '---',
+                        item.email || '---',
+                        item.isUpdateProfile,
+                        item.isAdmin,
+                        timeStampToDateTime(item.createdAt.toString()),
+                        timeStampToDateTime(item.updatedAt.toString()),
+                        !item.isCryptoWhiteLister ? (
+                          <Button id="test-button-primary" onClick={function noRefCheck() {}} text="Add" theme="primary" type="button" />
+                        ) : (
+                          'V'
+                        ),
+                        !item.isNFTWhiteLister ? (
+                          <Button id="test-button-primary" onClick={function noRefCheck() {}} text="Add" theme="primary" type="button" />
+                        ) : (
+                          'V'
+                        ),
+                      ])
+                  : []
+              }
               header={[
                 <span>Address</span>,
                 <span>User Name</span>,
