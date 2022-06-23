@@ -2,13 +2,14 @@ import './campaign.scss';
 import React, { useState, useEffect } from 'react';
 import { convertDateTimeFromServer, convertDateTimeToServer, convertTimeStampToDate } from 'app/shared/util/date-utils';
 // import { Table } from 'reactstrap';
-import { Loading, CryptoCards, Table } from 'web3uikit';
+import { Loading, CryptoCards, Table, Button } from 'web3uikit';
 import { useMoralis, useMoralisWeb3Api, useWeb3ExecuteFunction, useMoralisQuery, useWeb3Transfer, useERC20Balances } from 'react-moralis';
-import { useParams } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import axios from 'axios';
 import { result } from 'lodash';
 import { getEllipsisTxt, timeStampToDateTime } from 'app/web3utils';
+import { useNotificationCustom } from 'app/web3utils/notification';
 interface transactionType {
   hash: string;
   from: string;
@@ -22,10 +23,11 @@ const Campaign = () => {
   const [balanceOf, setBalanceOf] = useState<number>();
   const [transaction, setTransaction] = useState<transactionType[]>();
   const { data, error } = useMoralisQuery('Campaigns', query => query.contains('campaignAddress', id));
-  const { Moralis } = useMoralis();
+  const { Moralis, account } = useMoralis();
   const { fetch, error: error2, isFetching } = useWeb3Transfer();
   const contractProcessor = useWeb3ExecuteFunction();
-
+  const { handleNewNotification } = useNotificationCustom();
+  const history = useHistory();
   const {
     register,
     handleSubmit,
@@ -33,7 +35,13 @@ const Campaign = () => {
   } = useForm({
     mode: 'onTouched',
   });
-  console.log(id);
+  // const {
+  //   register: register2,
+  //   handleSubmit: handleSubmit2,
+  //   formState: { errors: errors2 },
+  // } = useForm({
+  //   mode: 'onTouched',
+  // });
   const onSubmit = async (data, e) => {
     console.log(data);
     console.log(parseInt(data.amount));
@@ -46,10 +54,13 @@ const Campaign = () => {
       },
     })
       .then(res => {
-        console.log(res);
+        handleNewNotification('success', 'Contract is pending, please wait!');
       })
       .catch(err => {
         console.log(err);
+        JSON.parse(JSON.stringify(error))?.error?.message
+          ? JSON.parse(JSON.stringify(error))?.error?.message
+          : JSON.parse(JSON.stringify(error))?.message;
       });
 
     e.target.reset();
@@ -82,7 +93,6 @@ const Campaign = () => {
   }, []);
   const lastestTxn = () => {
     if (transaction && transaction.length != 0) {
-      console.log(transaction);
       const lastest = transaction.filter(item => item.from !== '0x95f82f63b1d3eb775e37d7d2e401700ff395128f')[0];
       return (
         <div className="row py-3 justify-content-center">
@@ -127,11 +137,100 @@ const Campaign = () => {
           </a>,
           new Date(parseInt(item.timeStamp) * 1000).toString().slice(0, 25),
           getEllipsisTxt(item.from),
-          getEllipsisTxt(item.from),
+          getEllipsisTxt(item.to),
           parseInt(item?.value) / 1000000,
           item.tokenSymbol,
         ])
     : [];
+
+  // const onSubmit2 = async data => {
+  //   const options = {
+  //     contractAddress: '0x8cCbC37eF5B63932E8703ECB0Efd30b8a670192F',
+  //     functionName: 'withDraw2',
+  //     abi: [
+  //       {
+  //         inputs: [
+  //           {
+  //             internalType: 'contract IERC20',
+  //             name: 'token',
+  //             type: 'address',
+  //           },
+  //           {
+  //             internalType: 'uint256',
+  //             name: 'amount',
+  //             type: 'uint256',
+  //           },
+  //         ],
+  //         name: 'withDraw2',
+  //         outputs: [],
+  //         stateMutability: 'nonpayable',
+  //         type: 'function',
+  //       },
+  //     ],
+  //     params: {
+  //       token: '0x07865c6E87B9F70255377e024ace6630C1Eaa37F',
+  //       amount: parseInt(data.amount) * 1000000,
+  //     },
+  //   };
+  //   console.log(options);
+  //   await contractProcessor.fetch({
+  //     params: options,
+  //     onSuccess: res => {
+  //       console.log('Success');
+  //       handleNewNotification('success', 'Contract is pending, please wait!');
+  //     },
+  //     onError: error => {
+  //       console.log();
+  //       JSON.parse(JSON.stringify(error))?.error?.message
+  //         ? JSON.parse(JSON.stringify(error))?.error?.message
+  //         : JSON.parse(JSON.stringify(error))?.message;
+  //     },
+  //   });
+  // };
+  const withDraw = async () => {
+    const options = {
+      contractAddress: '0x8cCbC37eF5B63932E8703ECB0Efd30b8a670192F',
+      functionName: 'withDraw2',
+      abi: [
+        {
+          inputs: [
+            {
+              internalType: 'contract IERC20',
+              name: 'token',
+              type: 'address',
+            },
+            {
+              internalType: 'uint256',
+              name: 'amount',
+              type: 'uint256',
+            },
+          ],
+          name: 'withDraw2',
+          outputs: [],
+          stateMutability: 'nonpayable',
+          type: 'function',
+        },
+      ],
+      params: {
+        token: '0x07865c6E87B9F70255377e024ace6630C1Eaa37F',
+        amount: balanceOf * 1000000,
+      },
+    };
+    console.log(options);
+    await contractProcessor.fetch({
+      params: options,
+      onSuccess: res => {
+        console.log('Success');
+        handleNewNotification('success', 'Contract is pending, please wait!');
+      },
+      onError: error => {
+        console.log();
+        JSON.parse(JSON.stringify(error))?.error?.message
+          ? JSON.parse(JSON.stringify(error))?.error?.message
+          : JSON.parse(JSON.stringify(error))?.message;
+      },
+    });
+  };
   return (
     <>
       {data.length === 0 ? (
@@ -146,17 +245,20 @@ const Campaign = () => {
         </div>
       ) : (
         <>
-          <div className="row  justify-content-center main">
-            <div className="col-md-1"></div>
-            <div className="col-md-5 col-sm-12 pl-5">
-              <div className="h1">{data[0].attributes?.name}</div>
-              <div className="">{data[0].attributes?.description}</div>
-              <div className="h1">Campaign Start</div>
+          <div className="row  justify-content-center main mt-5">
+            <div className="col-md-3"></div>
+            <div className="col-md-4 col-sm-12 pl-5">
+              <div className="h1">{data[0].attributes?.name.toString()}</div>
+              <div className="h3">{data[0].attributes?.description}</div>
+              {/* <div className="h1">Campaign Start</div> */}
+              <div className="h1">
+                {new Date().getTime() > parseInt(data[0].attributes?.endTime) * 1000 ? 'Campaign End' : 'In Progress'}
+              </div>
               <div>{new Date(parseInt(data[0].attributes?.endTime) * 1000).toString().slice(0, 25)}</div>
-              <div className=" font-weight-bold">{balanceOf} USD</div>
-              <div>{parseInt(data[0].attributes.goal) / 1000000}</div>
+              <div className=" font-weight-bold h3">{balanceOf ? balanceOf : 0} USD</div>
+              <div className="h3">{parseInt(data[0].attributes.goal) / 1000000} USD</div>
             </div>
-            <div className="col-md-6 col-sm-12">
+            <div className="col-md-5 col-sm-12">
               <img
                 style={{
                   //maxWidth: '50%',
@@ -166,7 +268,24 @@ const Campaign = () => {
                 src={`${data[0].attributes?.coverImgUrl}`}
               ></img>
             </div>
-            <div className="col-md-6 donate">
+            {data[0].attributes?.creator === account && (
+              <>
+                <div className="col-md-5"></div>
+                <div className="col-md-7 ">
+                  <Button
+                    id="test-button-primary"
+                    onClick={() => {
+                      history.push('/email/new-camp');
+                    }}
+                    text="Send Email For Vip User"
+                    theme="primary"
+                    type="button"
+                    size="large"
+                  ></Button>
+                </div>
+              </>
+            )}
+            <div className="col-md-6 donate mt-5">
               <div className="row justify-content-center">
                 <div className="col-md-3 mt-3 text-center">
                   <img src="content/icons/cryptoYellow.svg"></img>
@@ -207,6 +326,7 @@ const Campaign = () => {
                         border: 'hidden',
                         marginLeft: '20px',
                       }}
+                      disabled={new Date().getTime() > parseInt(data[0].attributes?.endTime) * 1000}
                     >
                       Donate
                     </button>
@@ -233,6 +353,87 @@ const Campaign = () => {
                 pageSize={10}
               />
             </div>
+            {data[0].attributes?.creator === account && (
+              <div className="col-md-6 donate mt-5">
+                <div className="row justify-content-center">
+                  <div className="col-md-3 mt-3 text-center">
+                    <img src="content/icons/cryptoYellow.svg"></img>
+                  </div>
+                  <div className="col-md-4 text-center">
+                    <img src="content/icons/qrCode.svg" alt="" />
+                  </div>
+                  <div className="col-md-5 text-center mt-4">
+                    {/* <form onSubmit={handleSubmit2(onSubmit2)}>
+                      <div className="h4">Amount</div>
+                      {errors2.amount && <p>{errors2.amount.message}</p>}
+                      <input
+                        type="number"
+                        //placeholder="Amount"
+                        {...register2('amount', {
+                          required: 'Required',
+                          min: {
+                            value: 1,
+                            message: 'Min is 1',
+                          },
+                          max: {
+                            value: balanceOf,
+                            message: `Min is ${balanceOf} `,
+                          },
+                        })}
+                        style={{
+                          borderRadius: '15px',
+                          width: '100px',
+                          height: '40px',
+                        }}
+                      />
+
+                      <button
+                        type="submit"
+                        className="mt-2"
+                        style={{
+                          borderRadius: '15px',
+                          width: '100px',
+                          height: '40px',
+                          backgroundColor: '#21BF96',
+                          color: 'white',
+                          border: 'hidden',
+                          marginLeft: '20px',
+                        }}
+                      >
+                        With Draw
+                      </button>
+                    </form> */}
+                    <Button
+                      id="test-button-primary"
+                      onClick={() => withDraw()}
+                      text="With Draw"
+                      theme="primary"
+                      type="button"
+                      size="large"
+                    ></Button>
+                  </div>
+                </div>
+              </div>
+            )}
+            {new Date().getTime() > parseInt(data[0].attributes?.endTime) * 1000 && (
+              <div className="col-md-8 mt-5">
+                <Table
+                  columnsConfig="2fr 3fr 2fr 2fr 2fr 2fr"
+                  data={[]}
+                  header={[
+                    <span>TxT Hash</span>,
+                    <span>Time</span>,
+                    <span>From</span>,
+                    <span>To</span>,
+                    <span>Value</span>,
+                    <span>Token</span>,
+                  ]}
+                  maxPages={3}
+                  onPageNumberChanged={function noRefCheck() {}}
+                  pageSize={10}
+                />
+              </div>
+            )}
           </div>
         </>
       )}

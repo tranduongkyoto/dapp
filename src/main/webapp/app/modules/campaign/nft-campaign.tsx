@@ -2,19 +2,21 @@ import React, { useState, useEffect } from 'react';
 import { ethers } from 'ethers';
 import { MetaMaskInpageProvider } from '@metamask/providers';
 import * as abi from './nftAution.json';
-import { useMoralisQuery } from 'react-moralis';
-import { useParams } from 'react-router-dom';
+import { useMoralis, useMoralisQuery, useWeb3ExecuteFunction } from 'react-moralis';
+import { useHistory, useParams } from 'react-router-dom';
 import { Loading, Tag, Button, Hero } from 'web3uikit';
 import { useForm } from 'react-hook-form';
 import { NFT } from 'app/components/NFT';
 import { start } from 'repl';
-
+import { useNotificationCustom } from 'app/web3utils/notification';
 declare global {
   interface Window {
     ethereum?: any;
   }
 }
 export default function NftCampaign() {
+  const { account } = useMoralis();
+  const history = useHistory();
   const { id } = useParams<{ id: string }>();
   const { data, error } = useMoralisQuery('Auctions', query => query.contains('campaignAddress', id));
   const provider = new ethers.providers.Web3Provider(window.ethereum);
@@ -22,17 +24,63 @@ export default function NftCampaign() {
   const [currentPrice, setCurrentPrice] = useState<number>();
   const [discountRate, setDiscountRate] = useState<number>();
   const [end, setEnd] = useState<number>();
-
-  const buy = () => {
+  const [buyPrice, setBuyPrice] = useState<number>();
+  const contractProcessor = useWeb3ExecuteFunction();
+  const { handleNewNotification } = useNotificationCustom();
+  const buy = async () => {
     const startTime = end - 7 * 24 * 60 * 60;
     console.log(startTime);
     const time = new Date().getTime() / 1000 - startTime;
     const discount = (discountRate * time) / 1000000;
     console.log(discount);
-    const newPrice = price - discount + 0.01;
+    const newPrice = price - discount + 0.001;
     setCurrentPrice(Number(newPrice.toFixed(6)));
-    const myNFT = new ethers.Contract(id, abi.abi, provider.getSigner());
-    const res = myNFT.buy('0x07865c6E87B9F70255377e024ace6630C1Eaa37F', Number(newPrice.toFixed(6)) * 1000000);
+
+    const options = {
+      contractAddress: id,
+      functionName: 'buy',
+      abi: [
+        {
+          inputs: [
+            {
+              internalType: 'contract IERC20',
+              name: 'token',
+              type: 'address',
+            },
+            {
+              internalType: 'uint256',
+              name: 'amount',
+              type: 'uint256',
+            },
+          ],
+          name: 'buy',
+          outputs: [],
+          stateMutability: 'payable',
+          type: 'function',
+        },
+      ],
+      params: {
+        token: '0x07865c6E87B9F70255377e024ace6630C1Eaa37F',
+        amount: Number(newPrice.toFixed(6)) * 1000000,
+      },
+    };
+    await contractProcessor.fetch({
+      params: options,
+      onSuccess: res => {
+        console.log('Success');
+        setBuyPrice(Number(newPrice.toFixed(6)));
+        handleNewNotification('success', 'Contract is pending, please wait!');
+      },
+      onError: error => {
+        console.log(error);
+        handleNewNotification(
+          'error',
+          JSON.parse(JSON.stringify(error))?.error?.message
+            ? JSON.parse(JSON.stringify(error))?.error?.message
+            : JSON.parse(JSON.stringify(error))?.message
+        );
+      },
+    });
   };
 
   useEffect(() => {
@@ -45,12 +93,129 @@ export default function NftCampaign() {
         const startTime = data[0].attributes?.end - 7 * 24 * 60 * 60;
         const time = new Date().getTime() / 1000 - startTime;
         const discount = (parseInt(data[0].attributes?.discountRate) * time) / 1000000;
-        const newPrice = data[0].attributes?.startingPrice / 1000000 - discount + 0.01;
+        const newPrice = data[0].attributes?.startingPrice / 1000000 - discount + 0.001;
         setCurrentPrice(Number(newPrice.toFixed(6)));
       }
     }
   });
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    mode: 'onTouched',
+  });
 
+  const approve = async () => {
+    const startTime = end - 7 * 24 * 60 * 60;
+    console.log(startTime);
+    const time = new Date().getTime() / 1000 - startTime;
+    const discount = (discountRate * time) / 1000000;
+    console.log(discount);
+    const newPrice = price - discount + 0.01;
+    setCurrentPrice(Number(newPrice.toFixed(6)));
+
+    const options = {
+      contractAddress: '0x07865c6E87B9F70255377e024ace6630C1Eaa37F',
+      functionName: 'approve',
+      abi: [
+        {
+          inputs: [
+            { internalType: 'address', name: 'spender', type: 'address' },
+            { internalType: 'uint256', name: 'value', type: 'uint256' },
+          ],
+          name: 'approve',
+          outputs: [{ internalType: 'bool', name: '', type: 'bool' }],
+          stateMutability: 'nonpayable',
+          type: 'function',
+        },
+      ],
+      params: {
+        spender: id,
+        value: Number(newPrice.toFixed(6)) * 1000000,
+      },
+    };
+    await contractProcessor.fetch({
+      params: options,
+      onSuccess: res => {
+        console.log('Success');
+        handleNewNotification('success', 'Contract is pending, please wait!');
+      },
+      onError: error => {
+        console.log(error);
+        handleNewNotification(
+          'error',
+          JSON.parse(JSON.stringify(error))?.error?.message
+            ? JSON.parse(JSON.stringify(error))?.error?.message
+            : JSON.parse(JSON.stringify(error))?.message
+        );
+      },
+    });
+  };
+  const withDraw = async () => {
+    const options = {
+      contractAddress: id,
+      functionName: 'withDraw',
+      abi: [
+        {
+          inputs: [
+            {
+              internalType: 'contract IERC20',
+              name: 'token',
+              type: 'address',
+            },
+            {
+              internalType: 'uint256',
+              name: 'amount',
+              type: 'uint256',
+            },
+          ],
+          name: 'withDraw',
+          outputs: [],
+          stateMutability: 'nonpayable',
+          type: 'function',
+        },
+        // {
+        //   inputs: [
+        //     {
+        //       internalType: 'contract IERC20',
+        //       name: 'token',
+        //       type: 'address',
+        //     },
+        //     {
+        //       internalType: 'uint256',
+        //       name: 'amount',
+        //       type: 'uint256',
+        //     },
+        //   ],
+        //   name: 'withDraw2',
+        //   outputs: [],
+        //   stateMutability: 'nonpayable',
+        //   type: 'function',
+        // },
+      ],
+      params: {
+        token: '0x07865c6E87B9F70255377e024ace6630C1Eaa37F',
+        amount: buyPrice,
+      },
+    };
+    await contractProcessor.fetch({
+      params: options,
+      onSuccess: res => {
+        console.log('Success');
+        handleNewNotification('success', 'Contract is pending, please wait!');
+      },
+      onError: error => {
+        console.log(error);
+        handleNewNotification(
+          'error',
+          JSON.parse(JSON.stringify(error))?.error?.message
+            ? JSON.parse(JSON.stringify(error))?.error?.message
+            : JSON.parse(JSON.stringify(error))?.message
+        );
+      },
+    });
+  };
   return (
     <>
       {data.length === 0 ? (
@@ -65,29 +230,48 @@ export default function NftCampaign() {
         </div>
       ) : (
         <>
-          {/* <Hero backgroundURL="https://moralis.io/wp-content/uploads/2021/06/blue-blob-background-2.svg" title="" height="1000px"> */}
           <div className="row  justify-content-center main">
             <div className="col-md-2"></div>
             <div className="col-md-4 col-sm-12 pt-5 pl-5">
               <div className="h1">{data[0].attributes?.name}</div>
-              <div className="">{data[0].attributes?.description}</div>
-              <div>{new Date(parseInt(data[0].attributes?.end)).toString()}</div>
-              <NFT address={data[0].attributes?.nft} chain="ropsten" fetchMetadata tokenId={data[0].attributes?.tokenId} />
+              <div className="h2">{data[0].attributes?.description}</div>
+              <div className="h2"> Start Price {price} USD</div>
+              <div className="h2">
+                {new Date() > new Date(parseInt(data[0].attributes?.end) * 1000)
+                  ? 'Aution Ended'
+                  : `End at ${new Date(parseInt(data[0].attributes?.end) * 1000).toDateString()}`}
+              </div>
             </div>
             <div className="col-md-6 col-sm-12">
-              <img
-                style={{
-                  maxWidth: '60%',
-                  height: 'auto',
-                }}
-                alt=""
-                src="content/images/bluezoneApp.png"
-              ></img>
+              <NFT address={data[0].attributes?.nft} chain="ropsten" fetchMetadata tokenId={data[0].attributes?.tokenId} isAution={false} />
             </div>
-            <div className="col-md-6 donate mt-5">
+            {data[0].attributes?.creator === account && (
+              <>
+                <div className="col-md-5"></div>
+                <div className="col-md-7 mt-5">
+                  <Button
+                    id="test-button-primary"
+                    onClick={() => {
+                      history.push('/email/new-camp');
+                    }}
+                    text="Send Email For Vip User"
+                    theme="primary"
+                    type="button"
+                    size="large"
+                  ></Button>
+                </div>
+              </>
+            )}
+            <div
+              className="col-md-6 mt-5"
+              style={{
+                backgroundColor: '#fff',
+                borderRadius: '25px',
+                padding: '20px 20px',
+              }}
+            >
               <div className="row justify-content-center">
-                <div className="col-md-1"></div>
-                <div className="col-md-4 mt-2">
+                <div className="col-md-3 mt-2">
                   <Button
                     id="test-button-primary"
                     onClick={() => {
@@ -105,17 +289,44 @@ export default function NftCampaign() {
                     type="button"
                   />
                 </div>
-                <div className="col-md-4">
+                <div className="col-md-3 mt-2">
                   <Tag color="blue" text={`${currentPrice} USD`}></Tag>
                 </div>
-                <div className="col-md-3">
-                  {/* <Tag color="blue" text={}></Tag> */}
+                <div className="col-md-3 mt-2">
+                  <Button id="test-button-primary" onClick={() => approve()} size="large" text="Approve" theme="primary" type="button" />
+                </div>
+                <div className="col-md-3 mt-2">
                   <Button id="test-button-primary" onClick={() => buy()} size="large" text="Buy" theme="primary" type="button" />
                 </div>
               </div>
             </div>
           </div>
-          {/* </Hero> */}
+          {data[0].attributes?.creator === account && (
+            <>
+              <div className="row justify-content-center">
+                <div className="col-md-5 donate mt-5">
+                  <div className="row jutify-content-center">
+                    <div className="col-md-4 mt-3 text-center">
+                      <img src="content/icons/cryptoYellow.svg"></img>
+                    </div>
+                    <div className="col-md-4 text-center">
+                      <img src="content/icons/qrCode.svg" alt="" />
+                    </div>
+                    <div className="col-md-4 text-center mt-4">
+                      <Button
+                        id="test-button-primary"
+                        onClick={() => withDraw()}
+                        size="large"
+                        text="With Draw"
+                        theme="primary"
+                        type="button"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </>
+          )}
         </>
       )}
     </>

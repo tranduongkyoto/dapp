@@ -64,7 +64,7 @@ const SendNewCamp = () => {
             src="content/images/bluezoneApp.png"
           ></img>
         </div>
-        <div className="col-md-8 col-sm-12">
+        <div className="col-md-8 col-sm-12 mt-5">
           <div className="h4">User Name : {username}</div>
           <div className="h4">Email : {email}</div>
           <div className="justify-content-center ">

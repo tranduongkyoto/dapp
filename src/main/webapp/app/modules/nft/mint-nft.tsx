@@ -115,8 +115,13 @@ const MintNft = () => {
           console.log('Success');
         },
         onError: error => {
-          console.log('Error');
           console.log(error);
+          handleNewNotification(
+            'error',
+            JSON.parse(JSON.stringify(error))?.error?.message
+              ? JSON.parse(JSON.stringify(error))?.error?.message
+              : JSON.parse(JSON.stringify(error))?.message
+          );
         },
       });
       setSelectedFile(defaultImgs[1]);

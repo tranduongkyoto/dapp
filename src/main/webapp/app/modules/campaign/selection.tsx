@@ -5,25 +5,26 @@ export default function Selection() {
   return (
     <>
       <div className="row justify-content-center">
-        <div className="col-md-8 col-sm-12 pt-5 pl-5">
+        <div className="col-md-2"></div>
+        <div className="col-md-4 col-sm-12 pt-5 pl-5">
           <div className="h1  text-center">Change Our World, with Crypto</div>
           <div className=" text-center">
             Lorem ipsum dolor sit amet consectetur adipisicing elit. Eum reiciendis illum eius nisi temporibus aliquid sit quis quasi, non
             assumenda ab quaerat eos natus blanditiis in soluta exercitationem optio enim!
           </div>
-          <div className="row">
+          {/* <div className="row">
             <div className="col-sm-12 col-md-6 text-right pt-5">
               <button className="btn btn-lg btn-warning btn-border">Create</button>
             </div>
             <div className="col-sm-12 col-md-6 text-left pt-5">
               <button className="btn btn-lg btn-info btn-border">Donate</button>
             </div>
-          </div>
+          </div> */}
         </div>
-        <div className="col-md-4 col-sm-12">
+        <div className="col-md-6 col-sm-12">
           <img
             style={{
-              maxWidth: '50%',
+              maxWidth: '40%',
               height: 'auto',
             }}
             alt=""

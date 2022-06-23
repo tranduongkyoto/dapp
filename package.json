@@ -56,7 +56,7 @@
     "@storybook/react": "^6.5.8",
     "@web3-react/core": "^6.1.9",
     "availity-reactstrap-validation": "2.7.1",
-    "axios": "0.21.1",
+    "axios": "^0.21.1",
     "base-64": "^1.0.0",
     "bootstrap": "4.6.0",
     "browser-sync-client": "^2.27.10",

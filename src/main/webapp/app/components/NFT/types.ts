@@ -30,6 +30,8 @@ export interface INFTProps {
    * set metadata of NFT
    */
   metadata?: TNFTMetadata | undefined;
+
+  isAution?: boolean;
 }
 
 /**

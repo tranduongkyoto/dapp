@@ -31,6 +31,7 @@ import NftCampaign from './modules/campaign/nft-campaign';
 import NftCampaigns from './modules/campaign/nft-campaigns';
 import UserManage from './modules/administration/user-management/user-manage';
 import SendNewCamp from './modules/email/sendNewCamp';
+import DashBoard from './modules/dashboard/dashboard';
 
 const Account = Loadable({
   loader: () => import(/* webpackChunkName: "account" */ 'app/modules/account'),
@@ -67,6 +68,7 @@ const Routes = () => {
       <PrivateRouteCustom path="/account/:id" component={Profile} />
       <PrivateRouteCustom path="/email/new-camp" component={SendNewCamp} />
       <PrivateRouteCustom path="/admin/user-manage" component={UserManage} />
+      <PrivateRouteCustom path="/dashboard" component={DashBoard} />
       <PrivateRoute path="/admin" component={Admin} hasAnyAuthorities={[AUTHORITIES.ADMIN]} />
       <PrivateRoute path="/account" component={Account} hasAnyAuthorities={[AUTHORITIES.ADMIN, AUTHORITIES.USER]} />
       <ErrorBoundaryRoute path="/" exact component={Home} />

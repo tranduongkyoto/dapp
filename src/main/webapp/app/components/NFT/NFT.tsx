@@ -15,7 +15,7 @@ import { AppContext } from 'app/provider/appContext';
 import { Link } from 'react-router-dom';
 const { DivStyled } = styles;
 const { image } = NFTUtils;
-const NFT: React.FC<INFTProps> = ({ address, chain, name, tokenId, fetchMetadata, metadata, ...props }) => {
+const NFT: React.FC<INFTProps> = ({ address, chain, name, tokenId, fetchMetadata, metadata, isAution, ...props }) => {
   const { nftAution, setnftAution } = useContext(AppContext);
   const { isInitialized, isInitializing } = useMoralis();
   const Web3API = useMoralisWeb3Api();
@@ -107,16 +107,18 @@ const NFT: React.FC<INFTProps> = ({ address, chain, name, tokenId, fetchMetadata
             <div className="col-md-3 mt-2">
               <Tag color="blue" text={tokenId} />
             </div>
-            <div className="col-md-4 mt-2">
-              <Button
-                id="test-button-primary"
-                onClick={() => setShowModal(true)}
-                text="Aution"
-                theme="primary"
-                type="button"
-                disabled={isDisable}
-              />
-            </div>
+            {isAution != false && (
+              <div className="col-md-4 mt-2">
+                <Button
+                  id="test-button-primary"
+                  onClick={() => setShowModal(true)}
+                  text="Aution"
+                  theme="primary"
+                  type="button"
+                  disabled={isDisable}
+                />
+              </div>
+            )}
           </div>
         </div>
 

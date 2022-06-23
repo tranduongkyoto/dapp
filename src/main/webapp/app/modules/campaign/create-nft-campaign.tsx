@@ -132,7 +132,13 @@ const CreateNftCampaign = () => {
           window.localStorage.removeItem('myNft');
         },
         onError: error => {
-          handleNewNotification('error', error.message);
+          console.log(error);
+          handleNewNotification(
+            'error',
+            JSON.parse(JSON.stringify(error))?.error?.message
+              ? JSON.parse(JSON.stringify(error))?.error?.message
+              : JSON.parse(JSON.stringify(error))?.message
+          );
         },
         onComplete: () => {
           console.log('Complete');
@@ -200,7 +206,7 @@ const CreateNftCampaign = () => {
         <div className="col-md-4 col-sm-12">
           <img
             style={{
-              maxWidth: '70%',
+              maxWidth: '90%',
               height: 'auto',
             }}
             alt=""
