@@ -7,9 +7,12 @@ import { useMoralis, useMoralisWeb3Api, useWeb3ExecuteFunction, useMoralisQuery,
 import { useHistory, useParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import axios from 'axios';
-import { result } from 'lodash';
+import { result, truncate } from 'lodash';
 import { getEllipsisTxt, timeStampToDateTime } from 'app/web3utils';
 import { useNotificationCustom } from 'app/web3utils/notification';
+import { ethers } from 'ethers';
+import * as usdcabi from '../contract/USDC.json';
+import { faClosedCaptioning } from '@fortawesome/free-solid-svg-icons';
 interface transactionType {
   hash: string;
   from: string;
@@ -28,6 +31,7 @@ const Campaign = () => {
   const contractProcessor = useWeb3ExecuteFunction();
   const { handleNewNotification } = useNotificationCustom();
   const history = useHistory();
+  const provider = new ethers.providers.Web3Provider(window.ethereum);
   const {
     register,
     handleSubmit,
@@ -35,35 +39,27 @@ const Campaign = () => {
   } = useForm({
     mode: 'onTouched',
   });
-  // const {
-  //   register: register2,
-  //   handleSubmit: handleSubmit2,
-  //   formState: { errors: errors2 },
-  // } = useForm({
-  //   mode: 'onTouched',
-  // });
+
   const onSubmit = async (data, e) => {
-    console.log(data);
-    console.log(parseInt(data.amount));
-    await fetch({
-      params: {
-        type: 'erc20',
-        amount: Moralis.Units.Token(data.amount, 6),
-        receiver: `${id}`,
-        contractAddress: '0x07865c6E87B9F70255377e024ace6630C1Eaa37F',
-      },
-    })
-      .then(res => {
-        handleNewNotification('success', 'Contract is pending, please wait!');
-      })
-      .catch(err => {
-        console.log(err);
+    const USDC = new ethers.Contract('0x07865c6E87B9F70255377e024ace6630C1Eaa37F', usdcabi.abi, provider.getSigner());
+    try {
+      const transaction = await USDC.transfer(id, Moralis.Units.Token(data.amount, 6));
+      handleNewNotification('success', 'Contract is pending, Please wait! ');
+      const res = await transaction.wait();
+      if (res?.status == 1) {
+        console.log(res);
+        handleNewNotification('success', `Contract is confirmed with ${res?.confirmations} confirmations. Thank for your donation!`);
+      }
+      e.target.reset();
+    } catch (error: any) {
+      console.log(error);
+      handleNewNotification(
+        'error',
         JSON.parse(JSON.stringify(error))?.error?.message
           ? JSON.parse(JSON.stringify(error))?.error?.message
-          : JSON.parse(JSON.stringify(error))?.message;
-      });
-
-    e.target.reset();
+          : JSON.parse(JSON.stringify(error))?.message
+      );
+    }
   };
   useEffect(() => {
     const getBalanceOf = async () => {
@@ -124,7 +120,7 @@ const Campaign = () => {
   };
   const dataTable = transaction
     ? transaction
-        .filter(item => item.from !== '0x95f82f63b1d3eb775e37d7d2e401700ff395128f')
+        .filter(item => item.from != id)
         .map((item, key) => [
           <a
             href={'https://ropsten.etherscan.io/tx/' + `${item?.hash}`}
@@ -142,7 +138,29 @@ const Campaign = () => {
           item.tokenSymbol,
         ])
     : [];
-
+  const withDrawDataTable = transaction
+    ? transaction
+        .filter(item => item.from == id)
+        .map((item, key) => [
+          <a
+            href={'https://ropsten.etherscan.io/tx/' + `${item?.hash}`}
+            target="_blank"
+            style={{
+              textDecoration: 'none',
+            }}
+          >
+            {getEllipsisTxt(item.hash)}
+          </a>,
+          new Date(parseInt(item.timeStamp) * 1000).toString().slice(0, 25),
+          getEllipsisTxt(item.from),
+          getEllipsisTxt(item.to),
+          parseInt(item?.value) / 1000000,
+          item.tokenSymbol,
+        ])
+    : [];
+  if (transaction) {
+    console.log(transaction);
+  }
   // const onSubmit2 = async data => {
   //   const options = {
   //     contractAddress: '0x8cCbC37eF5B63932E8703ECB0Efd30b8a670192F',
@@ -189,7 +207,7 @@ const Campaign = () => {
   // };
   const withDraw = async () => {
     const options = {
-      contractAddress: '0x8cCbC37eF5B63932E8703ECB0Efd30b8a670192F',
+      contractAddress: id,
       functionName: 'withDraw2',
       abi: [
         {
@@ -224,13 +242,26 @@ const Campaign = () => {
         handleNewNotification('success', 'Contract is pending, please wait!');
       },
       onError: error => {
-        console.log();
+        console.log(error);
         JSON.parse(JSON.stringify(error))?.error?.message
           ? JSON.parse(JSON.stringify(error))?.error?.message
           : JSON.parse(JSON.stringify(error))?.message;
       },
     });
   };
+  var isEnd;
+  var isCreator;
+  if (data[0]) {
+    isEnd =
+      new Date().getTime() > parseInt(data[0].attributes?.endTime) * 1000 ||
+      balanceOf >= parseInt(data[0].attributes.goal) / 1000000 ||
+      withDrawDataTable.length == 1;
+    //isEnd = true;
+    isCreator = data[0].attributes?.creator === account;
+  }
+  if (!data) {
+    return <div>No Response</div>;
+  }
   return (
     <>
       {data.length === 0 ? (
@@ -251,9 +282,7 @@ const Campaign = () => {
               <div className="h1">{data[0].attributes?.name.toString()}</div>
               <div className="h3">{data[0].attributes?.description}</div>
               {/* <div className="h1">Campaign Start</div> */}
-              <div className="h1">
-                {new Date().getTime() > parseInt(data[0].attributes?.endTime) * 1000 ? 'Campaign End' : 'In Progress'}
-              </div>
+              <div className="h1">{isEnd ? 'Campaign End' : 'In Progress'}</div>
               <div>{new Date(parseInt(data[0].attributes?.endTime) * 1000).toString().slice(0, 25)}</div>
               <div className=" font-weight-bold h3">{balanceOf ? balanceOf : 0} USD</div>
               <div className="h3">{parseInt(data[0].attributes.goal) / 1000000} USD</div>
@@ -268,7 +297,7 @@ const Campaign = () => {
                 src={`${data[0].attributes?.coverImgUrl}`}
               ></img>
             </div>
-            {data[0].attributes?.creator === account && (
+            {isCreator && (
               <>
                 <div className="col-md-5"></div>
                 <div className="col-md-7 ">
@@ -277,10 +306,11 @@ const Campaign = () => {
                     onClick={() => {
                       history.push('/email/new-camp');
                     }}
-                    text="Send Email For Vip User"
+                    text="Send Email For User"
                     theme="primary"
                     type="button"
                     size="large"
+                    disabled={isEnd}
                   ></Button>
                 </div>
               </>
@@ -325,8 +355,10 @@ const Campaign = () => {
                         color: 'white',
                         border: 'hidden',
                         marginLeft: '20px',
+                        fontWeight: 'bold',
+                        opacity: `${isEnd ? '50%' : 'none'}`,
                       }}
-                      disabled={new Date().getTime() > parseInt(data[0].attributes?.endTime) * 1000}
+                      disabled={isEnd}
                     >
                       Donate
                     </button>
@@ -353,7 +385,7 @@ const Campaign = () => {
                 pageSize={10}
               />
             </div>
-            {data[0].attributes?.creator === account && (
+            {isEnd && isCreator && (
               <div className="col-md-6 donate mt-5">
                 <div className="row justify-content-center">
                   <div className="col-md-3 mt-3 text-center">
@@ -363,76 +395,51 @@ const Campaign = () => {
                     <img src="content/icons/qrCode.svg" alt="" />
                   </div>
                   <div className="col-md-5 text-center mt-4">
-                    {/* <form onSubmit={handleSubmit2(onSubmit2)}>
-                      <div className="h4">Amount</div>
-                      {errors2.amount && <p>{errors2.amount.message}</p>}
-                      <input
-                        type="number"
-                        //placeholder="Amount"
-                        {...register2('amount', {
-                          required: 'Required',
-                          min: {
-                            value: 1,
-                            message: 'Min is 1',
-                          },
-                          max: {
-                            value: balanceOf,
-                            message: `Min is ${balanceOf} `,
-                          },
-                        })}
-                        style={{
-                          borderRadius: '15px',
-                          width: '100px',
-                          height: '40px',
-                        }}
-                      />
-
-                      <button
-                        type="submit"
-                        className="mt-2"
-                        style={{
-                          borderRadius: '15px',
-                          width: '100px',
-                          height: '40px',
-                          backgroundColor: '#21BF96',
-                          color: 'white',
-                          border: 'hidden',
-                          marginLeft: '20px',
-                        }}
-                      >
-                        With Draw
-                      </button>
-                    </form> */}
-                    <Button
-                      id="test-button-primary"
-                      onClick={() => withDraw()}
-                      text="With Draw"
-                      theme="primary"
-                      type="button"
-                      size="large"
-                    ></Button>
+                    {withDrawDataTable.length == 0 ? (
+                      <Button
+                        id="test-button-primary"
+                        onClick={() => withDraw()}
+                        text="With Draw"
+                        theme="primary"
+                        type="button"
+                        size="large"
+                      ></Button>
+                    ) : (
+                      <Button
+                        id="test-button-primary"
+                        //onClick={}
+                        text="Drawed"
+                        theme="primary"
+                        type="button"
+                        size="large"
+                        disabled={true}
+                      ></Button>
+                    )}
                   </div>
                 </div>
               </div>
             )}
-            {new Date().getTime() > parseInt(data[0].attributes?.endTime) * 1000 && (
-              <div className="col-md-8 mt-5">
-                <Table
-                  columnsConfig="2fr 3fr 2fr 2fr 2fr 2fr"
-                  data={[]}
-                  header={[
-                    <span>TxT Hash</span>,
-                    <span>Time</span>,
-                    <span>From</span>,
-                    <span>To</span>,
-                    <span>Value</span>,
-                    <span>Token</span>,
-                  ]}
-                  maxPages={3}
-                  onPageNumberChanged={function noRefCheck() {}}
-                  pageSize={10}
-                />
-              </div>
+            {isEnd && (
+              <>
+                <div className="col-md-8 h1 text-center">With Draw History</div>
+                <div className="col-md-8 mt-5">
+                  <Table
+                    columnsConfig="2fr 3fr 2fr 2fr 2fr 2fr"
+                    data={withDrawDataTable}
+                    header={[
+                      <span>TxT Hash</span>,
+                      <span>Time</span>,
+                      <span>From</span>,
+                      <span>To</span>,
+                      <span>Value</span>,
+                      <span>Token</span>,
+                    ]}
+                    maxPages={3}
+                    onPageNumberChanged={function noRefCheck() {}}
+                    pageSize={10}
+                  />
+                </div>
+              </>
             )}
           </div>
         </>

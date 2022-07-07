@@ -22,6 +22,10 @@ import { getEllipsisTxt, timeStampToDateTime } from 'app/web3utils';
 import { AppProvider } from 'app/provider/appProvider';
 import { AppContext } from 'app/provider/appContext';
 import { UserCustom } from 'app/provider/styles';
+import { useNotificationCustom } from 'app/web3utils/notification';
+import { ethers } from 'ethers';
+import * as campaignabi from '../../contract/campaignStore.json';
+
 interface transactionType {
   hash: string;
   from: string;
@@ -32,54 +36,179 @@ interface transactionType {
 }
 
 export default function UserManage() {
+  const { account, Moralis } = useMoralis();
   const { id } = useParams<{ id: string }>();
   const [balanceOf, setBalanceOf] = useState<number>();
   const [transaction, setTransaction] = useState<transactionType[]>();
   const [user, setUser] = useState<MoralisType.User[]>();
-  const { fetch, data } = useMoralisCloudFunction('getUsers', { autoFetch: false });
+  const { fetch, data } = useMoralisCloudFunction('getUsers');
   const { userList, setUserList } = useContext(AppContext);
-  // const { fetch, error: error2, isFetching } = useWeb3Transfer();
   const contractProcessor = useWeb3ExecuteFunction();
+  const { handleNewNotification } = useNotificationCustom();
+  const provider = new ethers.providers.Web3Provider(window.ethereum);
 
-  const onSubmit = async (data, e) => {
-    console.log(data);
-    console.log(parseInt(data.amount));
-    // await fetch({
-    //   params: {
-    //     type: 'erc20',
-    //     amount: Moralis.Units.Token(data.amount, 6),
-    //     receiver: `${id}`,
-    //     contractAddress: '0x07865c6E87B9F70255377e024ace6630C1Eaa37F',
-    //   },
-    // })
-    //   .then(res => {
-    //     console.log(res);
-    //   })
-    //   .catch(err => {
-    //     console.log(err);
-    //   });
+  useEffect(() => {}, []);
 
-    e.target.reset();
-  };
-  useEffect(() => {
-    const getUser = async () => {
-      await fetch({
-        onSuccess: (data: UserCustom[]) => {
-          console.log(data);
-          if (data && userList.length == 0) {
-            window.localStorage.setItem('userList', JSON.stringify(data));
-            setUserList(window.localStorage.getItem('userList') ? JSON.parse(window.localStorage.getItem('userList')) : []);
-          }
-        },
-      });
-    };
-    if (userList.length == 0) {
-      getUser();
-    }
-  }, []);
-  if (userList.length > 1) {
-    console.log(userList);
+  if (!data) {
+    return (
+      <div className="row justify-content-center ">
+        <div
+          className="col-md-1"
+          style={{
+            //backgroundColor: '#ECECFE',
+            //borderRadius: '8px',
+            padding: '50px',
+            //width: '150px',
+            //height: '150px',
+          }}
+        >
+          <Loading size={40} spinnerColor="#2E7DAF" text="Loading..." />
+        </div>
+      </div>
+    );
   }
+  if (data && userList.length == 0) {
+    console.log(JSON.parse(JSON.stringify(data)));
+    setUserList(JSON.parse(JSON.stringify(data)));
+  }
+
+  const addCampaign = async (add: string, id: string) => {
+    try {
+      // const campaignStore = new ethers.Contract('0x1fcf3d0D9A9C4a0f02519c094DE4d326dbafdE98', campaignabi.abi, provider.getSigner());
+      // const transaction = await campaignStore.addWhiteLister(add);
+      // handleNewNotification('success', 'Contract is pending, Please wait! ');
+      // const res = await transaction.wait();
+      // if (res?.status == 1) {
+      //handleNewNotification('success', `Contract is confirmed with ${res?.confirmations} confirmations. Thank for!`);
+      const User = Moralis.Object.extend('_User', { useMasterkey: true });
+      const query = new Moralis.Query(User);
+      //console.log(id);
+      console.log(add, id);
+      query.equalTo('objectId', id);
+      console.log(query);
+      const user = await query.first({ useMasterKey: true });
+      console.log(user);
+      user.set('isCryptoWhiteLister', true);
+      await user.save();
+      //}
+    } catch (error: any) {
+      console.log(error);
+      handleNewNotification(
+        'error',
+        JSON.parse(JSON.stringify(error))?.error?.message
+          ? JSON.parse(JSON.stringify(error))?.error?.message
+          : JSON.parse(JSON.stringify(error))?.message
+      );
+    }
+  };
+  const addNft = async (add: string) => {
+    const options = {
+      contractAddress: '0xd784DD5D8C9E7F7681BDF268e5FeC11CCA6Ca14A',
+      functionName: 'addWhiteLister',
+      abi: [
+        {
+          inputs: [
+            {
+              internalType: 'address',
+              name: 'user',
+              type: 'address',
+            },
+          ],
+          name: 'addWhiteLister',
+          outputs: [],
+          stateMutability: 'nonpayable',
+          type: 'function',
+        },
+      ],
+      params: {
+        user: add,
+      },
+    };
+    console.log(options);
+    await contractProcessor.fetch({
+      params: options,
+      onSuccess: res => {
+        console.log('Success');
+        handleNewNotification('success', 'Contract is pending, please wait!');
+      },
+      onError: error => {
+        console.log(error);
+        handleNewNotification(
+          'error',
+          JSON.parse(JSON.stringify(error))?.error?.message
+            ? JSON.parse(JSON.stringify(error))?.error?.message
+            : JSON.parse(JSON.stringify(error))?.message
+        );
+      },
+    });
+  };
+  const removeCampaign = async (add: string) => {
+    try {
+      const campaignStore = new ethers.Contract('0x1fcf3d0D9A9C4a0f02519c094DE4d326dbafdE98', campaignabi.abi, provider.getSigner());
+      const transaction = await campaignStore.removeWhiteLister(add);
+      handleNewNotification('success', 'Contract is pending, Please wait! ');
+      const res = await transaction.wait();
+      if (res?.status == 1) {
+        handleNewNotification('success', `Contract is confirmed with ${res?.confirmations} confirmations. Thank for!`);
+        const User = Moralis.Object.extend('_User');
+        const query = new Moralis.Query(User);
+        query.equalTo('ethAddress', add);
+        const user = await query.first();
+        user.set('isNFTWhiteLister', true);
+        await user.save();
+      }
+    } catch (error: any) {
+      console.log(error);
+      handleNewNotification(
+        'error',
+        JSON.parse(JSON.stringify(error))?.error?.message
+          ? JSON.parse(JSON.stringify(error))?.error?.message
+          : JSON.parse(JSON.stringify(error))?.message
+      );
+    }
+  };
+  const removeNft = async (add: string) => {
+    const options = {
+      contractAddress: '0xd784DD5D8C9E7F7681BDF268e5FeC11CCA6Ca14A',
+      functionName: 'removeWhiteLister',
+      abi: [
+        {
+          inputs: [
+            {
+              internalType: 'address',
+              name: 'user',
+              type: 'address',
+            },
+          ],
+          name: 'removeWhiteLister',
+          outputs: [],
+          stateMutability: 'nonpayable',
+          type: 'function',
+        },
+      ],
+      params: {
+        user: add,
+      },
+    };
+    console.log(options);
+    await contractProcessor.fetch({
+      params: options,
+      onSuccess: res => {
+        console.log('Success');
+        handleNewNotification('success', 'Contract is pending, please wait!');
+      },
+      onError: error => {
+        console.log(error);
+        handleNewNotification(
+          'error',
+          JSON.parse(JSON.stringify(error))?.error?.message
+            ? JSON.parse(JSON.stringify(error))?.error?.message
+            : JSON.parse(JSON.stringify(error))?.message
+        );
+      },
+    });
+  };
+
   return (
     <>
       {userList.length == 0 ? (
@@ -104,21 +233,48 @@ export default function UserManage() {
                       .map(item => [
                         getEllipsisTxt(item.ethAddress) || '---',
                         item.username.toString().length > 10 ? item.username.slice(0, 10) + '...' : item.username || '---',
-                        //item.username || '---',
                         item.email || '---',
-                        item.isUpdateProfile,
-                        item.isAdmin,
+                        item.isUpdateProfile.toString(),
+                        item.isAdmin.toString(),
                         timeStampToDateTime(item.createdAt.toString()),
                         timeStampToDateTime(item.updatedAt.toString()),
                         !item.isCryptoWhiteLister ? (
-                          <Button id="test-button-primary" onClick={function noRefCheck() {}} text="Add" theme="primary" type="button" />
+                          <Button
+                            color="green"
+                            id="test-button-status"
+                            onClick={() => addCampaign(item.ethAddress, item.objectId)}
+                            text="Add"
+                            theme="status"
+                            type="button"
+                          />
                         ) : (
-                          'V'
+                          <Button
+                            color="red"
+                            id="test-button-status"
+                            onClick={() => removeCampaign(item.ethAddress)}
+                            text="Remove"
+                            theme="status"
+                            type="button"
+                          />
                         ),
                         !item.isNFTWhiteLister ? (
-                          <Button id="test-button-primary" onClick={function noRefCheck() {}} text="Add" theme="primary" type="button" />
+                          <Button
+                            color="green"
+                            id="test-button-status"
+                            onClick={() => addNft(item.ethAddress)}
+                            text="Add"
+                            theme="status"
+                            type="button"
+                          />
                         ) : (
-                          'V'
+                          <Button
+                            color="red"
+                            id="test-button-status"
+                            onClick={() => removeNft(item.ethAddress)}
+                            text="Remove"
+                            theme="status"
+                            type="button"
+                          />
                         ),
                       ])
                   : []

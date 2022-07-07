@@ -25,13 +25,15 @@ import Selection from './modules/campaign/selection';
 import ProfileSetting from './modules/profile/profile';
 import { Profile } from './modules/account/profile';
 import MintNft from './modules/nft/mint-nft';
-import MyCampaign from './modules/campaign/my-campaign';
+import MyCampaign from './modules/campaign/start-nft-campaigns';
 import NftDetail from './modules/nft/nft-details';
 import NftCampaign from './modules/campaign/nft-campaign';
 import NftCampaigns from './modules/campaign/nft-campaigns';
 import UserManage from './modules/administration/user-management/user-manage';
 import SendNewCamp from './modules/email/sendNewCamp';
 import DashBoard from './modules/dashboard/dashboard';
+import StartNftCampaigns from './modules/campaign/start-nft-campaigns';
+import StartNftCampaign from './modules/campaign/start-nft-campaign';
 
 const Account = Loadable({
   loader: () => import(/* webpackChunkName: "account" */ 'app/modules/account'),
@@ -52,9 +54,10 @@ const Routes = () => {
       <ErrorBoundaryRoute path="/account/activate/:key?" component={Activate} />
       <ErrorBoundaryRoute path="/account/reset/request" component={PasswordResetInit} />
       <ErrorBoundaryRoute path="/account/reset/finish/:key?" component={PasswordResetFinish} />
-      <ErrorBoundaryRoute path="/my-campaign" component={MyCampaign} />
       <ErrorBoundaryRoute path="/campaigns" component={Campaigns} />
+      <ErrorBoundaryRoute path="/start-nft-campaigns" component={StartNftCampaigns} />
       <ErrorBoundaryRoute path="/nft-campaigns" component={NftCampaigns} />
+      <ErrorBoundaryRoute path="/nft-campaign/start/:id" component={StartNftCampaign} />
       <ErrorBoundaryRoute path="/campaign/create/traditional" component={CreateCampaign} />
       <ErrorBoundaryRoute path="/campaign/create/nft" component={CreateNftCampaign} />
       <ErrorBoundaryRoute path="/campaign/create" component={Selection} />
@@ -67,7 +70,7 @@ const Routes = () => {
       <PrivateRouteCustom path="/account/profile" component={ProfileSetting} />
       <PrivateRouteCustom path="/account/:id" component={Profile} />
       <PrivateRouteCustom path="/email/new-camp" component={SendNewCamp} />
-      <PrivateRouteCustom path="/admin/user-manage" component={UserManage} />
+      <PrivateRouteCustom path="/admin/user-manage" component={UserManage} hasAnyAuthorities={[AUTHORITIES.ADMIN]} />
       <PrivateRouteCustom path="/dashboard" component={DashBoard} />
       <PrivateRoute path="/admin" component={Admin} hasAnyAuthorities={[AUTHORITIES.ADMIN]} />
       <PrivateRoute path="/account" component={Account} hasAnyAuthorities={[AUTHORITIES.ADMIN, AUTHORITIES.USER]} />

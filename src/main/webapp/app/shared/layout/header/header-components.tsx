@@ -43,3 +43,11 @@ export const Email = props => (
     </NavLink>
   </NavItem>
 );
+
+export const DashBoard = props => (
+  <NavItem>
+    <NavLink tag={Link} to="/dashboard" className="d-flex align-items-center">
+      <span className="font-weight-bold h5">Dashboard</span>
+    </NavLink>
+  </NavItem>
+);

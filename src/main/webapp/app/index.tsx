@@ -37,7 +37,7 @@ const getLibrary = (provider): Web3Provider => {
 const render = Component =>
   // eslint-disable-next-line react/no-render-return-value
   ReactDOM.render(
-    <MoralisProvider appId="1zhV0q1IwQgA5j5qLyIj0oxzEvMRR523m69IRq0g" serverUrl="https://oibcjmrstjdh.usemoralis.com:2053/server">
+    <MoralisProvider appId="RZa0ejTMvX6ssCh6Z2nCTotmBkkpIYA310rGWl2g" serverUrl="https://hg7eqctsrd7q.usemoralis.com:2053/server">
       <Web3ReactProvider getLibrary={getLibrary}>
         <NotificationProvider>
           <ThemeProvider theme={light}>

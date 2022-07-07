@@ -31,7 +31,9 @@ export interface INFTProps {
    */
   metadata?: TNFTMetadata | undefined;
 
-  isAution?: boolean;
+  isAuction?: boolean;
+
+  auctionLink?: string;
 }
 
 /**

@@ -16,7 +16,7 @@ app.get('/campaign', async (req, res) => {
     };
   });
   const data = {
-    data: [...arr, ...arr, ...arr, ...arr, ...arr, ...arr, ...arr, ...arr],
+    data: [...arr],
   };
   res.send(data);
 });
@@ -24,11 +24,11 @@ app.get('/campaign', async (req, res) => {
 app.get('/report', (req, res) => {
   const data = {
     data: [
-      { name: 'Campaign', value: '20' },
-      { name: 'Aution', value: '5' },
-      { name: 'Donate', value: '50' },
-      { name: 'Account', value: '20' },
-      { name: 'ERC20 Transfer', value: '20' },
+      { name: 'Campaign', value: '10' },
+      { name: 'Auction', value: '5' },
+      { name: 'Donate', value: '25' },
+      { name: 'Account', value: '2' },
+      { name: 'ERC20 Transfer', value: '30' },
       { name: 'NFT Transfer', value: '20' },
     ],
   };

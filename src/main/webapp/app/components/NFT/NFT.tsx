@@ -15,7 +15,7 @@ import { AppContext } from 'app/provider/appContext';
 import { Link } from 'react-router-dom';
 const { DivStyled } = styles;
 const { image } = NFTUtils;
-const NFT: React.FC<INFTProps> = ({ address, chain, name, tokenId, fetchMetadata, metadata, isAution, ...props }) => {
+const NFT: React.FC<INFTProps> = ({ address, chain, name, tokenId, fetchMetadata, metadata, isAuction, auctionLink, ...props }) => {
   const { nftAution, setnftAution } = useContext(AppContext);
   const { isInitialized, isInitializing } = useMoralis();
   const Web3API = useMoralisWeb3Api();
@@ -33,7 +33,7 @@ const NFT: React.FC<INFTProps> = ({ address, chain, name, tokenId, fetchMetadata
   const [showTraits, setShowModal] = useState(false);
 
   if (!/^0x[a-fA-F0-9]{40}$/.test(address)) {
-    return <div data-testid="no-valid-address">No valid address</div>;
+    return <div data-testid="no-valid-address">Invalid address</div>;
   }
 
   if (!fetchMetadata) {
@@ -76,12 +76,11 @@ const NFT: React.FC<INFTProps> = ({ address, chain, name, tokenId, fetchMetadata
     );
   }
   const isDisable = nftAution !== null;
-
   return (
     <div>
       <DivStyled id="nft">
         <Link
-          to={`/nft/${address}/${tokenId}`}
+          to={`${auctionLink ? auctionLink : '/nft/' + address + '/' + tokenId}`}
           style={{
             textDecoration: 'none',
           }}
@@ -107,7 +106,7 @@ const NFT: React.FC<INFTProps> = ({ address, chain, name, tokenId, fetchMetadata
             <div className="col-md-3 mt-2">
               <Tag color="blue" text={tokenId} />
             </div>
-            {isAution != false && (
+            {isAuction != false && (
               <div className="col-md-4 mt-2">
                 <Button
                   id="test-button-primary"

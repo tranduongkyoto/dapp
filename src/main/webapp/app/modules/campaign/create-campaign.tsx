@@ -113,16 +113,17 @@ const CreateCampaign = () => {
       await contractProcessor.fetch({
         params: options,
         onSuccess: res => {
-          console.log('Success');
+          console.log(res);
           handleNewNotification('success', 'Contract is pending, please wait!');
         },
         onError: error => {
           console.log(error);
+          console.log(JSON.parse(JSON.stringify(error))?.message);
           handleNewNotification(
             'error',
-            JSON.parse(JSON.stringify(error))?.error?.message
-              ? JSON.parse(JSON.stringify(error))?.error?.message
-              : JSON.parse(JSON.stringify(error))?.message
+            JSON.parse(JSON.stringify(error))?.message
+              ? JSON.parse(JSON.stringify(error))?.message
+              : JSON.parse(JSON.stringify(error))?.error?.message
           );
         },
       });

@@ -33,8 +33,9 @@ const NFTModal: React.FC<INFTModal> = ({ attributes, setShowModal, address, toke
       address,
       tokenId,
       startingPrice: Number(data.price),
-      discountRate: Number(data.rate),
+      discountRate: parseInt(((data.price - data.last) / 0.6048).toString()),
       name,
+      lastPrice: Number(data.last),
     };
     setnftAution(newNftAution);
     window.localStorage.setItem('nftAution', JSON.stringify(newNftAution));
@@ -42,8 +43,7 @@ const NFTModal: React.FC<INFTModal> = ({ attributes, setShowModal, address, toke
     history.push('/campaign/create/nft');
   };
   const isDisable = nftAution !== null;
-  const maxDiscount = getValues().price ? parseInt((getValues().price / 0.6).toString()) : 16;
-  const totalDiscount = getValues().rate ? parseInt((getValues().rate * 0.6).toString()) : 0;
+  const maxDiscount = getValues().price ? parseInt(getValues().price.toString()) : 99999;
   return (
     <Modal
       isVisible
@@ -98,14 +98,14 @@ const NFTModal: React.FC<INFTModal> = ({ attributes, setShowModal, address, toke
             </div>
 
             <div className="mt-2">
-              <span className="mr-2 ">Discount Rate</span>
+              <span className="mr-2 ">Last Price</span>
               <input
                 type="number"
-                {...register('rate', {
+                {...register('last', {
                   required: 'This field is required',
                   min: {
                     value: 1,
-                    message: 'Min is 1%',
+                    message: 'Min is 1',
                   },
                   max: {
                     value: maxDiscount,
@@ -118,10 +118,7 @@ const NFTModal: React.FC<INFTModal> = ({ attributes, setShowModal, address, toke
                   height: '30px',
                 }}
               />
-              {errors.rate && <p>{errors.rate.message}</p>}
-              {/* <div className="">
-                <Tag color="blue" text={` ${totalDiscount}` + ' USD'}></Tag>
-              </div> */}
+              {errors.last && <p>{errors.last.message}</p>}
             </div>
             <button
               type="submit"

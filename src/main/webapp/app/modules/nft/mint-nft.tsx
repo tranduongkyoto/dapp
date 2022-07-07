@@ -30,7 +30,7 @@ const MintNft = () => {
     console.log(file.type.slice(0, 5));
     if (file.type.slice(0, 5) !== 'image') {
       setIsImage(true);
-    }
+    } else setIsImage(false);
     setTheFile(file);
     setSelectedFile(URL.createObjectURL(file));
   };
@@ -104,7 +104,7 @@ const MintNft = () => {
           },
         ],
         params: {
-          recipient: account,
+          recipient: data?.to ? data.to : account,
           tokenURI: uri,
         },
       };
@@ -113,20 +113,29 @@ const MintNft = () => {
         params: options,
         onSuccess: res => {
           console.log('Success');
+          handleNewNotification('success', 'Contract is pending, Please wait! ');
+          setSelectedFile(defaultImgs[1]);
+          setTheFile(null);
+          e.target.reset();
         },
         onError: error => {
-          console.log(error);
+          console.log(JSON.parse(JSON.stringify(error)));
           handleNewNotification(
             'error',
             JSON.parse(JSON.stringify(error))?.error?.message
-              ? JSON.parse(JSON.stringify(error))?.error?.message
-              : JSON.parse(JSON.stringify(error))?.message
+              ? JSON.parse(JSON.stringify(error))?.error?.message +
+                  ' ' +
+                  JSON.parse(JSON.stringify(error))?.reason +
+                  '  ' +
+                  JSON.parse(JSON.stringify(error))?.code
+              : JSON.parse(JSON.stringify(error))?.message +
+                  ' ' +
+                  JSON.parse(JSON.stringify(error))?.reason +
+                  '  ' +
+                  JSON.parse(JSON.stringify(error))?.code
           );
         },
       });
-      setSelectedFile(defaultImgs[1]);
-      setTheFile(null);
-      e.target.reset();
     }
   };
   const test = async () => {
@@ -152,26 +161,16 @@ const MintNft = () => {
           ></img>
         </div>
         <div className="col-md-8 col-sm-12">
-          {/* <div className=" text-center font-weight-bold ">Create Campaign</div> */}
           <div className="settingsPage justify-content-center ">
             <div className="h4 font-weight-bold">Mint NFT</div>
+            {/* <div className="banner-border">
+              <img src={selectedFile} onClick={onBannerClick} className="banner"></img>
+              <input type="file" name="file" ref={inputFile} onChange={changeHandler} style={{ display: 'none' }} required />
+            </div> */}
             <div className="banner-border">
               <img src={selectedFile} onClick={onBannerClick} className="banner"></img>
               <input
-                //accept="image/*"
-                type="file"
-                name="file"
-                ref={inputFile}
-                onChange={changeHandler}
-                style={{ display: 'none' }}
-                required
-              />
-              {/* {isImage && <p>Please select image file</p>} */}
-            </div>
-            {/* <div className="banner-border">
-              <img src={selectedFile} onClick={onBannerClick} className="banner"></img>
-              <input
-                //accept="image/*"
+                accept="image/*"
                 type="file"
                 name="file"
                 ref={inputFile}
@@ -180,13 +179,12 @@ const MintNft = () => {
                 required
               />
               {isImage && <p>Please select image file</p>}
-            </div> */}
+            </div>
             <form onSubmit={handleSubmit(onSubmit)}>
               <div>
                 <div className="h4">Name</div>
                 <input
                   type="text"
-                  //placeholder="Name"
                   {...register('name', {
                     required: 'This field is required',
                     minLength: {
@@ -228,6 +226,25 @@ const MintNft = () => {
                   }}
                 />
                 {errors.link && <p>{errors.link.message}</p>}
+              </div>
+              <div>
+                <div className="h4">Recipient</div>
+                <input
+                  type="text"
+                  {...register('to', {
+                    //required: 'This field is required',
+                    pattern: {
+                      value: /^0x[a-fA-F0-9]{40}$/,
+                      message: 'Invalid Ethereum Address',
+                    },
+                  })}
+                  style={{
+                    borderRadius: '15px',
+                    width: '500px',
+                    height: '40px',
+                  }}
+                />
+                {errors.to && <p>{errors.to.message}</p>}
               </div>
               <div>
                 <div className="h4">Description</div>
