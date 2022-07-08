@@ -283,7 +283,7 @@ export function Profile() {
                           getEllipsisTxt(item.from_address),
                           getEllipsisTxt(item.to_address),
                           getEllipsisTxt(item.address),
-                          parseInt(item.value) / 100000,
+                          parseInt(item.value) / 1000000,
                         ])
                       : []
                   }

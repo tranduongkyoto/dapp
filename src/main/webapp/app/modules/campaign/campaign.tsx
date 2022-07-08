@@ -2,13 +2,17 @@ import './campaign.scss';
 import React, { useState, useEffect } from 'react';
 import { convertDateTimeFromServer, convertDateTimeToServer, convertTimeStampToDate } from 'app/shared/util/date-utils';
 // import { Table } from 'reactstrap';
-import { Loading, CryptoCards, Table } from 'web3uikit';
+import { Loading, CryptoCards, Table, Button } from 'web3uikit';
 import { useMoralis, useMoralisWeb3Api, useWeb3ExecuteFunction, useMoralisQuery, useWeb3Transfer, useERC20Balances } from 'react-moralis';
-import { useParams } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import axios from 'axios';
-import { result } from 'lodash';
+import { result, truncate } from 'lodash';
 import { getEllipsisTxt, timeStampToDateTime } from 'app/web3utils';
+import { useNotificationCustom } from 'app/web3utils/notification';
+import { ethers } from 'ethers';
+import * as usdcabi from '../contract/USDC.json';
+import { faClosedCaptioning } from '@fortawesome/free-solid-svg-icons';
 interface transactionType {
   hash: string;
   from: string;
@@ -22,10 +26,12 @@ const Campaign = () => {
   const [balanceOf, setBalanceOf] = useState<number>();
   const [transaction, setTransaction] = useState<transactionType[]>();
   const { data, error } = useMoralisQuery('Campaigns', query => query.contains('campaignAddress', id));
-  const { Moralis } = useMoralis();
+  const { Moralis, account } = useMoralis();
   const { fetch, error: error2, isFetching } = useWeb3Transfer();
   const contractProcessor = useWeb3ExecuteFunction();
-
+  const { handleNewNotification } = useNotificationCustom();
+  const history = useHistory();
+  const provider = new ethers.providers.Web3Provider(window.ethereum);
   const {
     register,
     handleSubmit,
@@ -33,26 +39,27 @@ const Campaign = () => {
   } = useForm({
     mode: 'onTouched',
   });
-  console.log(id);
-  const onSubmit = async (data, e) => {
-    console.log(data);
-    console.log(parseInt(data.amount));
-    await fetch({
-      params: {
-        type: 'erc20',
-        amount: Moralis.Units.Token(data.amount, 6),
-        receiver: `${id}`,
-        contractAddress: '0x07865c6E87B9F70255377e024ace6630C1Eaa37F',
-      },
-    })
-      .then(res => {
-        console.log(res);
-      })
-      .catch(err => {
-        console.log(err);
-      });
 
-    e.target.reset();
+  const onSubmit = async (data, e) => {
+    const USDC = new ethers.Contract('0x07865c6E87B9F70255377e024ace6630C1Eaa37F', usdcabi.abi, provider.getSigner());
+    try {
+      const transaction = await USDC.transfer(id, Moralis.Units.Token(data.amount, 6));
+      handleNewNotification('success', 'Contract is pending, Please wait! ');
+      const res = await transaction.wait();
+      if (res?.status == 1) {
+        console.log(res);
+        handleNewNotification('success', `Contract is confirmed with ${res?.confirmations} confirmations. Thank for your donation!`);
+      }
+      e.target.reset();
+    } catch (error: any) {
+      console.log(error);
+      handleNewNotification(
+        'error',
+        JSON.parse(JSON.stringify(error))?.error?.message
+          ? JSON.parse(JSON.stringify(error))?.error?.message
+          : JSON.parse(JSON.stringify(error))?.message
+      );
+    }
   };
   useEffect(() => {
     const getBalanceOf = async () => {
@@ -82,7 +89,6 @@ const Campaign = () => {
   }, []);
   const lastestTxn = () => {
     if (transaction && transaction.length != 0) {
-      console.log(transaction);
       const lastest = transaction.filter(item => item.from !== '0x95f82f63b1d3eb775e37d7d2e401700ff395128f')[0];
       return (
         <div className="row py-3 justify-content-center">
@@ -114,7 +120,7 @@ const Campaign = () => {
   };
   const dataTable = transaction
     ? transaction
-        .filter(item => item.from !== '0x95f82f63b1d3eb775e37d7d2e401700ff395128f')
+        .filter(item => item.from != id)
         .map((item, key) => [
           <a
             href={'https://ropsten.etherscan.io/tx/' + `${item?.hash}`}
@@ -127,11 +133,135 @@ const Campaign = () => {
           </a>,
           new Date(parseInt(item.timeStamp) * 1000).toString().slice(0, 25),
           getEllipsisTxt(item.from),
-          getEllipsisTxt(item.from),
+          getEllipsisTxt(item.to),
           parseInt(item?.value) / 1000000,
           item.tokenSymbol,
         ])
     : [];
+  const withDrawDataTable = transaction
+    ? transaction
+        .filter(item => item.from == id)
+        .map((item, key) => [
+          <a
+            href={'https://ropsten.etherscan.io/tx/' + `${item?.hash}`}
+            target="_blank"
+            style={{
+              textDecoration: 'none',
+            }}
+          >
+            {getEllipsisTxt(item.hash)}
+          </a>,
+          new Date(parseInt(item.timeStamp) * 1000).toString().slice(0, 25),
+          getEllipsisTxt(item.from),
+          getEllipsisTxt(item.to),
+          parseInt(item?.value) / 1000000,
+          item.tokenSymbol,
+        ])
+    : [];
+  if (transaction) {
+    console.log(transaction);
+  }
+  // const onSubmit2 = async data => {
+  //   const options = {
+  //     contractAddress: '0x8cCbC37eF5B63932E8703ECB0Efd30b8a670192F',
+  //     functionName: 'withDraw2',
+  //     abi: [
+  //       {
+  //         inputs: [
+  //           {
+  //             internalType: 'contract IERC20',
+  //             name: 'token',
+  //             type: 'address',
+  //           },
+  //           {
+  //             internalType: 'uint256',
+  //             name: 'amount',
+  //             type: 'uint256',
+  //           },
+  //         ],
+  //         name: 'withDraw2',
+  //         outputs: [],
+  //         stateMutability: 'nonpayable',
+  //         type: 'function',
+  //       },
+  //     ],
+  //     params: {
+  //       token: '0x07865c6E87B9F70255377e024ace6630C1Eaa37F',
+  //       amount: parseInt(data.amount) * 1000000,
+  //     },
+  //   };
+  //   console.log(options);
+  //   await contractProcessor.fetch({
+  //     params: options,
+  //     onSuccess: res => {
+  //       console.log('Success');
+  //       handleNewNotification('success', 'Contract is pending, please wait!');
+  //     },
+  //     onError: error => {
+  //       console.log();
+  //       JSON.parse(JSON.stringify(error))?.error?.message
+  //         ? JSON.parse(JSON.stringify(error))?.error?.message
+  //         : JSON.parse(JSON.stringify(error))?.message;
+  //     },
+  //   });
+  // };
+  const withDraw = async () => {
+    const options = {
+      contractAddress: id,
+      functionName: 'withDraw2',
+      abi: [
+        {
+          inputs: [
+            {
+              internalType: 'contract IERC20',
+              name: 'token',
+              type: 'address',
+            },
+            {
+              internalType: 'uint256',
+              name: 'amount',
+              type: 'uint256',
+            },
+          ],
+          name: 'withDraw2',
+          outputs: [],
+          stateMutability: 'nonpayable',
+          type: 'function',
+        },
+      ],
+      params: {
+        token: '0x07865c6E87B9F70255377e024ace6630C1Eaa37F',
+        amount: balanceOf * 1000000,
+      },
+    };
+    console.log(options);
+    await contractProcessor.fetch({
+      params: options,
+      onSuccess: res => {
+        console.log('Success');
+        handleNewNotification('success', 'Contract is pending, please wait!');
+      },
+      onError: error => {
+        console.log(error);
+        JSON.parse(JSON.stringify(error))?.error?.message
+          ? JSON.parse(JSON.stringify(error))?.error?.message
+          : JSON.parse(JSON.stringify(error))?.message;
+      },
+    });
+  };
+  var isEnd;
+  var isCreator;
+  if (data[0]) {
+    isEnd =
+      new Date().getTime() > parseInt(data[0].attributes?.endTime) * 1000 ||
+      balanceOf >= parseInt(data[0].attributes.goal) / 1000000 ||
+      withDrawDataTable.length == 1;
+    //isEnd = true;
+    isCreator = data[0].attributes?.creator === account;
+  }
+  if (!data) {
+    return <div>No Response</div>;
+  }
   return (
     <>
       {data.length === 0 ? (
@@ -146,17 +276,18 @@ const Campaign = () => {
         </div>
       ) : (
         <>
-          <div className="row  justify-content-center main">
-            <div className="col-md-1"></div>
-            <div className="col-md-5 col-sm-12 pl-5">
-              <div className="h1">{data[0].attributes?.name}</div>
-              <div className="">{data[0].attributes?.description}</div>
-              <div className="h1">Campaign Start</div>
+          <div className="row  justify-content-center main mt-5">
+            <div className="col-md-3"></div>
+            <div className="col-md-4 col-sm-12 pl-5">
+              <div className="h1">{data[0].attributes?.name.toString()}</div>
+              <div className="h3">{data[0].attributes?.description}</div>
+              {/* <div className="h1">Campaign Start</div> */}
+              <div className="h1">{isEnd ? 'Campaign End' : 'In Progress'}</div>
               <div>{new Date(parseInt(data[0].attributes?.endTime) * 1000).toString().slice(0, 25)}</div>
-              <div className=" font-weight-bold">{balanceOf} USD</div>
-              <div>{parseInt(data[0].attributes.goal) / 1000000}</div>
+              <div className=" font-weight-bold h3">{balanceOf ? balanceOf : 0} USD</div>
+              <div className="h3">{parseInt(data[0].attributes.goal) / 1000000} USD</div>
             </div>
-            <div className="col-md-6 col-sm-12">
+            <div className="col-md-5 col-sm-12">
               <img
                 style={{
                   //maxWidth: '50%',
@@ -166,7 +297,25 @@ const Campaign = () => {
                 src={`${data[0].attributes?.coverImgUrl}`}
               ></img>
             </div>
-            <div className="col-md-6 donate">
+            {isCreator && (
+              <>
+                <div className="col-md-5"></div>
+                <div className="col-md-7 ">
+                  <Button
+                    id="test-button-primary"
+                    onClick={() => {
+                      history.push('/email/new-camp');
+                    }}
+                    text="Send Email For User"
+                    theme="primary"
+                    type="button"
+                    size="large"
+                    disabled={isEnd}
+                  ></Button>
+                </div>
+              </>
+            )}
+            <div className="col-md-6 donate mt-5">
               <div className="row justify-content-center">
                 <div className="col-md-3 mt-3 text-center">
                   <img src="content/icons/cryptoYellow.svg"></img>
@@ -206,7 +355,10 @@ const Campaign = () => {
                         color: 'white',
                         border: 'hidden',
                         marginLeft: '20px',
+                        fontWeight: 'bold',
+                        opacity: `${isEnd ? '50%' : 'none'}`,
                       }}
+                      disabled={isEnd}
                     >
                       Donate
                     </button>
@@ -233,6 +385,62 @@ const Campaign = () => {
                 pageSize={10}
               />
             </div>
+            {isEnd && isCreator && (
+              <div className="col-md-6 donate mt-5">
+                <div className="row justify-content-center">
+                  <div className="col-md-3 mt-3 text-center">
+                    <img src="content/icons/cryptoYellow.svg"></img>
+                  </div>
+                  <div className="col-md-4 text-center">
+                    <img src="content/icons/qrCode.svg" alt="" />
+                  </div>
+                  <div className="col-md-5 text-center mt-4">
+                    {withDrawDataTable.length == 0 ? (
+                      <Button
+                        id="test-button-primary"
+                        onClick={() => withDraw()}
+                        text="With Draw"
+                        theme="primary"
+                        type="button"
+                        size="large"
+                      ></Button>
+                    ) : (
+                      <Button
+                        id="test-button-primary"
+                        //onClick={}
+                        text="Drawed"
+                        theme="primary"
+                        type="button"
+                        size="large"
+                        disabled={true}
+                      ></Button>
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
+            {isEnd && (
+              <>
+                <div className="col-md-8 h1 text-center">With Draw History</div>
+                <div className="col-md-8 mt-5">
+                  <Table
+                    columnsConfig="2fr 3fr 2fr 2fr 2fr 2fr"
+                    data={withDrawDataTable}
+                    header={[
+                      <span>TxT Hash</span>,
+                      <span>Time</span>,
+                      <span>From</span>,
+                      <span>To</span>,
+                      <span>Value</span>,
+                      <span>Token</span>,
+                    ]}
+                    maxPages={3}
+                    onPageNumberChanged={function noRefCheck() {}}
+                    pageSize={10}
+                  />
+                </div>
+              </>
+            )}
           </div>
         </>
       )}

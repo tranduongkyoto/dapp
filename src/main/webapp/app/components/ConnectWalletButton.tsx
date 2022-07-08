@@ -13,10 +13,15 @@ const ConnectWalletButton = ({ children, ...props }: ButtonProps) => {
     let user = Moralis.User.current();
     if (!user) {
       user = await authenticate({
-        onSuccess: () => {
+        onSuccess: data => {
+          console.log(data);
           window.localStorage.setItem('provider', 'metamask');
         },
+        onError: error => {
+          console.log(error);
+        },
       });
+      console.log(user);
       const isAdmin = user.attributes?.isAdmin ? user.attributes?.isAdmin : false;
       setIsAdmin(isAdmin);
       if (isAdmin) {

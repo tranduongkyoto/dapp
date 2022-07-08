@@ -10,7 +10,8 @@ export const Home = (props: IHomeProp) => {
   return (
     <>
       <div className="row bg-top">
-        <div className="col-md-6 col-sm-12 pt-5 pl-5">
+        <div className="col-md-2"></div>
+        <div className="col-md-4 col-sm-12 pt-5 pl-5">
           <div className="h1  text-center">Change Our World, with Crypto</div>
           <div className=" text-center">
             Lorem ipsum dolor sit amet consectetur adipisicing elit. Eum reiciendis illum eius nisi temporibus aliquid sit quis quasi, non
@@ -18,7 +19,7 @@ export const Home = (props: IHomeProp) => {
           </div>
           <div className="row">
             <div className="col-sm-12 col-md-6 text-right pt-5">
-              <button className="btn btn-lg btn-warning btn-border">Create</button>
+              <button className="btn btn-lg btn-warning btn-border">Create Campaign</button>
             </div>
             <div className="col-sm-12 col-md-6 text-left pt-5">
               <button className="btn btn-lg btn-info btn-border">Donate</button>
@@ -28,7 +29,7 @@ export const Home = (props: IHomeProp) => {
         <div className="col-md-6 col-sm-12">
           <img
             style={{
-              maxWidth: '60%',
+              maxWidth: '50%',
               height: 'auto',
             }}
             alt=""
@@ -36,17 +37,17 @@ export const Home = (props: IHomeProp) => {
           ></img>
         </div>
       </div>
-      <div className="row text-center">
+      <div className="row text-center mt-5">
         <div className="col-md-4"></div>
         <div className="col-md-4">
           <div className="h1">Why should you donate with cryptocurrency?</div>
-          <div className="">
+          <div className="mt-5">
             Lorem ipsum dolor sit amet consectetur adipisicing elit. Eum reiciendis illum eius nisi temporibus aliquid sit quis quasi, non
             assumenda ab quaerat eos natus blanditiis in soluta exercitationem optio enim!
           </div>
         </div>
       </div>
-      <div className="row text-center">
+      <div className="row text-center mt-5">
         <div className="col-md-4 col-sm-12">
           <img src="content/images/transparent.png"></img>
           <div className="h1">Transparent</div>
@@ -110,19 +111,7 @@ export const Home = (props: IHomeProp) => {
             </div>
           </div>
         </div>
-        {/* <div className="col-md-4 col-sm-12 my-5">
-          <div className="row">
-            <div className="col-md-4">
-              <img src="content/icons/imageBlack.svg"></img>
-            </div>
-            <div className="col-md-8">
-              <div className="h3">Min Random NFT</div>
-              <div>Donate cryptocurrency to public wallet</div>
-              <button className="btn btn-primary btn-border">View More</button>
-            </div>
-          </div>
-        </div> */}
-        <div className="col-md-8 tran-lastest my-5">
+        {/* <div className="col-md-8 tran-lastest my-5">
           <div className="row py-3 justify-content-center">
             <div className="col-md-auto col-sm-4">
               <img src="content/icons/cryptoPurple.svg" className="pb-1"></img>
@@ -132,10 +121,10 @@ export const Home = (props: IHomeProp) => {
             <div className="col-md-auto col-sm-4 font-weight-bold">Lastest</div>
             <div className="col-md-auto col-sm-4 font-italic">Thank for great action!</div>
           </div>
-        </div>
+        </div> */}
       </div>
       <div className="row justify-content-center mt-5"></div>
-      <div className="row justify-content-center text-center my-5">
+      {/* <div className="row justify-content-center text-center my-5">
         <div className="h1">Testimotional</div>
       </div>
       <div className="row justify-content-center ">
@@ -143,8 +132,8 @@ export const Home = (props: IHomeProp) => {
           Lorem ipsum dolor sit amet consectetur adipisicing elit. Eum reiciendis illum eius nisi temporibus aliquid sit quis quasi, non
           assumenda ab quaerat eos natus blanditiis in soluta exercitationem optio enim!
         </div>
-      </div>
-      <div className="row mt-5">
+      </div> */}
+      {/* <div className="row mt-5">
         <div className="col-md-6 col-sm-12">
           <div className="row">
             <div className="col-md-2">
@@ -191,7 +180,7 @@ export const Home = (props: IHomeProp) => {
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
     </>
   );
 };

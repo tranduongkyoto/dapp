@@ -38,17 +38,16 @@ const SendNewCamp = () => {
       _ApplicationId: '1zhV0q1IwQgA5j5qLyIj0oxzEvMRR523m69IRq0g',
       username: username,
       url: data.url,
-      email: email,
+      email: data.email,
     };
 
-    // fetch({
-    //   params,
-    //   onSuccess: data => {
-    //     console.log(data);
-    //     handleNewNotification('success', 'Email has been sent!');
-    //   },
-    // });
-    handleNewNotification2('success', 'Test Email');
+    fetch({
+      params,
+      onSuccess: data => {
+        handleNewNotification('success', 'Email has been sent!');
+        e.target().reset();
+      },
+    });
   };
 
   return (
@@ -64,12 +63,33 @@ const SendNewCamp = () => {
             src="content/images/bluezoneApp.png"
           ></img>
         </div>
-        <div className="col-md-8 col-sm-12">
-          <div className="h4">User Name : {username}</div>
+        <div className="col-md-8 col-sm-12 mt-5">
+          <div className="h4">To User : {username}</div>
           <div className="h4">Email : {email}</div>
           <div className="justify-content-center ">
             <form onSubmit={handleSubmit(onSubmit)}>
               <div>
+                <div className="h4">Email</div>
+                <input
+                  type="email"
+                  {...register('email', {
+                    required: 'This field is required',
+                    minLength: {
+                      value: 5,
+                      message: 'Min length is 50',
+                    },
+                    maxLength: {
+                      value: 200,
+                      message: 'Max length is 100',
+                    },
+                  })}
+                  style={{
+                    borderRadius: '15px',
+                    width: '500px',
+                    height: '40px',
+                  }}
+                />
+                {errors.email && <p>{errors.email.message}</p>}
                 <div className="h4">New Campaign Url</div>
                 <input
                   type="url"
@@ -90,7 +110,7 @@ const SendNewCamp = () => {
                     height: '40px',
                   }}
                 />
-                {errors.url && <p>{errors.des.url}</p>}
+                {errors.url && <p>{errors.url.message}</p>}
               </div>
 
               <button
@@ -105,7 +125,7 @@ const SendNewCamp = () => {
                   border: 'hidden',
                 }}
               >
-                Create
+                Send
               </button>
               <button
                 type="reset"

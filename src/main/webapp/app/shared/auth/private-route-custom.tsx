@@ -13,6 +13,7 @@ interface IOwnProps extends RouteProps {
 
 export interface IPrivateRouteProps extends IOwnProps, StateProps {}
 import { useNotification } from 'web3uikit';
+import { useNotificationCustom } from 'app/web3utils/notification';
 
 export const PrivateRouteComponent = ({
   component: Component,
@@ -46,27 +47,20 @@ export const PrivateRouteComponent = ({
     }
     return () => {};
   }, [user, isAuthorized]);
-  const dispatch = useNotification();
-  const handleNewNotification = (type: notifyType, message?: string, icon?: TIconType, position?: IPosition) => {
-    dispatch({
-      type,
-      message,
-      title: 'Notification',
-      icon,
-      position: position || 'bottomL',
-    });
-  };
+  const { handleNewNotification } = useNotificationCustom();
   const checkAuthorities = props =>
     isAuthorized ? (
       <ErrorBoundary>
         <Component {...props} />
       </ErrorBoundary>
     ) : (
-      <div className="insufficient-authority">
-        <div className="alert alert-danger">
-          <Translate contentKey="error.http.403">You are not authorized to access this page.</Translate>
+      <>
+        <div className="insufficient-authority">
+          <div className="alert alert-danger">
+            <Translate contentKey="error.http.403">You are not authorized to access this page.</Translate>
+          </div>
         </div>
-      </div>
+      </>
     );
   const renderRedirect = props => {
     if (!sessionHasBeenFetched) {
@@ -76,7 +70,7 @@ export const PrivateRouteComponent = ({
         checkAuthorities(props)
       ) : (
         <>
-          {handleNewNotification('error', 'You need Login to access this route.')}
+          {handleNewNotification('error', 'You need Connect Wallet to access this route.')}
           <Redirect
             to={{
               pathname: '/',

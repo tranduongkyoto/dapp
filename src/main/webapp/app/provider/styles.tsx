@@ -4,6 +4,7 @@ export interface NFTAutionProps {
   name?: string;
   address: string;
   tokenId: string;
+  lastPrice?: number;
 }
 export interface UserCustom {
   createdAt: string;
@@ -15,6 +16,7 @@ export interface UserCustom {
   username: string;
   isCryptoWhiteLister: boolean;
   isNFTWhiteLister: boolean;
+  objectId: string;
 }
 export type MyNftProps =
   | {
