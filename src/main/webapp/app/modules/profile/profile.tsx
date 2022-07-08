@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { useNotification } from 'web3uikit';
+import { Input, useNotification } from 'web3uikit';
 import { useMoralis, useMoralisWeb3Api, useWeb3ExecuteFunction } from 'react-moralis';
 import { defaultImgs } from '../../shared/util/defaultImgs';
 import { messages } from 'app/config/constants';
@@ -29,6 +29,7 @@ export default function ProfileSetting() {
     handleSubmit,
     reset,
     formState: { errors },
+    control,
   } = useForm({
     mode: 'onTouched',
   });
@@ -60,8 +61,7 @@ export default function ProfileSetting() {
 
   return (
     <>
-      <div className="row mt-5">
-        <div className="col-md-1"></div>
+      <div className="row mt-4">
         <div className="col-md-4 col-sm-12">
           <img
             style={{
@@ -72,62 +72,61 @@ export default function ProfileSetting() {
             src="content/images/bluezoneApp.png"
           ></img>
         </div>
-        <div className="col-md-7 col-sm-12">
+        <div className="col-md-8 col-sm-12">
           <div className="h1">Profile Setup</div>
           <div className=" justify-content-center ">
             <form onSubmit={handleSubmit(onSubmit)}>
-              <div>
-                <div className="h4">Name</div>
-                <input
-                  type="text"
-                  {...register('name', {
-                    required: 'This field is required',
-                    minLength: {
-                      value: 2,
-                      message: 'Min length is 2',
-                    },
-                    maxLength: {
-                      value: 50,
-                      message: 'Max length is 50',
-                    },
-                  })}
-                  style={{
-                    borderRadius: '15px',
-                    width: '500px',
-                    height: '40px',
-                  }}
-                />
-                {errors.name && <p>{errors.name.message}</p>}
-              </div>
-              <div>
-                <div className="h4">Email</div>
-                <input
-                  type="email"
-                  //placeholder="Description"
-                  {...register('email', {
-                    required: 'This field is required',
-                    minLength: {
-                      value: 5,
-                      message: 'Min length is 10',
-                    },
-                    maxLength: {
-                      value: 200,
-                      message: 'Max length is 30',
-                    },
-                    // pattern: {
-                    //   value: /^S+@S+$/i,
-                    //   message: 'Email not found, sample: test@gmail.com',
-                    // },
-                  })}
-                  style={{
-                    borderRadius: '15px',
-                    width: '500px',
-                    height: '40px',
-                  }}
-                />
-                {errors.email && <p>{errors.email.message}</p>}
-              </div>
-              <div>
+              <Controller
+                name="name"
+                control={control}
+                defaultValue=""
+                render={({ field }) => (
+                  <Input
+                    name={field.name}
+                    value={field.value}
+                    onBlur={field.onBlur}
+                    onChange={field.onChange}
+                    label="Name"
+                    validation={{
+                      required: true,
+                      characterMinLength: 2,
+                      characterMaxLength: 50,
+                      // regExp: '^[^@s]+@[^@s]+.[^@s]+$',
+                      // regExpInvalidMessage: 'That is not a valid email address',
+                    }}
+                    type="text"
+                    style={{
+                      marginTop: '30px',
+                    }}
+                  />
+                )}
+              />
+              <Controller
+                name="email"
+                control={control}
+                defaultValue=""
+                render={({ field }) => {
+                  return (
+                    <Input
+                      name={field.name}
+                      value={field.value}
+                      onBlur={field.onBlur}
+                      onChange={field.onChange}
+                      label="Email"
+                      validation={{
+                        required: true,
+                        // regExp: '^[^@s]+@[^@s]+.[^@s]+$',
+                        // regExpInvalidMessage: 'That is not a valid email address',
+                      }}
+                      type="email"
+                      style={{
+                        marginTop: '30px',
+                      }}
+                    />
+                  );
+                }}
+              />
+              {/* <div>
                 <div className="h4">Phone Number</div>
                 <input
                   type="tel"
@@ -149,34 +148,57 @@ export default function ProfileSetting() {
                   }}
                 />
                 {errors.phone && <p>{errors.phone.message}</p>}
-              </div>
-              <div>
-                <div className="h4">Work</div>
-                <input
-                  type="text"
-                  //placeholder="Name"
-                  {...register('work', {
-                    required: 'This field is required',
-                    minLength: {
-                      value: 2,
-                      message: 'Min length is 5',
-                    },
-                    maxLength: {
-                      value: 50,
-                      message: 'Max length is 50',
-                    },
-                  })}
-                  style={{
-                    borderRadius: '15px',
-                    width: '500px',
-                    height: '40px',
-                  }}
-                />
-                {errors.work && <p>{errors.work.message}</p>}
-              </div>
+              </div> */}
+              <Controller
+                name="tel"
+                control={control}
+                defaultValue=""
+                render={({ field }) => {
+                  return (
+                    <Input
+                      name={field.name}
+                      value={field.value}
+                      onBlur={field.onBlur}
+                      onChange={field.onChange}
+                      label="Phone Number"
+                      validation={{
+                        required: true,
+                        regExp: '(84|0[3|5|7|8|9])+([0-9]{8})',
+                        regExpInvalidMessage: 'That is not a valid viet nam phone number',
+                      }}
+                      style={{
+                        marginTop: '30px',
+                      }}
+                    />
+                  );
+                }}
+              />
+              <Controller
+                name="work"
+                control={control}
+                defaultValue=""
+                render={({ field }) => (
+                  <Input
+                    name={field.name}
+                    value={field.value}
+                    onBlur={field.onBlur}
+                    onChange={field.onChange}
+                    label="Work"
+                    validation={{
+                      required: true,
+                      characterMinLength: 5,
+                      characterMaxLength: 50,
+                    }}
+                    type="text"
+                    style={{
+                      marginTop: '30px',
+                    }}
+                  />
+                )}
+              />
               <button
                 type="submit"
-                className="mt-2"
+                className="mt-4"
                 style={{
                   borderRadius: '15px',
                   width: '100px',
@@ -190,7 +212,7 @@ export default function ProfileSetting() {
               </button>
               <button
                 type="reset"
-                className=" ml-1 mt-2"
+                className=" ml-2 mt-4"
                 style={{
                   borderRadius: '15px',
                   width: '100px',

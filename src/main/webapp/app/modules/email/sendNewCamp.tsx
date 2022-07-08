@@ -1,3 +1,4 @@
+import filIcon from 'app/components/Icon/icons/fil';
 import { useNotificationCustom } from 'app/web3utils/notification';
 // import usehandleNewNotification from 'app/web3utils/notification2';
 import React from 'react';
@@ -13,16 +14,6 @@ const SendNewCamp = () => {
   const username = 'Dace';
   const email = 'gojed25227@runqx.com';
   const { handleNewNotification, handleNewNotification2 } = useNotificationCustom();
-  //const dispatch = useNotification();
-  // const handleNewNotification = (type: notifyType, message?: string, icon?: TIconType, position?: IPosition) => {
-  //   dispatch({
-  //     type,
-  //     message,
-  //     title: 'Notification',
-  //     icon,
-  //     position: position || 'bottomL',
-  //   });
-  // };
 
   const {
     register,
@@ -35,7 +26,6 @@ const SendNewCamp = () => {
   });
 
   const onSubmit = async (data, e) => {
-    reset();
     const params = {
       _ApplicationId: '1zhV0q1IwQgA5j5qLyIj0oxzEvMRR523m69IRq0g',
       username: username,
@@ -46,10 +36,9 @@ const SendNewCamp = () => {
       params,
       onSuccess: data => {
         handleNewNotification('success', 'Email has been sent!');
-        e.target().reset();
+        reset();
       },
     });
-    e.target().reset();
   };
 
   return (
@@ -71,7 +60,6 @@ const SendNewCamp = () => {
           <div className="justify-content-center ">
             <form
               onSubmit={handleSubmit(onSubmit)}
-              id="create-course-form"
               style={{
                 backgroundColor: 'white',
                 borderRadius: '16px',
@@ -99,8 +87,10 @@ const SendNewCamp = () => {
                 render={({ field }) => {
                   return (
                     <Input
-                      id="1"
-                      {...field}
+                      name={field.name}
+                      value={field.value}
+                      onBlur={field.onBlur}
+                      onChange={field.onChange}
                       label="Email"
                       validation={{
                         required: true,
@@ -122,8 +112,10 @@ const SendNewCamp = () => {
                 render={({ field }) => {
                   return (
                     <Input
-                      id="1"
-                      {...field}
+                      name={field.name}
+                      value={field.value}
+                      onBlur={field.onBlur}
+                      onChange={field.onChange}
                       label="New Campaign Url"
                       validation={{
                         required: true,

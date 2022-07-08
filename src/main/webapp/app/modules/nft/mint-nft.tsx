@@ -1,13 +1,13 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Translate, translate } from 'react-jhipster';
 import './mint-nft.scss';
-import { useNotification } from 'web3uikit';
+import { Input, useNotification } from 'web3uikit';
 import { useMoralis, useMoralisWeb3Api, useWeb3ExecuteFunction } from 'react-moralis';
 import { defaultImgs } from '../../shared/util/defaultImgs';
 import { messages } from 'app/config/constants';
 import { IPosition, notifyType } from 'web3uikit/dist/components/Notification/types';
 import { TIconType } from 'web3uikit/dist/components/Icon/collection';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import { encode } from 'base-64';
 
 const MintNft = () => {
@@ -49,6 +49,7 @@ const MintNft = () => {
     handleSubmit,
     reset,
     formState: { errors },
+    control,
   } = useForm({
     mode: 'onTouched',
   });
@@ -163,10 +164,6 @@ const MintNft = () => {
         <div className="col-md-8 col-sm-12">
           <div className="settingsPage justify-content-center ">
             <div className="h4 font-weight-bold">Mint NFT</div>
-            {/* <div className="banner-border">
-              <img src={selectedFile} onClick={onBannerClick} className="banner"></img>
-              <input type="file" name="file" ref={inputFile} onChange={changeHandler} style={{ display: 'none' }} required />
-            </div> */}
             <div className="banner-border">
               <img src={selectedFile} onClick={onBannerClick} className="banner"></img>
               <input
@@ -181,30 +178,32 @@ const MintNft = () => {
               {isImage && <p>Please select image file</p>}
             </div>
             <form onSubmit={handleSubmit(onSubmit)}>
-              <div>
-                <div className="h4">Name</div>
-                <input
-                  type="text"
-                  {...register('name', {
-                    required: 'This field is required',
-                    minLength: {
-                      value: 2,
-                      message: 'Min length is 2',
-                    },
-                    maxLength: {
-                      value: 50,
-                      message: 'Max length is 50',
-                    },
-                  })}
-                  style={{
-                    borderRadius: '15px',
-                    width: '500px',
-                    height: '40px',
-                  }}
-                />
-                {errors.name && <p>{errors.name.message}</p>}
-              </div>
-              <div>
+              <Controller
+                name="name"
+                control={control}
+                defaultValue=""
+                render={({ field }) => (
+                  <Input
+                    name={field.name}
+                    value={field.value}
+                    onBlur={field.onBlur}
+                    onChange={field.onChange}
+                    label="Name"
+                    validation={{
+                      required: true,
+                      characterMinLength: 2,
+                      characterMaxLength: 50,
+                      // regExp: '^[^@s]+@[^@s]+.[^@s]+$',
+                      // regExpInvalidMessage: 'That is not a valid email address',
+                    }}
+                    type="text"
+                    style={{
+                      marginTop: '30px',
+                    }}
+                  />
+                )}
+              />
+              {/* <div>
                 <div className="h4">External Link</div>
                 <input
                   type="text"
@@ -226,51 +225,58 @@ const MintNft = () => {
                   }}
                 />
                 {errors.link && <p>{errors.link.message}</p>}
-              </div>
-              <div>
-                <div className="h4">Recipient</div>
-                <input
-                  type="text"
-                  {...register('to', {
-                    //required: 'This field is required',
-                    pattern: {
-                      value: /^0x[a-fA-F0-9]{40}$/,
-                      message: 'Invalid Ethereum Address',
-                    },
-                  })}
-                  style={{
-                    borderRadius: '15px',
-                    width: '500px',
-                    height: '40px',
-                  }}
-                />
-                {errors.to && <p>{errors.to.message}</p>}
-              </div>
-              <div>
-                <div className="h4">Description</div>
-                <textarea
-                  {...register('des', {
-                    required: 'This field is required',
-                    minLength: {
-                      value: 5,
-                      message: 'Min length is 5',
-                    },
-                    maxLength: {
-                      value: 200,
-                      message: 'Max length is 200',
-                    },
-                  })}
-                  style={{
-                    borderRadius: '15px',
-                    width: '500px',
-                    height: '100px',
-                  }}
-                />
-                {errors.des && <p>{errors.des.message}</p>}
-              </div>
+              </div> */}
+              <Controller
+                name="to"
+                control={control}
+                defaultValue=""
+                render={({ field }) => (
+                  <Input
+                    name={field.name}
+                    value={field.value}
+                    onBlur={field.onBlur}
+                    onChange={field.onChange}
+                    label="Recipient"
+                    validation={{
+                      required: true,
+                      regExp: '^0x[a-fA-F0-9]{40}$',
+                      regExpInvalidMessage: 'That is not a valid Ethereum Address',
+                    }}
+                    type="text"
+                    style={{
+                      marginTop: '30px',
+                    }}
+                  />
+                )}
+              />
+              <Controller
+                name="des"
+                control={control}
+                defaultValue=""
+                render={({ field }) => (
+                  <Input
+                    name={field.name}
+                    value={field.value}
+                    onBlur={field.onBlur}
+                    onChange={field.onChange}
+                    label="Description"
+                    validation={{
+                      required: true,
+                      characterMinLength: 5,
+                      characterMaxLength: 200,
+                      // regExp: '^[^@s]+@[^@s]+.[^@s]+$',
+                      // regExpInvalidMessage: 'That is not a valid email address',
+                    }}
+                    type="text"
+                    style={{
+                      marginTop: '30px',
+                    }}
+                  />
+                )}
+              />
               <button
                 type="submit"
-                className="mt-2"
+                className="mt-4"
                 style={{
                   borderRadius: '15px',
                   width: '100px',
@@ -284,7 +290,7 @@ const MintNft = () => {
               </button>
               <button
                 type="reset"
-                className=" ml-1 mt-2"
+                className=" ml-2 mt-4"
                 style={{
                   borderRadius: '15px',
                   width: '100px',
