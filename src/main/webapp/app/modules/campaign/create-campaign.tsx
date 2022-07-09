@@ -23,10 +23,14 @@ const CreateCampaign = () => {
     inputFile.current.click();
   };
 
-  const changeHandler = event => {
+  const changeHandler = async event => {
     const img = event.target.files[0];
-    setTheFile(img);
     setSelectedFile(URL.createObjectURL(img));
+    const imgFile = img;
+    const file = new Moralis.File(imgFile.name, imgFile);
+    await file.saveIPFS();
+    const coverImgUrl = 'https://ipfs.moralis.io:2053/ipfs/' + file.name().slice(0, file.name().length - 4);
+    setTheFile(coverImgUrl);
   };
   const handleNewNotification = (type: notifyType, message?: string, icon?: TIconType, position?: IPosition) => {
     dispatch({
@@ -53,10 +57,6 @@ const CreateCampaign = () => {
       handleNewNotification('error', 'Please select image banner for Campaign');
       return;
     } else {
-      const imgFile = theFile;
-      const file = new Moralis.File(imgFile.name, imgFile);
-      await file.saveIPFS();
-      const coverImgUrl = 'https://ipfs.moralis.io:2053/ipfs/' + file.name().slice(0, file.name().length - 4);
       const options = {
         contractAddress: '0xd9972bFDDd96c182f0Cd85c32a65D26485627a54',
         functionName: 'createCampaign',
@@ -105,7 +105,7 @@ const CreateCampaign = () => {
           description: data?.des,
           goal: Moralis.Units.Token(data.goal, 6),
           endTime: parseInt(data.endTime),
-          coverImgUrl: coverImgUrl,
+          coverImgUrl: theFile,
           campaignType: data?.name,
         },
       };
@@ -115,6 +115,7 @@ const CreateCampaign = () => {
         onSuccess: res => {
           console.log(res);
           handleNewNotification('success', 'Contract is pending, please wait!');
+          reset();
         },
         onError: error => {
           console.log(error);
@@ -131,7 +132,9 @@ const CreateCampaign = () => {
       setTheFile(null);
     }
   };
-
+  const resetForm = () => {
+    reset();
+  };
   return (
     <>
       <div className="row mt-5">
@@ -325,7 +328,7 @@ const CreateCampaign = () => {
                   color: 'white',
                   border: 'hidden',
                 }}
-                onClick={() => reset()}
+                onClick={() => resetForm()}
               >
                 Clear
               </button>
