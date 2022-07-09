@@ -1,9 +1,10 @@
+import filIcon from 'app/components/Icon/icons/fil';
 import { useNotificationCustom } from 'app/web3utils/notification';
 // import usehandleNewNotification from 'app/web3utils/notification2';
 import React from 'react';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import { useMoralis, useMoralisCloudFunction } from 'react-moralis';
-import { useNotification } from 'web3uikit';
+import { Form, Input, useNotification } from 'web3uikit';
 import { TIconType } from 'web3uikit/dist/components/Icon/collection';
 import { IPosition, notifyType } from 'web3uikit/dist/components/Notification/types';
 
@@ -13,22 +14,13 @@ const SendNewCamp = () => {
   const username = 'Dace';
   const email = 'gojed25227@runqx.com';
   const { handleNewNotification, handleNewNotification2 } = useNotificationCustom();
-  //const dispatch = useNotification();
-  // const handleNewNotification = (type: notifyType, message?: string, icon?: TIconType, position?: IPosition) => {
-  //   dispatch({
-  //     type,
-  //     message,
-  //     title: 'Notification',
-  //     icon,
-  //     position: position || 'bottomL',
-  //   });
-  // };
 
   const {
     register,
     handleSubmit,
     reset,
     formState: { errors },
+    control,
   } = useForm({
     mode: 'onTouched',
   });
@@ -40,12 +32,11 @@ const SendNewCamp = () => {
       url: data.url,
       email: data.email,
     };
-
     fetch({
       params,
       onSuccess: data => {
         handleNewNotification('success', 'Email has been sent!');
-        e.target().reset();
+        reset();
       },
     });
   };
@@ -63,59 +54,82 @@ const SendNewCamp = () => {
             src="content/images/bluezoneApp.png"
           ></img>
         </div>
-        <div className="col-md-8 col-sm-12 mt-5">
-          <div className="h4">To User : {username}</div>
-          <div className="h4">Email : {email}</div>
+        <div className="col-md-4 col-sm-12 mt-5">
+          {/* <div className="h4">To User : {username}</div>
+          <div className="h4">Email : {email}</div> */}
           <div className="justify-content-center ">
-            <form onSubmit={handleSubmit(onSubmit)}>
-              <div>
-                <div className="h4">Email</div>
-                <input
-                  type="email"
-                  {...register('email', {
-                    required: 'This field is required',
-                    minLength: {
-                      value: 5,
-                      message: 'Min length is 50',
-                    },
-                    maxLength: {
-                      value: 200,
-                      message: 'Max length is 100',
-                    },
-                  })}
-                  style={{
-                    borderRadius: '15px',
-                    width: '500px',
-                    height: '40px',
-                  }}
-                />
-                {errors.email && <p>{errors.email.message}</p>}
-                <div className="h4">New Campaign Url</div>
-                <input
-                  type="url"
-                  {...register('url', {
-                    required: 'This field is required',
-                    minLength: {
-                      value: 5,
-                      message: 'Min length is 20',
-                    },
-                    maxLength: {
-                      value: 200,
-                      message: 'Max length is 300',
-                    },
-                  })}
-                  style={{
-                    borderRadius: '15px',
-                    width: '500px',
-                    height: '40px',
-                  }}
-                />
-                {errors.url && <p>{errors.url.message}</p>}
+            <form
+              onSubmit={handleSubmit(onSubmit)}
+              style={{
+                backgroundColor: 'white',
+                borderRadius: '16px',
+                padding: '16px',
+                border: 'none',
+                boxSizing: 'border-box',
+                lineHeight: 1,
+                margin: 0,
+                outline: 'none',
+              }}
+            >
+              <div
+                className="h4"
+                style={{
+                  fontWeight: '700',
+                  color: '#68738D',
+                }}
+              >
+                Send Email
               </div>
-
+              <Controller
+                name="email"
+                control={control}
+                defaultValue=""
+                render={({ field }) => {
+                  return (
+                    <Input
+                      name={field.name}
+                      value={field.value}
+                      onBlur={field.onBlur}
+                      onChange={field.onChange}
+                      label="Email"
+                      validation={{
+                        required: true,
+                        // regExp: '^[^@s]+@[^@s]+.[^@s]+$',
+                        // regExpInvalidMessage: 'That is not a valid email address',
+                      }}
+                      type="email"
+                      style={{
+                        marginTop: '30px',
+                      }}
+                    />
+                  );
+                }}
+              />
+              <Controller
+                name="url"
+                control={control}
+                defaultValue=""
+                render={({ field }) => {
+                  return (
+                    <Input
+                      name={field.name}
+                      value={field.value}
+                      onBlur={field.onBlur}
+                      onChange={field.onChange}
+                      label="New Campaign Url"
+                      validation={{
+                        required: true,
+                      }}
+                      style={{
+                        marginTop: '30px',
+                      }}
+                    />
+                  );
+                }}
+              />
               <button
                 type="submit"
-                className="mt-2"
+                className="mt-5"
                 style={{
                   borderRadius: '15px',
                   width: '100px',
@@ -129,7 +143,7 @@ const SendNewCamp = () => {
               </button>
               <button
                 type="reset"
-                className=" ml-1 mt-2"
+                className=" ml-1 mt-5"
                 style={{
                   borderRadius: '15px',
                   width: '100px',
@@ -138,6 +152,7 @@ const SendNewCamp = () => {
                   color: 'white',
                   border: 'hidden',
                 }}
+                onClick={() => reset()}
               >
                 Clear
               </button>

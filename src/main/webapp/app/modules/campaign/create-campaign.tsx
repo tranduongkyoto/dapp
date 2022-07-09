@@ -1,14 +1,15 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Translate, translate } from 'react-jhipster';
 import './create-campaign.scss';
-import { useNotification } from 'web3uikit';
+import { Input, useNotification } from 'web3uikit';
 import { useMoralis, useMoralisWeb3Api, useWeb3ExecuteFunction } from 'react-moralis';
 import { defaultImgs } from '../../shared/util/defaultImgs';
 import { messages } from 'app/config/constants';
 import { IPosition, notifyType } from 'web3uikit/dist/components/Notification/types';
 import { TIconType } from 'web3uikit/dist/components/Icon/collection';
-import { useLocation } from 'react-router-dom';
 import { useForm, Controller, SubmitHandler } from 'react-hook-form';
+import { Select } from 'app/components/Select';
+import { Radios } from 'app/components/Radios';
 
 const CreateCampaign = () => {
   const inputFile = useRef(null);
@@ -42,12 +43,12 @@ const CreateCampaign = () => {
     handleSubmit,
     reset,
     formState: { errors },
+    control,
   } = useForm({
     mode: 'onTouched',
   });
 
   const onSubmit = async (data, e) => {
-    console.log(data);
     if (!theFile) {
       handleNewNotification('error', 'Please select image banner for Campaign');
       return;
@@ -56,7 +57,6 @@ const CreateCampaign = () => {
       const file = new Moralis.File(imgFile.name, imgFile);
       await file.saveIPFS();
       const coverImgUrl = 'https://ipfs.moralis.io:2053/ipfs/' + file.name().slice(0, file.name().length - 4);
-
       const options = {
         contractAddress: '0xd9972bFDDd96c182f0Cd85c32a65D26485627a54',
         functionName: 'createCampaign',
@@ -129,7 +129,6 @@ const CreateCampaign = () => {
       });
       setSelectedFile(defaultImgs[1]);
       setTheFile(null);
-      e.target.reset();
     }
   };
 
@@ -139,7 +138,7 @@ const CreateCampaign = () => {
         <div className="col-md-4 col-sm-12">
           <img
             style={{
-              maxWidth: '90%',
+              maxWidth: '80%',
               height: 'auto',
             }}
             alt=""
@@ -157,113 +156,148 @@ const CreateCampaign = () => {
               </div>
             </div>
             <form onSubmit={handleSubmit(onSubmit)}>
-              <div>
-                <div className="h4">Name</div>
-                <input
-                  type="text"
-                  //placeholder="Name"
-                  {...register('name', {
-                    required: 'This field is required',
-                    minLength: {
-                      value: 2,
-                      message: 'Min length is 2',
-                    },
-                    maxLength: {
-                      value: 50,
-                      message: 'Max length is 50',
-                    },
-                  })}
-                  style={{
-                    borderRadius: '15px',
-                    width: '500px',
-                    height: '40px',
-                  }}
-                />
-                {errors.name && <p>{errors.name.message}</p>}
-              </div>
-              <div>
-                <div className="h4">Description</div>
-                <input
-                  type="text"
-                  //placeholder="Description"
-                  {...register('des', {
-                    required: 'This field is required',
-                    minLength: {
-                      value: 5,
-                      message: 'Min length is 5',
-                    },
-                    maxLength: {
-                      value: 200,
-                      message: 'Max length is 200',
-                    },
-                  })}
-                  style={{
-                    borderRadius: '15px',
-                    width: '500px',
-                    height: '40px',
-                  }}
-                />
-                {errors.description && <p>{errors.description.message}</p>}
-              </div>
-              <div>
-                <div className="h4">Goal</div>
-                <input
-                  type="number"
-                  {...register('goal', {
-                    required: 'This field is required',
-                    min: {
-                      value: 100,
-                      message: 'Min value is 100',
-                    },
-                    max: {
-                      value: 999999,
-                      message: 'Max value is 999999',
-                    },
-                  })}
-                  style={{
-                    borderRadius: '15px',
-                    width: '500px',
-                    height: '40px',
-                  }}
-                />
-              </div>
-              <div>
-                <div className="h4">Type</div>
-                <select
-                  {...register('type', { required: 'This field is required' })}
-                  style={{
-                    borderRadius: '15px',
-                    width: '120px',
-                    height: '40px',
-                  }}
-                >
-                  <option value="">Select One</option>
-                  <option value="Education">Education</option>
-                  <option value="Health">Health/Medical</option>
-                  <option value="Enviromental">Enviromental</option>
-                  <option value="Animal">Animal/Wildlife</option>
-                  <option value="Art">Arts/Culture</option>
-                  <option value="Social">Social Justice</option>
-                </select>
-                {errors.type && <p>{errors.type.message}</p>}
-              </div>
+              <Controller
+                name="name"
+                control={control}
+                defaultValue=""
+                render={({ field }) => (
+                  <Input
+                    name={field.name}
+                    value={field.value}
+                    onBlur={field.onBlur}
+                    onChange={field.onChange}
+                    label="Name"
+                    validation={{
+                      required: true,
+                      characterMinLength: 2,
+                      characterMaxLength: 50,
+                      // regExp: '^[^@s]+@[^@s]+.[^@s]+$',
+                      // regExpInvalidMessage: 'That is not a valid email address',
+                    }}
+                    type="text"
+                    style={{
+                      marginTop: '30px',
+                    }}
+                  />
+                )}
+              />
 
-              <div>
-                <div className="h4">End Time</div>
-                <select
-                  {...register('endTime', { required: 'This field is required' })}
-                  style={{
-                    borderRadius: '15px',
-                    width: '120px',
-                    height: '40px',
-                  }}
-                >
-                  <option value="">Select One</option>
-                  <option value="0">7 days</option>
-                  <option value="1">14 days</option>
-                  <option value="2">30 days</option>{' '}
-                </select>
-                {errors.endTime && <p>{errors.type.endTime}</p>}
+              <Controller
+                name="des"
+                control={control}
+                defaultValue=""
+                render={({ field }) => (
+                  <Input
+                    name={field.name}
+                    value={field.value}
+                    onBlur={field.onBlur}
+                    onChange={field.onChange}
+                    label="Description"
+                    validation={{
+                      required: true,
+                      characterMinLength: 5,
+                      characterMaxLength: 200,
+                      // regExp: '^[^@s]+@[^@s]+.[^@s]+$',
+                      // regExpInvalidMessage: 'That is not a valid email address',
+                    }}
+                    type="text"
+                    style={{
+                      marginTop: '30px',
+                    }}
+                  />
+                )}
+              />
+
+              <Controller
+                name="goal"
+                control={control}
+                defaultValue=""
+                render={({ field }) => (
+                  <Input
+                    name={field.name}
+                    value={field.value}
+                    onBlur={field.onBlur}
+                    onChange={field.onChange}
+                    label="Goal"
+                    validation={{
+                      required: true,
+                      numberMin: 100,
+                      numberMax: 9999999,
+                      // regExp: '^[^@s]+@[^@s]+.[^@s]+$',
+                      // regExpInvalidMessage: 'That is not a valid email address',
+                    }}
+                    type="number"
+                    style={{
+                      marginTop: '30px',
+                    }}
+                  />
+                )}
+              />
+              <Controller
+                name="type"
+                control={control}
+                defaultValue=""
+                render={({ field }) => (
+                  <Select
+                    onBlurTraditional={field.onBlur}
+                    onChange={field.onChange}
+                    onChangeTraditional={field.onChange}
+                    label="Label Text"
+                    options={[
+                      {
+                        id: '1',
+                        label: 'Education',
+                      },
+                      {
+                        id: '2',
+                        label: 'Health/Medical',
+                      },
+                      {
+                        id: '3',
+                        label: 'Enviromental',
+                      },
+                      {
+                        id: '4',
+                        label: 'Animal/WildLife',
+                      },
+                      {
+                        id: '5',
+                        label: 'Arts/Culture',
+                      },
+                      {
+                        id: '6',
+                        label: 'Social Justice',
+                      },
+                    ]}
+                    traditionalHTML5={true}
+                    style={{
+                      marginTop: '40px',
+                    }}
+                    validation={{
+                      required: true,
+                    }}
+                  />
+                )}
+              />
+
+              <div className="mt-3">
+                <Controller
+                  name="endTime"
+                  control={control}
+                  defaultValue=""
+                  render={({ field }) => (
+                    <Radios
+                      id="radios2"
+                      onBlur={field.onBlur}
+                      onChange={field.onChange}
+                      items={['7 days', '14 days', '30 days']}
+                      title="End Time"
+                      validation={{
+                        required: true,
+                      }}
+                    />
+                  )}
+                />
               </div>
 
               <button
@@ -291,6 +325,7 @@ const CreateCampaign = () => {
                   color: 'white',
                   border: 'hidden',
                 }}
+                onClick={() => reset()}
               >
                 Clear
               </button>

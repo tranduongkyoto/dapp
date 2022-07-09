@@ -2,10 +2,10 @@ import './campaign.scss';
 import React, { useState, useEffect } from 'react';
 import { convertDateTimeFromServer, convertDateTimeToServer, convertTimeStampToDate } from 'app/shared/util/date-utils';
 // import { Table } from 'reactstrap';
-import { Loading, CryptoCards, Table, Button } from 'web3uikit';
+import { Loading, CryptoCards, Table, Button, Input } from 'web3uikit';
 import { useMoralis, useMoralisWeb3Api, useWeb3ExecuteFunction, useMoralisQuery, useWeb3Transfer, useERC20Balances } from 'react-moralis';
 import { useHistory, useParams } from 'react-router-dom';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import axios from 'axios';
 import { result, truncate } from 'lodash';
 import { getEllipsisTxt, timeStampToDateTime } from 'app/web3utils';
@@ -36,6 +36,8 @@ const Campaign = () => {
     register,
     handleSubmit,
     formState: { errors },
+    control,
+    reset,
   } = useForm({
     mode: 'onTouched',
   });
@@ -161,50 +163,7 @@ const Campaign = () => {
   if (transaction) {
     console.log(transaction);
   }
-  // const onSubmit2 = async data => {
-  //   const options = {
-  //     contractAddress: '0x8cCbC37eF5B63932E8703ECB0Efd30b8a670192F',
-  //     functionName: 'withDraw2',
-  //     abi: [
-  //       {
-  //         inputs: [
-  //           {
-  //             internalType: 'contract IERC20',
-  //             name: 'token',
-  //             type: 'address',
-  //           },
-  //           {
-  //             internalType: 'uint256',
-  //             name: 'amount',
-  //             type: 'uint256',
-  //           },
-  //         ],
-  //         name: 'withDraw2',
-  //         outputs: [],
-  //         stateMutability: 'nonpayable',
-  //         type: 'function',
-  //       },
-  //     ],
-  //     params: {
-  //       token: '0x07865c6E87B9F70255377e024ace6630C1Eaa37F',
-  //       amount: parseInt(data.amount) * 1000000,
-  //     },
-  //   };
-  //   console.log(options);
-  //   await contractProcessor.fetch({
-  //     params: options,
-  //     onSuccess: res => {
-  //       console.log('Success');
-  //       handleNewNotification('success', 'Contract is pending, please wait!');
-  //     },
-  //     onError: error => {
-  //       console.log();
-  //       JSON.parse(JSON.stringify(error))?.error?.message
-  //         ? JSON.parse(JSON.stringify(error))?.error?.message
-  //         : JSON.parse(JSON.stringify(error))?.message;
-  //     },
-  //   });
-  // };
+
   const withDraw = async () => {
     const options = {
       contractAddress: id,
@@ -317,36 +276,45 @@ const Campaign = () => {
             )}
             <div className="col-md-6 donate mt-5">
               <div className="row justify-content-center">
-                <div className="col-md-3 mt-3 text-center">
+                <div className="col-md-3 mt-4 text-center">
                   <img src="content/icons/cryptoYellow.svg"></img>
                 </div>
-                <div className="col-md-4 text-center">
+                <div className="col-md-4 text-center mt-2">
                   <img src="content/icons/qrCode.svg" alt="" />
                 </div>
-                <div className="col-md-5 text-center">
+                <div className="col-md-4 justify-content-center ">
                   <form onSubmit={handleSubmit(onSubmit)}>
-                    <div className="h4">Amount</div>
-                    {errors.amount && <p>{errors.amount.message}</p>}
-                    <input
-                      type="number"
-                      //placeholder="Amount"
-                      {...register('amount', {
-                        required: 'Required',
-                        min: {
-                          value: 2,
-                          message: 'Min is 2',
-                        },
-                      })}
+                    <div
                       style={{
-                        borderRadius: '15px',
-                        width: '100px',
-                        height: '40px',
+                        width: '150px',
                       }}
-                    />
-
+                    >
+                      <Controller
+                        name="amount"
+                        control={control}
+                        defaultValue=""
+                        render={({ field }) => (
+                          <Input
+                            name={field.name}
+                            value={field.value}
+                            onBlur={field.onBlur}
+                            onChange={field.onChange}
+                            label="Amount"
+                            validation={{
+                              required: true,
+                              numberMin: 2,
+                            }}
+                            type="number"
+                            style={{
+                              marginTop: '30px',
+                            }}
+                          />
+                        )}
+                      />
+                    </div>
                     <button
                       type="submit"
-                      className="mt-2"
+                      className="mt-3 mb-1 "
                       style={{
                         borderRadius: '15px',
                         width: '100px',

@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect, useContext } from 'react';
 import { Translate, translate } from 'react-jhipster';
 import './create-campaign.scss';
-import { Avatar, Button, Icon, Table, Tag, useNotification } from 'web3uikit';
+import { Avatar, Button, Icon, Input, Table, Tag, useNotification } from 'web3uikit';
 import { useMoralis, useMoralisWeb3Api, useWeb3ExecuteFunction } from 'react-moralis';
 import { defaultImgs } from '../../shared/util/defaultImgs';
 import { messages } from 'app/config/constants';
@@ -46,6 +46,7 @@ const CreateNftCampaign = () => {
     handleSubmit,
     reset,
     formState: { errors },
+    control,
   } = useForm({
     mode: 'onTouched',
   });
@@ -116,7 +117,7 @@ const CreateNftCampaign = () => {
         handleNewNotification('success', 'Contract is pending, Please wait! ');
         setSelectedFile(defaultImgs[1]);
         setTheFile(null);
-        e.target.reset();
+        reset();
         setnftAution(null);
         window.localStorage.removeItem('myNft');
       },
@@ -188,55 +189,57 @@ const CreateNftCampaign = () => {
             </div>
 
             <form onSubmit={handleSubmit(onSubmit)}>
-              <div>
-                <div className="h4">Name</div>
-                <input
-                  type="text"
-                  //placeholder="Name"
-                  {...register('name', {
-                    required: 'This field is required',
-                    minLength: {
-                      value: 2,
-                      message: 'Min length is 2',
-                    },
-                    maxLength: {
-                      value: 50,
-                      message: 'Max length is 50',
-                    },
-                  })}
-                  style={{
-                    borderRadius: '15px',
-                    width: '500px',
-                    height: '40px',
-                  }}
-                />
-                {errors.name && <p>{errors.name.message}</p>}
-              </div>
-              <div>
-                <div className="h4">Description</div>
-                <input
-                  type="text"
-                  //placeholder="Description"
-                  {...register('des', {
-                    required: 'This field is required',
-                    minLength: {
-                      value: 5,
-                      message: 'Min length is 5',
-                    },
-                    maxLength: {
-                      value: 200,
-                      message: 'Max length is 200',
-                    },
-                  })}
-                  style={{
-                    borderRadius: '15px',
-                    width: '500px',
-                    height: '40px',
-                  }}
-                />
-                {errors.des && <p>{errors.des.message}</p>}
-              </div>
-              <div className="row">
+              <Controller
+                name="name"
+                control={control}
+                defaultValue=""
+                render={({ field }) => (
+                  <Input
+                    name={field.name}
+                    value={field.value}
+                    onBlur={field.onBlur}
+                    onChange={field.onChange}
+                    label="Name"
+                    validation={{
+                      required: true,
+                      characterMinLength: 2,
+                      characterMaxLength: 50,
+                      // regExp: '^[^@s]+@[^@s]+.[^@s]+$',
+                      // regExpInvalidMessage: 'That is not a valid email address',
+                    }}
+                    type="text"
+                    style={{
+                      marginTop: '30px',
+                    }}
+                  />
+                )}
+              />
+              <Controller
+                name="des"
+                control={control}
+                defaultValue=""
+                render={({ field }) => (
+                  <Input
+                    name={field.name}
+                    value={field.value}
+                    onBlur={field.onBlur}
+                    onChange={field.onChange}
+                    label="Description"
+                    validation={{
+                      required: true,
+                      characterMinLength: 5,
+                      characterMaxLength: 200,
+                      // regExp: '^[^@s]+@[^@s]+.[^@s]+$',
+                      // regExpInvalidMessage: 'That is not a valid email address',
+                    }}
+                    type="text"
+                    style={{
+                      marginTop: '30px',
+                    }}
+                  />
+                )}
+              />
+              <div className="row mt-5">
                 <div className="col-md-11">
                   <Table
                     columnsConfig="1fr 2fr 2fr 1fr 2fr 2fr 2fr 1fr"
@@ -285,44 +288,13 @@ const CreateNftCampaign = () => {
                   border: 'hidden',
                   fontWeight: 'bold',
                 }}
+                onClick={() => reset()}
               >
                 Clear
               </button>
             </form>
           </div>
         </div>
-        {/* <div className="row">
-          <div className="col-md-6">
-            <Table
-              columnsConfig="1fr 1fr 1fr 1fr 1fr 1fr"
-              data={allData}
-              header={['', <span>Name</span>, <span>Address</span>, <span>Token Id</span>, '', '']}
-              // isColumnSortable={[false, true, false, false]}
-              maxPages={3}
-              onPageNumberChanged={function noRefCheck() {}}
-              pageSize={5}
-            />
-          </div>
-          <div className="col-md-6">
-            <Table
-              columnsConfig="1fr 2fr 2fr 1fr 2fr 2fr 1fr"
-              data={dataTable}
-              header={[
-                '',
-                <span>Name</span>,
-                <span>Address</span>,
-                <span>Token Id</span>,
-                <span>Starting Price</span>,
-                <span>Discount Rate</span>,
-                '',
-              ]}
-              // isColumnSortable={[false, true, false, false]}
-              maxPages={3}
-              onPageNumberChanged={function noRefCheck() {}}
-              pageSize={3}
-            />
-          </div>
-        </div> */}
       </div>
     </>
   );
