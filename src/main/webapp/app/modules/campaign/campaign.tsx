@@ -12,6 +12,7 @@ import { getEllipsisTxt, timeStampToDateTime } from 'app/web3utils';
 import { useNotificationCustom } from 'app/web3utils/notification';
 import { ethers } from 'ethers';
 import * as usdcabi from '../contract/USDC.json';
+import * as cam from '../contract/campaign.json';
 import { faClosedCaptioning } from '@fortawesome/free-solid-svg-icons';
 interface transactionType {
   hash: string;
@@ -26,10 +27,11 @@ const Campaign = () => {
   const [balanceOf, setBalanceOf] = useState<number>();
   const [transaction, setTransaction] = useState<transactionType[]>();
   const { data, error } = useMoralisQuery('Campaigns', query => query.contains('campaignAddress', id));
-  const { Moralis, account } = useMoralis();
+  const { Moralis, account, isInitialized } = useMoralis();
   const { fetch, error: error2, isFetching } = useWeb3Transfer();
   const contractProcessor = useWeb3ExecuteFunction();
   const { handleNewNotification } = useNotificationCustom();
+  const [sub, setSub] = useState(false);
   const history = useHistory();
   const provider = new ethers.providers.Web3Provider(window.ethereum);
   const {
@@ -51,8 +53,9 @@ const Campaign = () => {
       if (res?.status == 1) {
         console.log(res);
         handleNewNotification('success', `Contract is confirmed with ${res?.confirmations} confirmations. Thank for your donation!`);
+        setSub(!sub);
       }
-      e.target.reset();
+      reset();
     } catch (error: any) {
       console.log(error);
       handleNewNotification(
@@ -63,32 +66,45 @@ const Campaign = () => {
       );
     }
   };
-  useEffect(() => {
-    const getBalanceOf = async () => {
-      const data = await axios.get(
-        `https://api-ropsten.etherscan.io/api?module=account&action=tokenbalance&contractaddress=0x07865c6E87B9F70255377e024ace6630C1Eaa37F&address=${id}&tag=latest&apikey=FH674SA8K1BFH2SFB7KXYZXFB5GS63IXM4`
-      );
-      if (data?.data?.result) {
-        if (data?.data?.result == '0') {
-          setBalanceOf(0);
-        } else setBalanceOf(parseInt(data?.data?.result) / 1000000);
-      }
-    };
-
-    getBalanceOf();
-  }, []);
 
   useEffect(() => {
-    const getTransaction = async () => {
-      const data = await axios.get(
-        `https://api-ropsten.etherscan.io/api?module=account&action=tokentx&contractaddress=0x07865c6E87B9F70255377e024ace6630C1Eaa37F&address=${id}&page=1&offset=100&startblock=0&endblock=99999999&sort=asc&apikey=FH674SA8K1BFH2SFB7KXYZXFB5GS63IXM4`
-      );
-      if (data?.data?.result) {
-        setTransaction(data?.data?.result);
+    if (isInitialized) {
+      const getTransaction = async () => {
+        const data = await axios.get(
+          `https://api-ropsten.etherscan.io/api?module=account&action=tokentx&contractaddress=0x07865c6E87B9F70255377e024ace6630C1Eaa37F&address=${id}&page=1&offset=100&startblock=0&endblock=99999999&sort=asc&apikey=FH674SA8K1BFH2SFB7KXYZXFB5GS63IXM4`
+        );
+        if (data?.data?.result) {
+          setTransaction(data?.data?.result);
+        }
+      };
+
+      const getBalanceOf = async () => {
+        const data = await axios.get(
+          `https://api-ropsten.etherscan.io/api?module=account&action=tokenbalance&contractaddress=0x07865c6E87B9F70255377e024ace6630C1Eaa37F&address=${id}&tag=latest&apikey=FH674SA8K1BFH2SFB7KXYZXFB5GS63IXM4`
+        );
+        if (data?.data?.result) {
+          if (data?.data?.result == '0') {
+            setBalanceOf(0);
+          } else {
+            setBalanceOf(parseInt(data?.data?.result) / 1000000);
+          }
+        }
+      };
+      getTransaction();
+      getBalanceOf();
+      if (data[0]) {
+        isEnd =
+          isEnd ||
+          new Date().getTime() > parseInt(data[0].attributes?.endTime) * 1000 ||
+          balanceOf >= parseInt(data[0].attributes.goal) / 1000000 ||
+          withDrawDataTable.length == 1;
+        //isEnd = true;
+        isCreator = data[0].attributes?.creator === account;
+        console.log(isEnd);
+        console.log(isCreator);
       }
-    };
-    getTransaction();
-  }, []);
+    }
+  }, [isInitialized, sub]);
   const lastestTxn = () => {
     if (transaction && transaction.length != 0) {
       const lastest = transaction.filter(item => item.from !== '0x95f82f63b1d3eb775e37d7d2e401700ff395128f')[0];
@@ -160,66 +176,45 @@ const Campaign = () => {
           item.tokenSymbol,
         ])
     : [];
-  if (transaction) {
-    console.log(transaction);
-  }
 
   const withDraw = async () => {
-    const options = {
-      contractAddress: id,
-      functionName: 'withDraw2',
-      abi: [
-        {
-          inputs: [
-            {
-              internalType: 'contract IERC20',
-              name: 'token',
-              type: 'address',
-            },
-            {
-              internalType: 'uint256',
-              name: 'amount',
-              type: 'uint256',
-            },
-          ],
-          name: 'withDraw2',
-          outputs: [],
-          stateMutability: 'nonpayable',
-          type: 'function',
-        },
-      ],
-      params: {
-        token: '0x07865c6E87B9F70255377e024ace6630C1Eaa37F',
-        amount: balanceOf * 1000000,
-      },
-    };
-    console.log(options);
-    await contractProcessor.fetch({
-      params: options,
-      onSuccess: res => {
-        console.log('Success');
-        handleNewNotification('success', 'Contract is pending, please wait!');
-      },
-      onError: error => {
-        console.log(error);
+    const campaign = new ethers.Contract(id, cam.abi, provider.getSigner());
+    try {
+      const transaction = await campaign.withDraw2('0x07865c6E87B9F70255377e024ace6630C1Eaa37F', balanceOf * 1000000);
+      handleNewNotification('success', 'Contract is pending, Please wait! ');
+      const res = await transaction.wait();
+      if (res?.status == 1) {
+        console.log(res);
+        handleNewNotification('success', `Contract is confirmed with ${res?.confirmations} confirmations. Thank for your donation!`);
+        setSub(!sub);
+      }
+      reset();
+    } catch (error: any) {
+      console.log(error);
+      handleNewNotification(
+        'error',
         JSON.parse(JSON.stringify(error))?.error?.message
           ? JSON.parse(JSON.stringify(error))?.error?.message
-          : JSON.parse(JSON.stringify(error))?.message;
-      },
-    });
+          : JSON.parse(JSON.stringify(error))?.message
+      );
+    }
   };
-  var isEnd;
+  var isEnd = false;
   var isCreator;
+
+  if (!data) {
+    return <div>No Response</div>;
+  }
   if (data[0]) {
     isEnd =
+      isEnd ||
       new Date().getTime() > parseInt(data[0].attributes?.endTime) * 1000 ||
       balanceOf >= parseInt(data[0].attributes.goal) / 1000000 ||
       withDrawDataTable.length == 1;
     //isEnd = true;
     isCreator = data[0].attributes?.creator === account;
-  }
-  if (!data) {
-    return <div>No Response</div>;
+    console.log(isEnd);
+    console.log(isCreator);
   }
   return (
     <>
