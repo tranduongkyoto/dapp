@@ -47,7 +47,7 @@ const SendNewCamp = () => {
         <div className="col-md-4 col-sm-12">
           <img
             style={{
-              maxWidth: '70%',
+              maxWidth: '90%',
               height: 'auto',
             }}
             alt=""

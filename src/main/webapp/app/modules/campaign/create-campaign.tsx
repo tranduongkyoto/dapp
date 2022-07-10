@@ -10,15 +10,22 @@ import { TIconType } from 'web3uikit/dist/components/Icon/collection';
 import { useForm, Controller, SubmitHandler } from 'react-hook-form';
 import { Select } from 'app/components/Select';
 import { Radios } from 'app/components/Radios';
+import { ethers } from 'ethers';
+import * as abi from '../contract/campaignStore.json';
+import { sign } from 'crypto';
 
 const CreateCampaign = () => {
   const inputFile = useRef(null);
   const [selectedFile, setSelectedFile] = useState(defaultImgs[1]);
   const [theFile, setTheFile] = useState<any>();
-  const { Moralis } = useMoralis();
+  const { Moralis, account } = useMoralis();
   const Web3Api = useMoralisWeb3Api();
   const contractProcessor = useWeb3ExecuteFunction();
   const dispatch = useNotification();
+  //console.log(window.ethereum);
+  //const provider = new ethers.providers.JsonRpcProvider('https://speedy-nodes-nyc.moralis.io/cc62c6b608990d64ec2ac8ca/eth/ropsten');
+  const provider = new ethers.providers.Web3Provider(window.ethereum);
+  const signer = provider.getSigner(account);
   const onBannerClick = () => {
     inputFile.current.click();
   };
@@ -51,89 +58,126 @@ const CreateCampaign = () => {
   } = useForm({
     mode: 'onTouched',
   });
+  useEffect(() => {
+    const test = async () => {
+      const list = await provider.listAccounts();
+      console.log(provider);
+      console.log(list);
+    };
+    test();
+  }, []);
 
+  // if (provider) {
+  //   console.log(provider.listAccounts());
+  //   // console.log(signer);
+  //   // console.log(provider);
+  // }
   const onSubmit = async (data, e) => {
     if (!theFile) {
       handleNewNotification('error', 'Please select image banner for Campaign');
       return;
     } else {
-      const options = {
-        contractAddress: '0xd9972bFDDd96c182f0Cd85c32a65D26485627a54',
-        functionName: 'createCampaign',
-        abi: [
-          {
-            inputs: [
-              {
-                internalType: 'string',
-                name: 'name',
-                type: 'string',
-              },
-              {
-                internalType: 'string',
-                name: 'description',
-                type: 'string',
-              },
-              {
-                internalType: 'uint256',
-                name: 'goal',
-                type: 'uint256',
-              },
-              {
-                internalType: 'uint256',
-                name: 'endTime',
-                type: 'uint256',
-              },
-              {
-                internalType: 'string',
-                name: 'coverImgUrl',
-                type: 'string',
-              },
-              {
-                internalType: 'string',
-                name: 'campaignType',
-                type: 'string',
-              },
-            ],
-            name: 'createCampaign',
-            outputs: [],
-            stateMutability: 'nonpayable',
-            type: 'function',
-          },
-        ],
-        params: {
-          name: data?.name,
-          description: data?.des,
-          goal: Moralis.Units.Token(data.goal, 6),
-          endTime: parseInt(data.endTime),
-          coverImgUrl: theFile,
-          campaignType: data?.name,
-        },
-      };
-      console.log(options);
-      await contractProcessor.fetch({
-        params: options,
-        onSuccess: res => {
+      try {
+        const campaignStore = new ethers.Contract('0xd9972bFDDd96c182f0Cd85c32a65D26485627a54', abi.abi, provider.getSigner(account));
+        const transaction = await campaignStore.createCampaign(
+          data?.name,
+          data?.des,
+          Moralis.Units.Token(data.goal, 6),
+          parseInt(data.endTime),
+          theFile,
+          data?.type
+        );
+        handleNewNotification('success', 'Contract is pending, Please wait! ');
+        console.log(provider.getSigner());
+        const res = await transaction.wait();
+        if (res?.status == 1) {
           console.log(res);
-          handleNewNotification('success', 'Contract is pending, please wait!');
-          reset();
-        },
-        onError: error => {
-          console.log(error);
-          console.log(JSON.parse(JSON.stringify(error))?.message);
-          handleNewNotification(
-            'error',
-            JSON.parse(JSON.stringify(error))?.message
-              ? JSON.parse(JSON.stringify(error))?.message
-              : JSON.parse(JSON.stringify(error))?.error?.message
-          );
-        },
-      });
+          handleNewNotification('success', `Contract is confirmed with ${res?.confirmations} confirmations. Thank for your donation!`);
+        }
+        reset();
+      } catch (error: any) {
+        console.log(JSON.parse(JSON.stringify(error)));
+        handleNewNotification(
+          'error',
+          JSON.parse(JSON.stringify(error))?.error?.message
+            ? JSON.parse(JSON.stringify(error))?.error?.message
+            : JSON.parse(JSON.stringify(error))?.message
+        );
+      }
+      // const options = {
+      //   contractAddress: '0xd9972bFDDd96c182f0Cd85c32a65D26485627a54',
+      //   functionName: 'createCampaign',
+      //   abi: [
+      //     {
+      //       inputs: [
+      //         {
+      //           internalType: 'string',
+      //           name: 'name',
+      //           type: 'string',
+      //         },
+      //         {
+      //           internalType: 'string',
+      //           name: 'description',
+      //           type: 'string',
+      //         },
+      //         {
+      //           internalType: 'uint256',
+      //           name: 'goal',
+      //           type: 'uint256',
+      //         },
+      //         {
+      //           internalType: 'uint256',
+      //           name: 'endTime',
+      //           type: 'uint256',
+      //         },
+      //         {
+      //           internalType: 'string',
+      //           name: 'coverImgUrl',
+      //           type: 'string',
+      //         },
+      //         {
+      //           internalType: 'string',
+      //           name: 'campaignType',
+      //           type: 'string',
+      //         },
+      //       ],
+      //       name: 'createCampaign',
+      //       outputs: [],
+      //       stateMutability: 'nonpayable',
+      //       type: 'function',
+      //     },
+      //   ],
+      //   params: {
+      //     name: data?.name,
+      //     description: data?.des,
+      //     goal: Moralis.Units.Token(data.goal, 6),
+      //     endTime: parseInt(data.endTime),
+      //     coverImgUrl: theFile,
+      //     campaignType: data?.name,
+      //   },
+      // };
+      // console.log(options);
+      // await contractProcessor.fetch({
+      //   params: options,
+      //   onSuccess: res => {
+      //     console.log(res);
+      //     handleNewNotification('success', 'Contract is pending, please wait!');
+      //     reset();
+      //   },
+      //   onError: error => {
+      //     console.log(error);
+      //     console.log(JSON.parse(JSON.stringify(error))?.message);
+      //     handleNewNotification(
+      //       'error',
+      //       JSON.parse(JSON.stringify(error))?.message
+      //         ? JSON.parse(JSON.stringify(error))?.message
+      //         : JSON.parse(JSON.stringify(error))?.error?.message
+      //     );
+      //   },
+      // });
       setSelectedFile(defaultImgs[1]);
       setTheFile(null);
     }
-  };
-  const resetForm = () => {
-    reset();
   };
   return (
     <>
@@ -141,14 +185,26 @@ const CreateCampaign = () => {
         <div className="col-md-4 col-sm-12">
           <img
             style={{
-              maxWidth: '80%',
+              maxWidth: '90%',
               height: 'auto',
             }}
             alt=""
             src="content/images/bluezoneApp.png"
           ></img>
         </div>
-        <div className="col-md-8 col-sm-12">
+        <div
+          className="col-md-4 col-sm-12"
+          style={{
+            backgroundColor: 'white',
+            borderRadius: '16px',
+            padding: '16px',
+            border: 'none',
+            boxSizing: 'border-box',
+            lineHeight: 1,
+            margin: 0,
+            outline: 'none',
+          }}
+        >
           {/* <div className=" text-center font-weight-bold ">Create Campaign</div> */}
           <div className="settingsPage justify-content-center ">
             <div className="pfp">
@@ -328,7 +384,7 @@ const CreateCampaign = () => {
                   color: 'white',
                   border: 'hidden',
                 }}
-                onClick={() => resetForm()}
+                onClick={() => reset()}
               >
                 Clear
               </button>

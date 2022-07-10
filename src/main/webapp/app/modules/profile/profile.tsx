@@ -65,17 +65,29 @@ export default function ProfileSetting() {
         <div className="col-md-4 col-sm-12">
           <img
             style={{
-              maxWidth: '60%',
+              maxWidth: '90%',
               height: 'auto',
             }}
             alt=""
             src="content/images/bluezoneApp.png"
           ></img>
         </div>
-        <div className="col-md-8 col-sm-12">
-          <div className="h1">Profile Setup</div>
+        <div className="col-md-4 col-sm-12">
           <div className=" justify-content-center ">
-            <form onSubmit={handleSubmit(onSubmit)}>
+            <form
+              onSubmit={handleSubmit(onSubmit)}
+              style={{
+                backgroundColor: 'white',
+                borderRadius: '16px',
+                padding: '16px',
+                border: 'none',
+                boxSizing: 'border-box',
+                lineHeight: 1,
+                margin: 0,
+                outline: 'none',
+              }}
+            >
+              <div className="h1">Profile Setup</div>
               <Controller
                 name="name"
                 control={control}

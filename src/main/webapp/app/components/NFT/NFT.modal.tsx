@@ -1,8 +1,8 @@
 import { AppContext } from 'app/provider/appContext';
 import React, { useContext } from 'react';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import { useHistory } from 'react-router-dom';
-import { Information, Tag } from 'web3uikit';
+import { Information, Input, Tag } from 'web3uikit';
 import { Modal } from 'web3uikit';
 import { Typography } from 'web3uikit';
 import token from '../Illustrations/images/various/token';
@@ -23,6 +23,7 @@ const NFTModal: React.FC<INFTModal> = ({ attributes, setShowModal, address, toke
     reset,
     formState: { errors, touchedFields },
     getValues,
+    control,
   } = useForm({
     mode: 'onTouched',
   });
@@ -71,58 +72,78 @@ const NFTModal: React.FC<INFTModal> = ({ attributes, setShowModal, address, toke
             <Typography>Token ID : </Typography>
             <Typography className=" font-weight-bold ">{tokenId}</Typography>
           </div>
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <div>
-              <span className="mr-2">Starting Price</span>
-              <input
-                type="number"
-                //placeholder="Name"
-                {...register('price', {
-                  required: 'This field is required',
-                  min: {
-                    value: 10,
-                    message: 'Min is 10',
-                  },
-                  max: {
-                    value: 99999,
-                    message: 'Max length is 99999',
-                  },
-                })}
-                style={{
-                  borderRadius: '15px',
-                  width: '200px',
-                  height: '30px',
-                }}
-              />
-              {errors.price && <p>{errors.price.message}</p>}
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            style={{
+              backgroundColor: 'white',
+              borderRadius: '16px',
+              padding: '16px',
+              border: 'none',
+              boxSizing: 'border-box',
+              lineHeight: 1,
+              margin: 0,
+              outline: 'none',
+            }}
+          >
+            <div
+              className="h4"
+              style={{
+                fontWeight: '700',
+                color: '#68738D',
+              }}
+            >
+              Set Price for Auction
             </div>
+            <Controller
+              name="price"
+              control={control}
+              defaultValue=""
+              render={({ field }) => (
+                <Input
+                  name={field.name}
+                  value={field.value}
+                  onBlur={field.onBlur}
+                  onChange={field.onChange}
+                  label="Starting Price"
+                  validation={{
+                    required: true,
+                    numberMin: 10,
+                    numberMax: 9999999,
+                  }}
+                  type="number"
+                  style={{
+                    marginTop: '30px',
+                  }}
+                />
+              )}
+            />
 
-            <div className="mt-2">
-              <span className="mr-2 ">Last Price</span>
-              <input
-                type="number"
-                {...register('last', {
-                  required: 'This field is required',
-                  min: {
-                    value: 1,
-                    message: 'Min is 1',
-                  },
-                  max: {
-                    value: maxDiscount,
-                    message: `Max is ${maxDiscount}`,
-                  },
-                })}
-                style={{
-                  borderRadius: '15px',
-                  width: '100px',
-                  height: '30px',
-                }}
-              />
-              {errors.last && <p>{errors.last.message}</p>}
-            </div>
+            <Controller
+              name="last"
+              control={control}
+              defaultValue=""
+              render={({ field }) => (
+                <Input
+                  name={field.name}
+                  value={field.value}
+                  onBlur={field.onBlur}
+                  onChange={field.onChange}
+                  label="Last Price"
+                  validation={{
+                    required: true,
+                    numberMin: 0,
+                    numberMax: maxDiscount,
+                  }}
+                  type="number"
+                  style={{
+                    marginTop: '30px',
+                  }}
+                />
+              )}
+            />
             <button
               type="submit"
-              className="mt-2"
+              className="mt-4"
               style={{
                 borderRadius: '15px',
                 width: '100px',
@@ -137,7 +158,7 @@ const NFTModal: React.FC<INFTModal> = ({ attributes, setShowModal, address, toke
             </button>
             <button
               type="reset"
-              className=" ml-1 mt-2"
+              className=" ml-1 mt-4"
               style={{
                 borderRadius: '15px',
                 width: '100px',
@@ -146,6 +167,7 @@ const NFTModal: React.FC<INFTModal> = ({ attributes, setShowModal, address, toke
                 color: 'white',
                 border: 'hidden',
               }}
+              onClick={() => reset()}
             >
               Clear
             </button>

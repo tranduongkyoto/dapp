@@ -179,7 +179,19 @@ const CreateNftCampaign = () => {
             src="content/images/bluezoneApp.png"
           ></img>
         </div>
-        <div className="col-md-8 col-sm-12">
+        <div
+          className="col-md-8 col-sm-12"
+          style={{
+            backgroundColor: 'white',
+            borderRadius: '16px',
+            padding: '16px',
+            border: 'none',
+            boxSizing: 'border-box',
+            lineHeight: 1,
+            margin: 0,
+            outline: 'none',
+          }}
+        >
           <div className="settingsPage justify-content-center ">
             <div className="pfp">
               <div className="h4 font-weight-bold">Campaign NFT</div>
