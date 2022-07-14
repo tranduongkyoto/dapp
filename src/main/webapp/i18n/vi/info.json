@@ -1,0 +1,11 @@
+{
+  "info": {
+    "title": "Cập nhật thông tin",
+    "name": "Tên người dùng",
+    "email": "Email cá nhân",
+    "phone": "Số điện thoại",
+    "work": "Công việc",
+    "update": "Cập nhật",
+    "clear": "Làm mới"
+  }
+}

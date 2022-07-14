@@ -7,6 +7,7 @@ import { IPosition, notifyType } from 'web3uikit/dist/components/Notification/ty
 import { TIconType } from 'web3uikit/dist/components/Icon/collection';
 import { useLocation } from 'react-router-dom';
 import { useForm, Controller, SubmitHandler } from 'react-hook-form';
+import { translate } from 'react-jhipster';
 
 export default function ProfileSetting() {
   const { Moralis } = useMoralis();
@@ -87,7 +88,7 @@ export default function ProfileSetting() {
                 outline: 'none',
               }}
             >
-              <div className="h1">Profile Setup</div>
+              <div className="h1">{translate('info.title')}</div>
               <Controller
                 name="name"
                 control={control}
@@ -98,7 +99,7 @@ export default function ProfileSetting() {
                     value={field.value}
                     onBlur={field.onBlur}
                     onChange={field.onChange}
-                    label="Name"
+                    label={translate('info.name')}
                     validation={{
                       required: true,
                       characterMinLength: 2,
@@ -124,7 +125,7 @@ export default function ProfileSetting() {
                       value={field.value}
                       onBlur={field.onBlur}
                       onChange={field.onChange}
-                      label="Email"
+                      label={translate('info.email')}
                       validation={{
                         required: true,
                         // regExp: '^[^@s]+@[^@s]+.[^@s]+$',
@@ -172,7 +173,7 @@ export default function ProfileSetting() {
                       value={field.value}
                       onBlur={field.onBlur}
                       onChange={field.onChange}
-                      label="Phone Number"
+                      label={translate('info.phone')}
                       validation={{
                         required: true,
                         regExp: '(84|0[3|5|7|8|9])+([0-9]{8})',
@@ -195,7 +196,7 @@ export default function ProfileSetting() {
                     value={field.value}
                     onBlur={field.onBlur}
                     onChange={field.onChange}
-                    label="Work"
+                    label={translate('info.work')}
                     validation={{
                       required: true,
                       characterMinLength: 5,
@@ -220,7 +221,7 @@ export default function ProfileSetting() {
                   border: 'hidden',
                 }}
               >
-                Update
+                {translate('info.update')}
               </button>
               <button
                 type="reset"
@@ -234,7 +235,7 @@ export default function ProfileSetting() {
                   border: 'hidden',
                 }}
               >
-                Clear
+                {translate('info.clear')}
               </button>
             </form>
           </div>

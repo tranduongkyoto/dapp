@@ -1,11 +1,13 @@
 import { AppContext } from 'app/provider/appContext';
 import React, { useContext } from 'react';
 import { Controller, useForm } from 'react-hook-form';
+import { translate } from 'react-jhipster';
 import { useHistory } from 'react-router-dom';
 import { Information, Input, Tag } from 'web3uikit';
 import { Modal } from 'web3uikit';
 import { Typography } from 'web3uikit';
 import token from '../Illustrations/images/various/token';
+import NFT from './NFT';
 import styles from './NFT.styles';
 const { DivModalStyled } = styles;
 interface INFTModal {
@@ -51,25 +53,25 @@ const NFTModal: React.FC<INFTModal> = ({ attributes, setShowModal, address, toke
       isCentered
       hasFooter={false}
       headerHasBottomBorder={false}
-      title={'NFT Aution'}
+      title={translate('campaign.nft.modal.title')}
       onCloseButtonPressed={() => setShowModal(false)}
     >
-      <div className="row mb-3">
+      <div className="row ">
         {/* <button onClick={() => test()}>TEST</button> */}
-        <div className="col-md-4 col-sm-12">
-          <img src="content/images/nftItem.png"></img>
+        <div className="col-md-5 col-sm-12">
+          <NFT address={address} chain="ropsten" fetchMetadata tokenId={tokenId} isAuction={false} />
         </div>
-        <div className="col-md-8 col-sm-12">
+        <div className="col-md-7 col-sm-12 mt-2">
           <div>
-            <Typography>Name : </Typography>
+            <Typography>{translate('campaign.nft.table.name')} : </Typography>
             <Typography className=" font-weight-bold ">{name}</Typography>
           </div>
-          <div>
-            <Typography>Address : </Typography>
+          <div className="mt-2">
+            <Typography>{translate('campaign.nft.table.add')} : </Typography>
             <Typography className=" font-weight-bold ">{address}</Typography>
           </div>
-          <div>
-            <Typography>Token ID : </Typography>
+          <div className="mt-2">
+            <Typography>{translate('campaign.nft.table.id')} : </Typography>
             <Typography className=" font-weight-bold ">{tokenId}</Typography>
           </div>
           <form
@@ -77,22 +79,23 @@ const NFTModal: React.FC<INFTModal> = ({ attributes, setShowModal, address, toke
             style={{
               backgroundColor: 'white',
               borderRadius: '16px',
-              padding: '16px',
+              //padding: '16px',
               border: 'none',
               boxSizing: 'border-box',
               lineHeight: 1,
               margin: 0,
               outline: 'none',
+              marginTop: '10px',
             }}
           >
             <div
-              className="h4"
+              className="h6"
               style={{
-                fontWeight: '700',
+                // fontWeight: '700',
                 color: '#68738D',
               }}
             >
-              Set Price for Auction
+              {translate('campaign.nft.modal.setting')}
             </div>
             <Controller
               name="price"
@@ -104,16 +107,18 @@ const NFTModal: React.FC<INFTModal> = ({ attributes, setShowModal, address, toke
                   value={field.value}
                   onBlur={field.onBlur}
                   onChange={field.onChange}
-                  label="Starting Price"
+                  label={translate('campaign.nft.table.start')}
                   validation={{
                     required: true,
                     numberMin: 10,
                     numberMax: 9999999,
                   }}
                   type="number"
-                  style={{
-                    marginTop: '30px',
-                  }}
+                  style={
+                    {
+                      //marginTop: '30px',
+                    }
+                  }
                 />
               )}
             />
@@ -128,7 +133,7 @@ const NFTModal: React.FC<INFTModal> = ({ attributes, setShowModal, address, toke
                   value={field.value}
                   onBlur={field.onBlur}
                   onChange={field.onChange}
-                  label="Last Price"
+                  label={translate('campaign.nft.table.end')}
                   validation={{
                     required: true,
                     numberMin: 0,
@@ -154,7 +159,7 @@ const NFTModal: React.FC<INFTModal> = ({ attributes, setShowModal, address, toke
               }}
               disabled={isDisable}
             >
-              Aution
+              {translate('campaign.nft.modal.start')}
             </button>
             <button
               type="reset"
@@ -169,7 +174,7 @@ const NFTModal: React.FC<INFTModal> = ({ attributes, setShowModal, address, toke
               }}
               onClick={() => reset()}
             >
-              Clear
+              {translate('campaign.nft.modal.clear')}
             </button>
           </form>
         </div>

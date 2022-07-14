@@ -14,6 +14,7 @@ import { ethers } from 'ethers';
 import * as usdcabi from '../contract/USDC.json';
 import * as cam from '../contract/campaign.json';
 import { faClosedCaptioning } from '@fortawesome/free-solid-svg-icons';
+import { translate } from 'react-jhipster';
 interface transactionType {
   hash: string;
   from: string;
@@ -132,7 +133,7 @@ const Campaign = () => {
     } else
       return (
         <div className="row py-3 justify-content-center">
-          <div className="col-md-auto col-sm-4 text-warning">No data</div>
+          <div className="col-md-auto col-sm-4 text-warning">{translate('campaign.crypto.no')}</div>
         </div>
       );
   };
@@ -236,10 +237,20 @@ const Campaign = () => {
               <div className="h1">{data[0].attributes?.name.toString()}</div>
               <div className="h3">{data[0].attributes?.description}</div>
               {/* <div className="h1">Campaign Start</div> */}
-              <div className="h1">{isEnd ? 'Campaign End' : 'In Progress'}</div>
-              <div>{new Date(parseInt(data[0].attributes?.endTime) * 1000).toString().slice(0, 25)}</div>
-              <div className=" font-weight-bold h3">{balanceOf ? balanceOf : 0} USD</div>
-              <div className="h3">{parseInt(data[0].attributes.goal) / 1000000} USD</div>
+              <div className="h3">{isEnd ? translate('campaign.crypto.end') : translate('campaign.crypto.progress')}</div>
+              <div>
+                {translate('campaign.crypto.endAt') + ': '}
+                {new Date(parseInt(data[0].attributes?.endTime) * 1000).toString().slice(0, 25)}
+              </div>
+              <div className=" font-weight-bold h3">
+                {translate('campaign.crypto.balance') + ': '}
+                {+balanceOf ? balanceOf : 0} USD
+              </div>
+              <div className="h3">
+                {' '}
+                {translate('campaign.crypto.goal') + ': '}
+                {parseInt(data[0].attributes.goal) / 1000000} USD
+              </div>
             </div>
             <div className="col-md-5 col-sm-12">
               <img
@@ -260,7 +271,7 @@ const Campaign = () => {
                     onClick={() => {
                       history.push('/email/new-camp');
                     }}
-                    text="Send Email For User"
+                    text={translate('campaign.crypto.email')}
                     theme="primary"
                     type="button"
                     size="large"
@@ -294,7 +305,7 @@ const Campaign = () => {
                             value={field.value}
                             onBlur={field.onBlur}
                             onChange={field.onChange}
-                            label="Amount"
+                            label={translate('campaign.crypto.amount')}
                             validation={{
                               required: true,
                               numberMin: 2,
@@ -323,14 +334,14 @@ const Campaign = () => {
                       }}
                       disabled={isEnd}
                     >
-                      Donate
+                      {translate('campaign.crypto.donate')}
                     </button>
                   </form>
                 </div>
               </div>
             </div>
             <div className="col-md-8 tran-lastest my-5">{lastestTxn()}</div>
-            <div className="col-md-8 h1 text-center">Recent Donate</div>
+            <div className="col-md-8 h1 text-center">{translate('campaign.crypto.recent')}</div>
             <div className="col-md-8">
               <Table
                 columnsConfig="2fr 3fr 2fr 2fr 2fr 2fr"

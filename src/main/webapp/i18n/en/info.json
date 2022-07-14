@@ -1,0 +1,11 @@
+{
+  "info": {
+    "title": "Update Infomation",
+    "name": "Name",
+    "email": "Email",
+    "phone": "Phone Number",
+    "work": "Work",
+    "update": "Update",
+    "clear": "Clear"
+  }
+}

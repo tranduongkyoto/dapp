@@ -1,0 +1,9 @@
+{
+  "email": {
+    "title": "Send Email",
+    "to": "To",
+    "content": "Content",
+    "send": "Send",
+    "clear": "Clear"
+  }
+}

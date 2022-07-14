@@ -25,6 +25,7 @@ import { UserCustom } from 'app/provider/styles';
 import { useNotificationCustom } from 'app/web3utils/notification';
 import { ethers } from 'ethers';
 import * as campaignabi from '../../contract/campaignStore.json';
+import { translate } from 'react-jhipster';
 
 interface transactionType {
   hash: string;
@@ -222,7 +223,7 @@ export default function UserManage() {
         </div>
       ) : (
         <div className="row  justify-content-center main">
-          <div className="col-md-8 h1 text-center">User Management</div>
+          <div className="col-md-8 h1 text-center">{translate('user.title')}</div>
           <div className="col-md-12">
             <Table
               columnsConfig="0.75fr 1fr 1fr 0.75fr 0.5fr 1fr 1fr 1fr 1fr"
@@ -280,15 +281,15 @@ export default function UserManage() {
                   : []
               }
               header={[
-                <span>Address</span>,
-                <span>User Name</span>,
-                <span>Email</span>,
-                <span> Update Info</span>,
-                <span>Is Admin</span>,
-                <span>Created Date</span>,
-                <span>Updated Date</span>,
-                <span>Crypto WhiteLister</span>,
-                <span>NFT WhiteLister</span>,
+                <span>{translate('user.add')}</span>,
+                <span>{translate('user.name')}</span>,
+                <span>{translate('user.email')}</span>,
+                <span>{translate('user.info')}</span>,
+                <span>{translate('user.admin')}</span>,
+                <span>{translate('user.create')}</span>,
+                <span>{translate('user.update')}</span>,
+                <span>{translate('user.crypto')}</span>,
+                <span>{translate('user.nft')}</span>,
               ]}
               maxPages={5}
               onPageNumberChanged={function noRefCheck() {}}

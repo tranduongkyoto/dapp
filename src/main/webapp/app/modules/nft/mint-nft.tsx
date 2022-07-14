@@ -175,7 +175,7 @@ const MintNft = () => {
           }}
         >
           <div className="settingsPage justify-content-center ">
-            <div className="h4 font-weight-bold">Mint NFT</div>
+            <div className="h4 font-weight-bold">{translate('campaign.nft.mint.title')}</div>
             <div className="banner-border">
               <img src={selectedFile} onClick={onBannerClick} className="banner"></img>
               <input
@@ -187,7 +187,7 @@ const MintNft = () => {
                 style={{ display: 'none' }}
                 required
               />
-              {isImage && <p>Please select image file</p>}
+              {isImage && <p>{translate('campaign.nft.mint.image')}</p>}
             </div>
             <form onSubmit={handleSubmit(onSubmit)}>
               <Controller
@@ -200,7 +200,7 @@ const MintNft = () => {
                     value={field.value}
                     onBlur={field.onBlur}
                     onChange={field.onChange}
-                    label="Name"
+                    label={translate('campaign.nft.mint.name')}
                     validation={{
                       required: true,
                       characterMinLength: 2,
@@ -248,7 +248,7 @@ const MintNft = () => {
                     value={field.value}
                     onBlur={field.onBlur}
                     onChange={field.onChange}
-                    label="Recipient"
+                    label={translate('campaign.nft.mint.to')}
                     validation={{
                       required: true,
                       regExp: '^0x[a-fA-F0-9]{40}$',
@@ -271,7 +271,7 @@ const MintNft = () => {
                     value={field.value}
                     onBlur={field.onBlur}
                     onChange={field.onChange}
-                    label="Description"
+                    label={translate('campaign.nft.mint.des')}
                     validation={{
                       required: true,
                       characterMinLength: 5,
@@ -298,7 +298,7 @@ const MintNft = () => {
                   border: 'hidden',
                 }}
               >
-                Create
+                {translate('campaign.nft.mint.create')}
               </button>
               <button
                 type="reset"
@@ -312,7 +312,7 @@ const MintNft = () => {
                   border: 'hidden',
                 }}
               >
-                Clear
+                {translate('campaign.nft.mint.clear')}
               </button>
             </form>
           </div>

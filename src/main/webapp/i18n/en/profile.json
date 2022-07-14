@@ -1,0 +1,20 @@
+{
+  "profile": {
+    "transac": "Transactions",
+    "info": "Profile",
+    "name": "Name",
+    "email": "Email",
+    "phone": "Phone",
+    "work": "Work",
+    "nft": "NFT",
+    "nfttransac": "NFT Transactions",
+    "erc20transac": "ERC20 Transactions",
+    "hash": "Txt Hash",
+    "time": "Time",
+    "from": "From",
+    "to": "To",
+    "tokenadd": "Token Address",
+    "id": "Token Id",
+    "value": "Value"
+  }
+}

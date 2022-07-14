@@ -1,0 +1,20 @@
+{
+  "profile": {
+    "transac": "Giao dịch",
+    "info": "Hồ sơ",
+    "name": "Tên người dùng",
+    "email": "Email",
+    "phone": "Số điện thoại",
+    "work": "Công việc",
+    "nft": "NFT của bạn",
+    "nfttransac": "Giao dịch NFT",
+    "erc20transac": "Giao dịch tiền mã hoá",
+    "hash": "Mã giao dịch",
+    "time": "Thời gian",
+    "from": "Từ",
+    "to": "Đến",
+    "tokenadd": "Địa chỉ Token",
+    "id": "Id",
+    "value": "Giá trị"
+  }
+}

@@ -1,7 +1,17 @@
 {
   "home": {
-    "title": "Chào mừng bạn đến với Java Hipster!",
+    "title": "Thay đổi thế giới, với chúng tôi",
+    "create": "Tạo chiến dịch",
+    "donate": "Quyên góp",
     "subtitle": "Đây là trang chủ của bạn",
+    "transparent": "Minh bạch",
+    "where": "Bất cứ đâu",
+    "easy": "Nhanh chóng, thuận tiện và dễ dàng",
+    "what": "Bạn có thể làm gì?",
+    "crypto": "Mở chiến dịch gây quỹ",
+    "nft": "Quyên góp và nhận lại NFT",
+    "more": "Chi tiết",
+    "why": "Vượt trội hơn so với công việc gây quỹ truyền thống",
     "logged": {
       "message": "Bạn đang đăng nhập bằng tài khoản \"{{username}}\"."
     },

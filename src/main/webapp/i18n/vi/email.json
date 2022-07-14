@@ -1,0 +1,9 @@
+{
+  "email": {
+    "title": "Gửi Email",
+    "to": "Người nhận",
+    "content": "Nội dung",
+    "send": "Gửi",
+    "clear": "Làm mới"
+  }
+}

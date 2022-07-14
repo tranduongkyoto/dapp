@@ -8,6 +8,7 @@ import * as abi from '../contract/myNft.json';
 import { default as MoralisType } from 'moralis/types';
 
 import { useNotificationCustom } from 'app/web3utils/notification';
+import { translate } from 'react-jhipster';
 const StartNftCampaigns = () => {
   const { account, Moralis } = useMoralis();
   const [list, setList] = useState<any>();
@@ -84,7 +85,7 @@ const StartNftCampaigns = () => {
                               item.attributes?.campaignAddress
                             )
                           }
-                          text="Start"
+                          text={translate('campaign.nft.create')}
                           theme="primary"
                           type="button"
                         />

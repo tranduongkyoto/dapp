@@ -1,0 +1,14 @@
+{
+  "user": {
+    "title": "User Management",
+    "add": "Address",
+    "name": "User Name",
+    "email": "Email",
+    "info": "Updated",
+    "admin": "Is Admin",
+    "create": "Create Date",
+    "update": "Update Date",
+    "crypto": "Crypto Campaign WhiteLister",
+    "nft": "NFT Auction WhiteLister"
+  }
+}

@@ -13,6 +13,7 @@ import { Tooltip } from 'web3uikit';
 import { Icon } from 'web3uikit';
 import { AppContext } from 'app/provider/appContext';
 import { Link } from 'react-router-dom';
+import { translate } from 'react-jhipster';
 const { DivStyled } = styles;
 const { image } = NFTUtils;
 const NFT: React.FC<INFTProps> = ({ address, chain, name, tokenId, fetchMetadata, metadata, isAuction, auctionLink, ...props }) => {
@@ -111,7 +112,7 @@ const NFT: React.FC<INFTProps> = ({ address, chain, name, tokenId, fetchMetadata
                 <Button
                   id="test-button-primary"
                   onClick={() => setShowModal(true)}
-                  text="Aution"
+                  text={translate('campaign.nft.auction')}
                   theme="primary"
                   type="button"
                   disabled={isDisable}

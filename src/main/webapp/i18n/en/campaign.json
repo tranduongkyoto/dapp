@@ -1,0 +1,78 @@
+{
+  "campaign": {
+    "title": "Change our world, with Crypto",
+    "select": "Please select one",
+    "crypto": {
+      "title": "Crypto Campaign",
+      "form": "Crypto campaign Setting",
+      "banner": "Campaign Banner",
+      "name": "Name",
+      "des": "Description",
+      "goal": "Goal",
+      "type": "Type",
+      "edu": "Education",
+      "health": "Health/Medical",
+      "env": "Enviromental",
+      "animal": "Animal/Wildlife",
+      "art": "Arts/Culture",
+      "social": "Social Justice",
+      "time": "End Time",
+      "7": "7 days",
+      "14": "14 days",
+      "30": "30 days",
+      "create": "Create",
+      "clear": "Clear",
+      "raise": "Total raised",
+      "donate": "Donate",
+      "end": "End",
+      "progress": "In Progress",
+      "endAt": "End At",
+      "balance": "Donated",
+      "email": "Send Email for user",
+      "amount": "Amount",
+      "recent": "Recent Donation",
+      "no": "No data"
+    },
+    "nft": {
+      "title": "NFT Auction",
+      "form": "NFT Auction",
+      "name": "Name",
+      "des": "Description",
+      "create": "Create",
+      "clear": "Clear",
+      "table": {
+        "name": "Name",
+        "add": "Address",
+        "id": "Id",
+        "start": "Starting Price",
+        "end": "End Price",
+        "discount": "Discount"
+      },
+      "buy": "Buy",
+      "end": "Enned",
+      "progress": "In Progress",
+      "endAt": "End At",
+      "getPrice": "Get Price",
+      "approve": "Approve",
+      "buyer": "Buyer",
+      "price": "Price",
+      "mint": {
+        "title": "Mint  NFT",
+        "image": "Please select Image",
+        "name": "Name",
+        "to": "Recipient",
+        "des": "Description",
+        "create": "Create",
+        "clear": "Clear",
+        "add": "Go to NFT Auction"
+      },
+      "auction": "Auction",
+      "modal": {
+        "title": "NFT Auction",
+        "setting": "Setting",
+        "start": "Create",
+        "clear": "Clear"
+      }
+    }
+  }
+}
