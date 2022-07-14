@@ -5,6 +5,7 @@ import { useMoralis, useMoralisWeb3Api, useWeb3ExecuteFunction, useMoralisQuery 
 import { NFT } from 'app/components/NFT';
 import { ethers } from 'ethers';
 import * as abi from '../contract/nftAution.json';
+import { translate } from 'react-jhipster';
 const NftCampaigns = () => {
   const { account, Moralis } = useMoralis();
   const [list, setList] = useState<any>();
@@ -65,7 +66,7 @@ const NftCampaigns = () => {
                       <Button
                         id="test-button-primary"
                         onClick={() => buy(item.attributes?.campaignAddress)}
-                        text="Buy"
+                        text={translate('campaign.nft.buy')}
                         theme="primary"
                         type="button"
                       />

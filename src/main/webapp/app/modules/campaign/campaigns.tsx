@@ -3,6 +3,7 @@ import { Link, useHistory, useLocation } from 'react-router-dom';
 import { Input, Button, DatePicker, Select, TabList, Tab, Icon } from 'web3uikit';
 import { useMoralis, useMoralisWeb3Api, useWeb3ExecuteFunction, useMoralisQuery } from 'react-moralis';
 import axios from 'axios';
+import { translate } from 'react-jhipster';
 
 const Campaigns = () => {
   const { Moralis } = useMoralis();
@@ -81,10 +82,10 @@ const Campaigns = () => {
                 </div>
               </Link>
               <div className="ml-5">
-                <span className="h3">Total Raised : </span>
+                <span className="h3">{translate('campaign.crypto.raise')} </span>
                 <span className="h3 text-success">{}</span>
                 <button className="btn btn-primary btn-border ml-5" onClick={() => donate(item.attributes?.uid)}>
-                  Donate
+                  {translate('campaign.crypto.donate')}
                 </button>
               </div>
             </div>

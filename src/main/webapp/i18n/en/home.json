@@ -1,7 +1,17 @@
 {
   "home": {
-    "title": "Welcome, Node Hipster Official Blueprint!",
-    "subtitle": "This is your homepage",
+    "title": "Change Our World, with Crypto",
+    "create": "Create Campaign",
+    "donate": "Donate",
+    "subtitle": "Home page",
+    "transparent": "Transparent",
+    "where": "Every where",
+    "easy": "Fast, Convenient and Easy",
+    "what": "What can you do?",
+    "crypto": "Create Crypto Campaign",
+    "nft": "Donate and receive NFT",
+    "more": "More",
+    "why": "Why should you donate with crypto?",
     "logged": {
       "message": "You are logged in as user \"{{username}}\"."
     },

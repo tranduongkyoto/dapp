@@ -3,6 +3,7 @@ import { useNotificationCustom } from 'app/web3utils/notification';
 // import usehandleNewNotification from 'app/web3utils/notification2';
 import React from 'react';
 import { Controller, useForm } from 'react-hook-form';
+import { translate } from 'react-jhipster';
 import { useMoralis, useMoralisCloudFunction } from 'react-moralis';
 import { Form, Input, useNotification } from 'web3uikit';
 import { TIconType } from 'web3uikit/dist/components/Icon/collection';
@@ -78,7 +79,7 @@ const SendNewCamp = () => {
                   color: '#68738D',
                 }}
               >
-                Send Email
+                {translate('email.title')}
               </div>
               <Controller
                 name="email"
@@ -91,7 +92,7 @@ const SendNewCamp = () => {
                       value={field.value}
                       onBlur={field.onBlur}
                       onChange={field.onChange}
-                      label="Email"
+                      label={translate('email.to')}
                       validation={{
                         required: true,
                         // regExp: '^[^@s]+@[^@s]+.[^@s]+$',
@@ -116,7 +117,7 @@ const SendNewCamp = () => {
                       value={field.value}
                       onBlur={field.onBlur}
                       onChange={field.onChange}
-                      label="New Campaign Url"
+                      label={translate('email.content')}
                       validation={{
                         required: true,
                       }}
@@ -139,7 +140,7 @@ const SendNewCamp = () => {
                   border: 'hidden',
                 }}
               >
-                Send
+                {translate('email.send')}
               </button>
               <button
                 type="reset"
@@ -154,7 +155,7 @@ const SendNewCamp = () => {
                 }}
                 onClick={() => reset()}
               >
-                Clear
+                {translate('email.clear')}
               </button>
             </form>
           </div>

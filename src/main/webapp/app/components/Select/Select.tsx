@@ -5,6 +5,7 @@ import { Illustration } from '../Illustrations';
 import SelectStyles from './Select.styles';
 import type { SelectProps } from './types';
 import InputStyles from '../Input/Input.styles';
+import { Translate, translate } from 'react-jhipster';
 const { DivWrapperStyled, LabelStyled: LabelStyledTrad } = InputStyles;
 
 const {
@@ -172,7 +173,7 @@ const Select: React.FC<SelectProps> = ({
         ref={refTraditional}
         required={validation?.required}
       >
-        <option value="">Please choose</option>
+        <option value="">{translate('campaign.select')}</option>
         {options.map(
           (option, i) =>
             i !== selectedOptionIndex && (

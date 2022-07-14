@@ -169,7 +169,7 @@ const CreateNftCampaign = () => {
   return (
     <>
       <div className="row">
-        <div className="col-md-4 col-sm-12">
+        <div className="col-md-3 col-sm-12">
           <img
             style={{
               maxWidth: '90%',
@@ -180,7 +180,7 @@ const CreateNftCampaign = () => {
           ></img>
         </div>
         <div
-          className="col-md-8 col-sm-12"
+          className="col-md-9 col-sm-12"
           style={{
             backgroundColor: 'white',
             borderRadius: '16px',
@@ -194,7 +194,10 @@ const CreateNftCampaign = () => {
         >
           <div className="settingsPage justify-content-center ">
             <div className="pfp">
-              <div className="h4 font-weight-bold">Campaign NFT</div>
+              <div className="h4 font-weight-bold">
+                {' '}
+                <Translate contentKey="campaign.nft.form"></Translate>
+              </div>
               {nftAution && (
                 <NFT address={nftAution?.address} chain="ropsten" fetchMetadata tokenId={nftAution?.tokenId} isAuction={false} />
               )}
@@ -211,7 +214,7 @@ const CreateNftCampaign = () => {
                     value={field.value}
                     onBlur={field.onBlur}
                     onChange={field.onChange}
-                    label="Name"
+                    label={translate('campaign.nft.name')}
                     validation={{
                       required: true,
                       characterMinLength: 2,
@@ -236,7 +239,7 @@ const CreateNftCampaign = () => {
                     value={field.value}
                     onBlur={field.onBlur}
                     onChange={field.onChange}
-                    label="Description"
+                    label={translate('campaign.nft.des')}
                     validation={{
                       required: true,
                       characterMinLength: 5,
@@ -258,12 +261,12 @@ const CreateNftCampaign = () => {
                     data={dataTable}
                     header={[
                       '',
-                      <span>Name</span>,
-                      <span>Address</span>,
-                      <span>Token Id</span>,
-                      <span>Starting Price</span>,
-                      <span>Last Price</span>,
-                      <span>Discount Rate</span>,
+                      <span> {translate('campaign.nft.table.name')}</span>,
+                      <span>{translate('campaign.nft.table.add')}</span>,
+                      <span>{translate('campaign.nft.table.id')}</span>,
+                      <span>{translate('campaign.nft.table.start')}</span>,
+                      <span>{translate('campaign.nft.table.end')}</span>,
+                      <span>{translate('campaign.nft.table.discount')}</span>,
                       '',
                     ]}
                     // isColumnSortable={[false, true, false, false]}
@@ -286,14 +289,14 @@ const CreateNftCampaign = () => {
                   fontWeight: 'bold',
                 }}
               >
-                Create
+                {translate('campaign.nft.create')}
               </button>
               <button
                 type="reset"
                 className=" ml-1 mt-2"
                 style={{
                   borderRadius: '15px',
-                  width: '100px',
+                  width: '150px',
                   height: '40px',
                   backgroundColor: 'red',
                   color: 'white',
@@ -302,7 +305,7 @@ const CreateNftCampaign = () => {
                 }}
                 onClick={() => reset()}
               >
-                Clear
+                {translate('campaign.nft.clear')}
               </button>
             </form>
           </div>

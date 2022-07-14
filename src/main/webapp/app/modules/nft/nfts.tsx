@@ -1,6 +1,7 @@
 import { NFT } from 'app/components/NFT';
 import { time } from 'console';
 import React, { useEffect, useState } from 'react';
+import { translate } from 'react-jhipster';
 import { useNFTBalances } from 'react-moralis';
 import { Link, useHistory, useParams } from 'react-router-dom';
 import { Button, Icon, Modal, Typography } from 'web3uikit';
@@ -100,7 +101,7 @@ export default function Nfts() {
             textDecoration: 'none',
           }}
         >
-          <div className="h4">Add NFT to Aution</div>
+          <div className="h4">{translate('campaign.nft.mint.add')}</div>
         </Link>
       </div>
       <div className="row">

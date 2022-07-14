@@ -29,7 +29,7 @@ export const Home = props => (
     <NavLink tag={Link} to="/" className="d-flex align-items-center">
       {/* <FontAwesomeIcon icon="home" /> */}
       <span className="font-weight-bold h5">
-        <Translate contentKey="global.menu.home">Home</Translate>
+        <Translate contentKey="global.menu.home"></Translate>
       </span>
     </NavLink>
   </NavItem>
@@ -47,7 +47,10 @@ export const Email = props => (
 export const DashBoard = props => (
   <NavItem>
     <NavLink tag={Link} to="/dashboard" className="d-flex align-items-center">
-      <span className="font-weight-bold h5">Dashboard</span>
+      <span className="font-weight-bold h5">
+        {' '}
+        <Translate contentKey="global.menu.dashboard"></Translate>
+      </span>
     </NavLink>
   </NavItem>
 );

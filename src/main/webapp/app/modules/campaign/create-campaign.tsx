@@ -193,7 +193,7 @@ const CreateCampaign = () => {
           ></img>
         </div>
         <div
-          className="col-md-4 col-sm-12"
+          className="col-md-6 col-sm-12"
           style={{
             backgroundColor: 'white',
             borderRadius: '16px',
@@ -208,8 +208,15 @@ const CreateCampaign = () => {
           {/* <div className=" text-center font-weight-bold ">Create Campaign</div> */}
           <div className="settingsPage justify-content-center ">
             <div className="pfp">
-              <div className="h4 font-weight-bold">Campaign Banner</div>
+              <div className="h4 font-weight-bold">
+                {' '}
+                <Translate contentKey="campaign.crypto.form"></Translate>
+              </div>
               <div className="pfpOptions">
+                {/* <div className="h6">
+                  {' '}
+                  <Translate contentKey="campaign.crypto.banner"></Translate>
+                </div> */}
                 <img src={selectedFile} onClick={onBannerClick} className="banner"></img>
                 <input type="file" name="file" ref={inputFile} onChange={changeHandler} style={{ display: 'none' }} required />
               </div>
@@ -225,7 +232,7 @@ const CreateCampaign = () => {
                     value={field.value}
                     onBlur={field.onBlur}
                     onChange={field.onChange}
-                    label="Name"
+                    label={translate('campaign.crypto.name')}
                     validation={{
                       required: true,
                       characterMinLength: 2,
@@ -251,7 +258,7 @@ const CreateCampaign = () => {
                     value={field.value}
                     onBlur={field.onBlur}
                     onChange={field.onChange}
-                    label="Description"
+                    label={translate('campaign.crypto.des')}
                     validation={{
                       required: true,
                       characterMinLength: 5,
@@ -277,7 +284,7 @@ const CreateCampaign = () => {
                     value={field.value}
                     onBlur={field.onBlur}
                     onChange={field.onChange}
-                    label="Goal"
+                    label={translate('campaign.crypto.goal')}
                     validation={{
                       required: true,
                       numberMin: 100,
@@ -301,31 +308,31 @@ const CreateCampaign = () => {
                     onBlurTraditional={field.onBlur}
                     onChange={field.onChange}
                     onChangeTraditional={field.onChange}
-                    label="Label Text"
+                    label={translate('campaign.crypto.type')}
                     options={[
                       {
                         id: '1',
-                        label: 'Education',
+                        label: translate('campaign.crypto.edu'),
                       },
                       {
                         id: '2',
-                        label: 'Health/Medical',
+                        label: translate('campaign.crypto.health'),
                       },
                       {
                         id: '3',
-                        label: 'Enviromental',
+                        label: translate('campaign.crypto.env'),
                       },
                       {
                         id: '4',
-                        label: 'Animal/WildLife',
+                        label: translate('campaign.crypto.animal'),
                       },
                       {
                         id: '5',
-                        label: 'Arts/Culture',
+                        label: translate('campaign.crypto.art'),
                       },
                       {
                         id: '6',
-                        label: 'Social Justice',
+                        label: translate('campaign.crypto.social'),
                       },
                     ]}
                     traditionalHTML5={true}
@@ -349,8 +356,8 @@ const CreateCampaign = () => {
                       id="radios2"
                       onBlur={field.onBlur}
                       onChange={field.onChange}
-                      items={['7 days', '14 days', '30 days']}
-                      title="End Time"
+                      items={[translate('campaign.crypto.7'), translate('campaign.crypto.14'), translate('campaign.crypto.30')]}
+                      title={translate('campaign.crypto.time')}
                       validation={{
                         required: true,
                       }}
@@ -371,7 +378,7 @@ const CreateCampaign = () => {
                   border: 'hidden',
                 }}
               >
-                Create
+                {translate('campaign.crypto.create')}
               </button>
               <button
                 type="reset"
@@ -386,7 +393,7 @@ const CreateCampaign = () => {
                 }}
                 onClick={() => reset()}
               >
-                Clear
+                {translate('campaign.crypto.clear')}
               </button>
             </form>
           </div>

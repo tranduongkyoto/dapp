@@ -1,0 +1,78 @@
+{
+  "campaign": {
+    "title": "Thay đổi thế gíới, cùng chúng tôi",
+    "select": "Hãy chọn một",
+    "crypto": {
+      "title": "Nhận tiền mã hoá",
+      "form": "Bạn cần một chiến dịch như thế nào ?",
+      "banner": "Mô tả cho mọi người",
+      "name": "Chúng ta cần một cái tên",
+      "des": "Mục đích",
+      "goal": "Mục tiêu",
+      "type": "Lĩnh vực",
+      "edu": "Giáo dục",
+      "health": "Sức khoẻ/ Y tế",
+      "env": "Môi trường",
+      "animal": "Bảo tồn động vật",
+      "art": "Văn hoá/ Nghệ thuật",
+      "social": "Xã hội",
+      "time": "Chiến dịch sẽ kéo dài bao lâu",
+      "7": "7 ngày",
+      "14": "14 ngày",
+      "30": "30 ngày",
+      "create": "Bắt đầu",
+      "clear": "Làm mới",
+      "raise": "Đã nhận",
+      "donate": "Quyên góp",
+      "end": "Đã kết thúc",
+      "progress": "Đang diễn ra",
+      "endAt": "Kết thúc vào",
+      "balance": "Đã quyên góp ",
+      "email": "Gửi email cho những nhà quyên góp lớn",
+      "amount": "Giá trị",
+      "recent": "Quyên góp gần đây",
+      "no": "Không có dữ liệu"
+    },
+    "nft": {
+      "title": "Đấu giá NFT của bạn",
+      "form": "Đấu giá NFT của bạn",
+      "name": "Tên cuộc đấu giá",
+      "des": "Mục đích",
+      "create": "Bắt đầu",
+      "clear": "Làm mới",
+      "table": {
+        "name": "Tên",
+        "add": "Địa chỉ",
+        "id": "Id",
+        "start": "Giá bắt đầu",
+        "end": "Giá kết thúc",
+        "discount": "Giảm giá"
+      },
+      "buy": "Mua",
+      "end": "Đã kết thúc",
+      "progress": "Đang diễn ra",
+      "endAt": "Kết thúc vào",
+      "getPrice": "Giá hiện tại",
+      "approve": "Xác nhận",
+      "buyer": "Người mua",
+      "price": "Giá",
+      "mint": {
+        "title": "Đúc  NFT",
+        "image": "Hãy chọn file ảnh",
+        "name": "Tên NFT",
+        "to": "Địa chỉ người nhận",
+        "des": "Mô tả",
+        "create": "Tạo",
+        "clear": "Làm mới",
+        "add": "Tới trang tạo đấu giá"
+      },
+      "auction": "Bán",
+      "modal": {
+        "title": "Đấu giá NFT",
+        "setting": "Đặt giá",
+        "start": "Bắt đầu",
+        "clear": "Làm mới"
+      }
+    }
+  }
+}

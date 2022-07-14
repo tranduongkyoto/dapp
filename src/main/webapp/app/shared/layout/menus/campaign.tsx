@@ -15,13 +15,13 @@ export const Campaign = props => (
       <Translate contentKey="global.menu.campaign.create">Create Campaign</Translate>
     </MenuItem>
     <MenuItem icon="user-plus" to="/start-nft-campaigns" data-cy="create">
-      Start NFT Campaign
+      <Translate contentKey="global.menu.campaign.startnft">Create Campaign</Translate>
+    </MenuItem>
+    <MenuItem icon="user-plus" to="/nft-campaigns" data-cy="all">
+      <Translate contentKey="global.menu.campaign.nft">Create Campaign</Translate>
     </MenuItem>
     <MenuItem icon="user-plus" to="/campaigns" data-cy="all">
       <Translate contentKey="global.menu.campaign.all">All Campaigns</Translate>
-    </MenuItem>
-    <MenuItem icon="user-plus" to="/nft-campaigns" data-cy="all">
-      NFT Campaigns
     </MenuItem>
   </NavDropdown>
 );

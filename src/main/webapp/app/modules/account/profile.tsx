@@ -2,6 +2,7 @@ import { NFT } from 'app/components/NFT';
 import { Tab, TabList } from 'app/components/Tabs';
 import { AppContext } from 'app/provider/appContext';
 import React, { useContext, useEffect, useState } from 'react';
+import { translate } from 'react-jhipster';
 import { useMoralis, useNFTBalances, useNFTTransfers, useERC20Transfers } from 'react-moralis';
 import { useParams } from 'react-router-dom';
 import { Button, Icon, Table, Tag } from 'web3uikit';
@@ -169,7 +170,7 @@ export function Profile() {
               <Tag color="blue" text={myNft.length.toString()}></Tag>
             </div>
             <div className="col-md-auto col-sm-4 text-warning mx-auto">
-              <div className=" text-center">Transaction</div>
+              <div className=" text-center">{translate('profile.transac')}</div>
               <Tag color="yellow" text={erc20Transfer && erc20Transfer.result.length.toString()}></Tag>
             </div>
           </div>
@@ -184,24 +185,25 @@ export function Profile() {
               tabKey={1}
               tabName={
                 <div style={{ display: 'flex' }}>
-                  <Icon fill="black" size={22} svg="messageCircle" /> <span style={{ paddingLeft: '4px' }}>Profile </span>
+                  <Icon fill="black" size={22} svg="messageCircle" />{' '}
+                  <span style={{ paddingLeft: '4px' }}>{translate('profile.info')}</span>
                 </div>
               }
             >
               <div>
-                <span className=" font-weight-bold ">User name </span>
+                <span className=" font-weight-bold ">{translate('profile.name')} </span>
                 <span>{user && user.attributes?.username}</span>
               </div>
               <div>
-                <span className=" font-weight-bold ">Email </span>
+                <span className=" font-weight-bold ">{translate('profile.email')} </span>
                 <span>{user && user.attributes?.email}</span>
               </div>
               <div>
-                <span className=" font-weight-bold ">Phone Number </span>
+                <span className=" font-weight-bold ">{translate('profile.phone')} </span>
                 <span>{user && user.attributes?.phoneNumber}</span>
               </div>
               <div>
-                <span className=" font-weight-bold ">Work </span>
+                <span className=" font-weight-bold ">{translate('profile.work')} </span>
                 <span>{user && user.attributes?.work}</span>
               </div>
             </Tab>
@@ -210,7 +212,7 @@ export function Profile() {
               tabName={
                 <div style={{ display: 'flex' }}>
                   <Icon fill="black" size={22} svg="bell" />
-                  <span style={{ paddingLeft: '4px' }}>NFT </span>
+                  <span style={{ paddingLeft: '4px' }}>{translate('profile.nft')} </span>
                 </div>
               }
             >
@@ -229,13 +231,13 @@ export function Profile() {
               tabName={
                 <div style={{ display: 'flex' }}>
                   <Icon fill="black" size={22} svg="bell" />
-                  <span style={{ paddingLeft: '4px' }}>NFT Transaction </span>
+                  <span style={{ paddingLeft: '4px' }}>{translate('profile.nfttransac')} </span>
                 </div>
               }
             >
               <div className="col-md-10">
                 <Table
-                  columnsConfig="1fr 2fr 1fr 1fr 1fr 1fr"
+                  columnsConfig="1fr 1fr 1fr 1fr 1fr 1fr"
                   data={
                     nftTransfer
                       ? nftTransfer.result.map((item, key) => [
@@ -249,12 +251,12 @@ export function Profile() {
                       : []
                   }
                   header={[
-                    <span>TxT Hash</span>,
-                    <span>Time</span>,
-                    <span>From </span>,
-                    <span>To</span>,
-                    <span>Token Address</span>,
-                    <span>Token Id</span>,
+                    <span>{translate('profile.hash')}</span>,
+                    <span>{translate('profile.time')}</span>,
+                    <span>{translate('profile.from')} </span>,
+                    <span>{translate('profile.to')}</span>,
+                    <span>{translate('profile.tokenadd')}</span>,
+                    <span>{translate('profile.id')}</span>,
                   ]}
                   maxPages={5}
                   onPageNumberChanged={function noRefCheck() {}}
@@ -268,13 +270,13 @@ export function Profile() {
               tabName={
                 <div style={{ display: 'flex' }}>
                   <Icon fill="black" size={22} svg="bell" />
-                  <span style={{ paddingLeft: '4px' }}>ERC20 Transaction </span>
+                  <span style={{ paddingLeft: '4px' }}>{translate('profile.erc20transac')} </span>
                 </div>
               }
             >
               <div className="col-md-10">
                 <Table
-                  columnsConfig="1fr 2fr 1fr 1fr 1fr 1fr"
+                  columnsConfig="1fr 1fr 1fr 1fr 1fr 1fr"
                   data={
                     erc20Transfer
                       ? erc20Transfer.result.map((item, key) => [
@@ -288,12 +290,12 @@ export function Profile() {
                       : []
                   }
                   header={[
-                    <span>TxT Hash</span>,
-                    <span>Time</span>,
-                    <span>From </span>,
-                    <span>To</span>,
-                    <span>Token Address</span>,
-                    <span>value</span>,
+                    <span>{translate('profile.hash')}</span>,
+                    <span>{translate('profile.time')}</span>,
+                    <span>{translate('profile.from')} </span>,
+                    <span>{translate('profile.to')}</span>,
+                    <span>{translate('profile.tokenadd')}</span>,
+                    <span>{translate('profile.value')}</span>,
                   ]}
                   maxPages={5}
                   onPageNumberChanged={function noRefCheck() {}}

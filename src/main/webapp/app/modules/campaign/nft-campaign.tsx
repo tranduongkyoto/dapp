@@ -9,6 +9,7 @@ import { useForm } from 'react-hook-form';
 import { NFT } from 'app/components/NFT';
 import { useNotificationCustom } from 'app/web3utils/notification';
 import { getEllipsisTxt, timeStampToDateTime } from 'app/web3utils';
+import { translate } from 'react-jhipster';
 declare global {
   interface Window {
     ethereum?: any;
@@ -166,10 +167,15 @@ export default function NftCampaign() {
             <div className="col-md-2"></div>
             <div className="col-md-4 col-sm-12 pt-5 pl-5">
               <div className="h1">{data[0].attributes?.name}</div>
-              <div className="h4">{data[0].attributes?.description}</div>
-              <div className="h4"> Start Price {price} USD</div>
+              <div className="h3">{data[0].attributes?.description}</div>
+              <div className="h4">
+                {' '}
+                {translate('campaign.nft.table.start') + ': '} {price} USD
+              </div>
               <div className="h3">
-                {isEnd ? 'Aution Ended' : `End at ${new Date(parseInt(data[0].attributes?.end) * 1000).toDateString()}`}
+                {isEnd
+                  ? translate('campaign.nft.end')
+                  : translate('campaign.nft.endAt') + `: ${new Date(parseInt(data[0].attributes?.end) * 1000).toDateString()}`}
               </div>
             </div>
             <div className="col-md-6 col-sm-12">
@@ -203,7 +209,7 @@ export default function NftCampaign() {
                       setTimeout(() => setIsGetPrice(false), 5000);
                     }}
                     size="large"
-                    text="Get Price"
+                    text={translate('campaign.nft.getPrice')}
                     theme="primary"
                     type="button"
                     disabled={isEnd || isGetPrice || isBuy}
@@ -217,7 +223,7 @@ export default function NftCampaign() {
                     id="test-button-primary"
                     onClick={() => approve()}
                     size="large"
-                    text="Approve"
+                    text={translate('campaign.nft.approve')}
                     theme="primary"
                     type="button"
                     disabled={isEnd || isBuy}
@@ -228,7 +234,7 @@ export default function NftCampaign() {
                     id="test-button-primary"
                     onClick={() => buy(data[0].attributes?.nft, data[0].attributes?.tokenId)}
                     size="large"
-                    text="Buy"
+                    text={translate('campaign.nft.buy')}
                     theme="primary"
                     type="button"
                     disabled={isEnd || isBuy}
@@ -295,8 +301,14 @@ export default function NftCampaign() {
                     pageSize={10}
                     isColumnSortable={[true, true, false, false, false, true]}
                   /> */}
-                  <div className="h3"> Buyer {data[0].attributes?.buyer}</div>
-                  <div className="h3">Price {parseInt(data[0].attributes?.sellPrice) / 1000000} USD</div>
+                  <div className="h3">
+                    {' '}
+                    {translate('campaign.nft.buyer')} {data[0].attributes?.buyer}
+                  </div>
+                  <div className="h3">
+                    {' '}
+                    {translate('campaign.nft.price')} {parseInt(data[0].attributes?.sellPrice) / 1000000} USD
+                  </div>
                 </div>
               </>
             )}
