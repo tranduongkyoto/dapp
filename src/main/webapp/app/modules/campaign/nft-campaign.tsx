@@ -148,7 +148,32 @@ export default function NftCampaign() {
     //isEnd = true;
     isCreator = data[0].attributes?.creator === account;
   }
-
+  const withDraw = async () => {
+    try {
+      const nftAuction = new ethers.Contract(id, abi.abi, provider.getSigner());
+      const transaction = await nftAuction.withDraw2();
+      handleNewNotification('success', 'Contract is pending, Please wait! ');
+      const res = await transaction.wait();
+      if (res?.status == 1) {
+        const Auctionss = Moralis.Object.extend('Auctionss');
+        const query = new Moralis.Query(Auctionss);
+        query.equalTo('campaignAddress', id);
+        const auction = await query.first();
+        //auction.set('buyer', "");
+        auction.set('sellPrice', '-1');
+        await auction.save();
+        handleNewNotification('success', `Contract is confirmed with ${res?.confirmations} confirmations. Thank for your donation!`);
+      }
+    } catch (error: any) {
+      console.log(JSON.parse(JSON.stringify(error)));
+      handleNewNotification(
+        'error',
+        JSON.parse(JSON.stringify(error))?.error?.message
+          ? JSON.parse(JSON.stringify(error))?.error?.message
+          : JSON.parse(JSON.stringify(error))?.message
+      );
+    }
+  };
   return (
     <>
       {data.length === 0 ? (
@@ -177,6 +202,11 @@ export default function NftCampaign() {
                   ? translate('campaign.nft.end')
                   : translate('campaign.nft.endAt') + `: ${new Date(parseInt(data[0].attributes?.end) * 1000).toDateString()}`}
               </div>
+              {!isBuy && (
+                <>
+                  <Button onClick={() => withDraw()} size="large" text="With Draw" theme="primary" type="button" disabled={isBuy} />
+                </>
+              )}
             </div>
             <div className="col-md-6 col-sm-12">
               <NFT
@@ -263,44 +293,6 @@ export default function NftCampaign() {
             {isBuy && (
               <>
                 <div className="col-md-8 mt-5">
-                  {/* <Table
-                    columnsConfig="1fr 2fr 1fr 1fr 1fr 1fr"
-                    data={
-                      nftTransfer
-                        ? nftTransfer.result
-                            .filter(item => item.from_address == id)
-                            .map((item, key) => [
-                              getEllipsisTxt(item.transaction_hash),
-                              timeStampToDateTime(item.block_timestamp),
-                              getEllipsisTxt(item.from_address),
-                              getEllipsisTxt(item.to_address),
-                              getEllipsisTxt(item.token_address),
-                              item.token_id,
-                            ])
-                        : []
-                    }
-                    header={[
-                      <span>TxT Hash</span>,
-                      <span>Time</span>,
-                      <span>From </span>,
-                      <span>To</span>,
-                      <span>Token Address</span>,
-                      <span>Token Id</span>,
-                    ]}
-                    maxPages={5}
-                    onPageNumberChanged={function noRefCheck() {}}
-                    pageSize={10}
-                    isColumnSortable={[true, true, false, false, false, true]}
-                  /> */}
-                  {/* <Table
-                    columnsConfig="1fr 1fr"
-                    data={[]}
-                    header={[<span>Buyer</span>, <span>Sell Price</span>]}
-                    maxPages={5}
-                    onPageNumberChanged={function noRefCheck() {}}
-                    pageSize={10}
-                    isColumnSortable={[true, true, false, false, false, true]}
-                  /> */}
                   <div className="h3">
                     {' '}
                     {translate('campaign.nft.buyer')} {data[0].attributes?.buyer}
