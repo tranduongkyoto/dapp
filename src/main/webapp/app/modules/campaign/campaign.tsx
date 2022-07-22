@@ -45,9 +45,9 @@ const Campaign = () => {
   });
 
   const onSubmit = async (data, e) => {
-    const USDC = new ethers.Contract('0x7ef95a0FEE0Dd31b22626fA2e10Ee6A223F8a684', usdcabi.abi, provider.getSigner());
+    const USDT = new ethers.Contract('0x7ef95a0FEE0Dd31b22626fA2e10Ee6A223F8a684', usdcabi.abi, provider.getSigner());
     try {
-      const transaction = await USDC.transfer(id, Moralis.Units.Token(data.amount, 18));
+      const transaction = await USDT.transfer(id, Moralis.Units.Token(data.amount, 18));
       handleNewNotification('success', 'Contract is pending, Please wait! ');
       const res = await transaction.wait();
       if (res?.status == 1) {
@@ -115,7 +115,7 @@ const Campaign = () => {
           </div>
           <div className="col-md-auto col-sm-8">
             <a
-              href={'https://ropsten.etherscan.io/tx/' + `${lastest.hash}`}
+              href={'https://testnet.bscscan.com/tx/' + `${lastest.hash}`}
               target="_blank"
               style={{
                 textDecoration: 'none',
@@ -141,7 +141,7 @@ const Campaign = () => {
         .filter(item => item.from != id)
         .map((item, key) => [
           <a
-            href={'https://ropsten.etherscan.io/tx/' + `${item?.hash}`}
+            href={'https://testnet.bscscan.com/tx/' + `${item?.hash}`}
             target="_blank"
             style={{
               textDecoration: 'none',
@@ -161,7 +161,7 @@ const Campaign = () => {
         .filter(item => item.from == id)
         .map((item, key) => [
           <a
-            href={'https://ropsten.etherscan.io/tx/' + `${item?.hash}`}
+            href={'https://testnet.bscscan.com/tx/' + `${item?.hash}`}
             target="_blank"
             style={{
               textDecoration: 'none',

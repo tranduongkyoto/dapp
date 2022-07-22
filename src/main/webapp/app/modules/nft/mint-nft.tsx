@@ -8,7 +8,7 @@ import { messages } from 'app/config/constants';
 import { IPosition, notifyType } from 'web3uikit/dist/components/Notification/types';
 import { TIconType } from 'web3uikit/dist/components/Icon/collection';
 import { Controller, useForm } from 'react-hook-form';
-import { encode } from 'base-64';
+import { encode } from 'js-base64';
 import { ethers } from 'ethers';
 import * as abi from '../contract/myNft.json';
 const MintNft = () => {
@@ -72,12 +72,15 @@ const MintNft = () => {
         image: theFile,
         name: data.name,
       };
-      const base64 = encode(JSON.stringify(metadata));
+      console.log(metadata);
+      const metadataStr = JSON.stringify(metadata);
+      console.log(metadataStr);
+      const base64 = encode(metadataStr);
       const res = new Moralis.File('test.json', { base64 });
       await res.saveIPFS();
       const uri = 'https://ipfs.moralis.io:2053/ipfs/' + res.name().slice(0, res.name().length - 4);
       try {
-        const myNft = new ethers.Contract('0xfab34f6db9657a74f7ea96a5308c84c4f34b9a91', abi.abi, provider.getSigner());
+        const myNft = new ethers.Contract('0xca0797Bd5397b8822A05CCb7f733f67829c3039d', abi.abi, provider.getSigner());
         const transaction = await myNft.mintNFT(data?.to ? data.to : account, uri);
         handleNewNotification('success', 'Contract is pending, Please wait! ');
         const res = await transaction.wait();
@@ -97,14 +100,6 @@ const MintNft = () => {
       setSelectedFile(defaultImgs[1]);
       setTheFile(null);
     }
-  };
-  const test = async () => {
-    const base64 =
-      'ewoiYXR0cmlidXRlcyI6IFsKewoidHJhaXRfdHlwZSI6ICJCcmVlZCIsCiJ2YWx1ZSI6ICJNYWx0aXBvbyIKfSwKewoidHJhaXRfdHlwZSI6ICJFeWUgY29sb3IiLAoidmFsdWUiOiAiTW9jaGEiCn0KXSwKImRlc2NyaXB0aW9uIjogIlRoZSB3b3JsZCdzIG1vc3QgYWRvcmFibGUgYW5kIHNlbnNpdGl2ZSBwdXAuIiwKImltYWdlIjogImh0dHBzOi8vZ2F0ZXdheS5waW5hdGEuY2xvdWQvaXBmcy9RbVdtdlRKbUpVM3BvelI5WkhGbVFDMkRORHdpMlhKdGYzUUd5WWlpYWdGU1diIiwKIm5hbWUiOiAiUmFtc2VzIgp9';
-    const file = new Moralis.File('test.json', { base64 });
-    console.log(file);
-    await file.saveIPFS();
-    console.log(file);
   };
   return (
     <>

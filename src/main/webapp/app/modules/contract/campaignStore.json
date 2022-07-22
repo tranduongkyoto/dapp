@@ -8,7 +8,7 @@
       "linkReferences": {},
       "autoDeployLib": true
     },
-    "ropsten:3": {
+    "bsc testnet:3": {
       "linkReferences": {},
       "autoDeployLib": true
     },

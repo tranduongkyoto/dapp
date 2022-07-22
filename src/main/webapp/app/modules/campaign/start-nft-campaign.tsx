@@ -60,7 +60,7 @@
 //   //         },
 //   //       ],
 //   //       params: {
-//   //         token: '0x07865c6E87B9F70255377e024ace6630C1Eaa37F',
+//   //         token: '0x7ef95a0FEE0Dd31b22626fA2e10Ee6A223F8a684',
 //   //         amount: Number(newPrice.toFixed(6)) * 1000000000000000000,
 //   //       },
 //   //     };
@@ -197,7 +197,7 @@
 //             <div className="col-md-6 col-sm-12">
 //               <NFT
 //                 address={data[0].attributes?.nft}
-//                 chain="ropsten"
+//                 chain="bsc testnet"
 //                 fetchMetadata
 //                 tokenId={data[0].attributes?.tokenId}
 //                 isAuction={false}

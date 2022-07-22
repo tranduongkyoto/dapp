@@ -45,20 +45,22 @@ const CreateNftCampaign = () => {
 
   const onSubmit = async (data, e) => {
     try {
-      const nftStore = new ethers.Contract('0x1fcf3d0D9A9C4a0f02519c094DE4d326dbafdE98', abi.abi, provider.getSigner());
+      const nftStore = new ethers.Contract('0x50703a8CFC6C7395a90cDeD596e7E31389D1E25E', abi.abi, provider.getSigner());
       const transaction = await nftStore.createNftCampaign(
         data?.name,
         data?.des,
         nftAution.address,
         nftAution.tokenId,
-        nftAution.startingPrice * 1000000000000000000,
-        nftAution.lastPrice * 1000000000000000000,
-        nftAution.discountRate
+        Moralis.Units.Token(nftAution.startingPrice, 18),
+        Moralis.Units.Token(nftAution.lastPrice, 18),
+        Moralis.Units.Token(nftAution.discountRate, 12)
       );
       handleNewNotification('success', 'Contract is pending, Please wait! ');
       const res = await transaction.wait();
       if (res?.status == 1) {
         handleNewNotification('success', `Contract is confirmed with ${res?.confirmations} confirmations. Thank for!`);
+        setnftAution(null);
+        reset();
       }
     } catch (error: any) {
       console.log(error);
@@ -134,7 +136,7 @@ const CreateNftCampaign = () => {
                 <Translate contentKey="campaign.nft.form"></Translate>
               </div>
               {nftAution && (
-                <NFT address={nftAution?.address} chain="ropsten" fetchMetadata tokenId={nftAution?.tokenId} isAuction={false} />
+                <NFT address={nftAution?.address} chain="bsc testnet" fetchMetadata tokenId={nftAution?.tokenId} isAuction={false} />
               )}
             </div>
 

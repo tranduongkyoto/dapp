@@ -77,7 +77,7 @@ export default function Nfts() {
       console.log(id);
       await getNFTBalances({
         params: {
-          chain: 'ropsten',
+          chain: 'bsc testnet',
           address: id,
         },
       });
@@ -109,8 +109,8 @@ export default function Nfts() {
           data.result
             .filter(item => item.token_uri && item.metadata)
             .map(item => (
-              <div className="col-md-4 col-sm-12" key={item.token_address + '/' + item.token_id}>
-                <NFT address={item.token_address} chain="ropsten" fetchMetadata tokenId={item.token_id} />
+              <div className=" col-lg-4 col-md-4 col-sm-12 mt-5" key={item.token_address + '/' + item.token_id}>
+                <NFT address={item.token_address} chain="bsc testnet" fetchMetadata tokenId={item.token_id} />
               </div>
             ))}
       </div>

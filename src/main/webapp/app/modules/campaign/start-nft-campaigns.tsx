@@ -29,15 +29,20 @@ const StartNftCampaigns = () => {
       const myNFT = new ethers.Contract(nft, abi.abi, provider.getSigner());
       const transaction = await myNFT.transferFrom(from, to, tokenId);
       handleNewNotification('success', 'Contract is pending, Please wait! ');
-      const res = await transaction.wait();
-      if (res?.status == 1) {
-        const Auctionss = Moralis.Object.extend('Auctionss');
-        const query = new Moralis.Query(Auctionss);
-        query.equalTo('campaignAddress', to);
-        const auction = await query.first();
-        auction.set('isStart', true);
+      const ids = [1, 2]; // Array of ids
+      const Auctionss = Moralis.Object.extend('Auctionss');
+      const query = new Moralis.Query(Auctionss);
+      query.equalTo('campaignAddress', to);
+      const auction = await query.first();
+      auction.set('isStart', true);
+      const [res1, res2] = await Promise.all([await transaction.wait(), await auction.save()]);
+      console.log(res1);
+      console.log(res2);
+      if (res1?.status == 1) {
+        handleNewNotification('success', `Contract is confirmed with ${res1?.confirmations} confirmations. Thank for!`);
+      } else {
+        auction.set('isStart', false);
         await auction.save();
-        handleNewNotification('success', `Contract is confirmed with ${res?.confirmations} confirmations. Thank for!`);
       }
     } catch (error: any) {
       console.log(error);
@@ -65,7 +70,7 @@ const StartNftCampaigns = () => {
                 <div className="col-md-4 mt-5" key={index}>
                   <NFT
                     address={item.attributes?.nft}
-                    chain="ropsten"
+                    chain="bsc testnet"
                     fetchMetadata
                     tokenId={item.attributes?.tokenId}
                     isAuction={false}

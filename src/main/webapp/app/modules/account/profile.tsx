@@ -46,13 +46,13 @@ export function Profile() {
       console.log(id);
       await getNFTBalances({
         params: {
-          chain: 'ropsten',
+          chain: 'bsc testnet',
           address: id,
         },
       });
       await getNFTTransfers({
         params: {
-          chain: 'ropsten',
+          chain: 'bsc testnet',
           address: id,
         },
       });
@@ -220,7 +220,7 @@ export function Profile() {
                 {myNft.length != 0
                   ? myNft.map(item => (
                       <div className="col-md-4 col-sm-12" key={item.token_address + '/' + item.token_id}>
-                        <NFT address={item.token_address} chain="ropsten" fetchMetadata tokenId={item.token_id} />
+                        <NFT address={item.token_address} chain="bsc testnet" fetchMetadata tokenId={item.token_id} />
                       </div>
                     ))
                   : []}

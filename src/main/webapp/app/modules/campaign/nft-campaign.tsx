@@ -44,22 +44,30 @@ export default function NftCampaign() {
     try {
       const nftAuction = new ethers.Contract(id, abi.abi, provider.getSigner());
       const price = await nftAuction.getPrice();
-      const buyPrice = parseInt(price._hex, 16);
-      const transaction = await nftAuction.buy('0x07865c6e87b9f70255377e024ace6630c1eaa37f', buyPrice);
+      const transaction = await nftAuction.buy(
+        '0x7ef95a0FEE0Dd31b22626fA2e10Ee6A223F8a684',
+        Moralis.Units.Token(parseInt(price._hex, 16) / 1000000000000000000, 18)
+      );
       handleNewNotification('success', 'Contract is pending, Please wait! ');
       const res = await transaction.wait();
+      const Auctionss = Moralis.Object.extend('Auctionss');
+      const query = new Moralis.Query(Auctionss);
+      query.equalTo('campaignAddress', id);
+      const auction = await query.first();
+      auction.set('buyer', account);
+      auction.set('sellPrice', Moralis.Units.Token(parseInt(price._hex, 16) / 1000000000000000000, 18));
+      const [res1, res2] = await Promise.all([await transaction.wait(), await auction.save()]);
+      console.log(res1);
+      console.log(res2);
       if (res?.status == 1) {
-        const Auctionss = Moralis.Object.extend('Auctionss');
-        const query = new Moralis.Query(Auctionss);
-        query.equalTo('campaignAddress', id);
-        const auction = await query.first();
-        auction.set('buyer', account);
-        auction.set('sellPrice', buyPrice.toString());
-        await auction.save();
         handleNewNotification('success', `Contract is confirmed with ${res?.confirmations} confirmations. Thank for!`);
+      } else {
+        auction.set('buyer', '');
+        auction.set('sellPrice', '');
+        await auction.save();
       }
     } catch (error: any) {
-      console.log(error);
+      console.log(JSON.parse(JSON.stringify(error)));
       handleNewNotification(
         'error',
         JSON.parse(JSON.stringify(error))?.error?.message
@@ -90,7 +98,7 @@ export default function NftCampaign() {
       console.log(id);
       await getNFTTransfers({
         params: {
-          chain: 'ropsten',
+          chain: 'bsc testnet',
           address: id,
         },
       });
@@ -102,9 +110,9 @@ export default function NftCampaign() {
     const nftAuction = new ethers.Contract(id, abi.abi, provider.getSigner());
     const price = await nftAuction.getPrice();
     setCurrentPrice(Number(parseInt(price._hex, 16) / 1000000000000000000));
-    const USDC = new ethers.Contract('0x07865c6E87B9F70255377e024ace6630C1Eaa37F', abi2.abi, provider.getSigner());
+    const USDC = new ethers.Contract('0x7ef95a0FEE0Dd31b22626fA2e10Ee6A223F8a684', abi2.abi, provider.getSigner());
     try {
-      const transaction = await USDC.approve(id, parseInt(price._hex, 16));
+      const transaction = await USDC.approve(id, Moralis.Units.Token(parseInt(price._hex, 16) / 1000000000000000000, 18));
       handleNewNotification('success', 'Contract is pending, Please wait! ');
       const res = await transaction.wait();
       if (res?.status == 1) {
@@ -182,7 +190,7 @@ export default function NftCampaign() {
                   ? translate('campaign.nft.end')
                   : translate('campaign.nft.endAt') + `: ${new Date(parseInt(data[0].attributes?.end) * 1000).toDateString()}`}
               </div>
-              {!isBuy && (
+              {!isBuy && isEnd && (
                 <>
                   <Button onClick={() => withDraw()} size="large" text="With Draw" theme="primary" type="button" disabled={isBuy} />
                 </>
@@ -191,7 +199,7 @@ export default function NftCampaign() {
             <div className="col-md-6 col-sm-12">
               <NFT
                 address={data[0].attributes?.nft}
-                chain="ropsten"
+                chain="bsc testnet"
                 fetchMetadata
                 tokenId={data[0].attributes?.tokenId}
                 isAuction={false}
