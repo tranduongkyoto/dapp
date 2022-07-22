@@ -43,7 +43,7 @@ const NftCampaigns = () => {
                 <div className="col-md-4 mt-5" key={index}>
                   <NFT
                     address={item.attributes?.nft}
-                    chain="ropsten"
+                    chain="bsc testnet"
                     fetchMetadata
                     tokenId={item.attributes?.tokenId}
                     isAuction={false}

@@ -22,7 +22,7 @@ const CampaignItem: React.FC<ICampaignProps> = ({ campaignAddress, name, descrip
     console.log('34');
     const getBalanceOf = async () => {
       const data = await axios.get(
-        `https://api-ropsten.etherscan.io/api?module=account&action=tokenbalance&contractaddress=0x07865c6E87B9F70255377e024ace6630C1Eaa37F&address=${campaignAddress}&tag=latest&apikey=FH674SA8K1BFH2SFB7KXYZXFB5GS63IXM4`
+        `https://api-testnet.bscscan.com/api?module=account&action=tokenbalance&contractaddress=0x7ef95a0FEE0Dd31b22626fA2e10Ee6A223F8a684&address=${campaignAddress}&tag=latest&apikey=FH674SA8K1BFH2SFB7KXYZXFB5GS63IXM4`
       );
       console.log(data);
       if (data?.data?.result) {
@@ -32,7 +32,7 @@ const CampaignItem: React.FC<ICampaignProps> = ({ campaignAddress, name, descrip
           if (isLoading) setIsLoading(false);
         } else {
           console.log(data?.data?.result);
-          setBalanceOf(parseInt(data?.data?.result) / 1000000);
+          setBalanceOf(parseInt(data?.data?.result) / 1000000000000000000);
           if (isLoading) setIsLoading(false);
         }
       }
@@ -80,7 +80,7 @@ const CampaignItem: React.FC<ICampaignProps> = ({ campaignAddress, name, descrip
                 </div>
               </div>
               <div className="col-md-4 mt-2">
-                <Tag color="blue" text={(parseInt(goal) / 1000000).toString()} />
+                <Tag color="blue" text={(parseInt(goal) / 1000000000000000000).toString()} />
               </div>
               <div className="col-md-3 mt-2">
                 <Tag color="yellow" text={balanceOf.toString()} />

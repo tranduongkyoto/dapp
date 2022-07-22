@@ -31,7 +31,7 @@
 //   //     const startTime = end - 7 * 24 * 60 * 60;
 //   //     console.log(startTime);
 //   //     const time = new Date().getTime() / 1000 - startTime;
-//   //     const discount = (discountRate * time) / 1000000;
+//   //     const discount = (discountRate * time) / 1000000000000000000;
 //   //     console.log(discount);
 //   //     const newPrice = price - discount + 0.001;
 //   //     setCurrentPrice(Number(newPrice.toFixed(6)));
@@ -60,8 +60,8 @@
 //   //         },
 //   //       ],
 //   //       params: {
-//   //         token: '0x07865c6E87B9F70255377e024ace6630C1Eaa37F',
-//   //         amount: Number(newPrice.toFixed(6)) * 1000000,
+//   //         token: '0x7ef95a0FEE0Dd31b22626fA2e10Ee6A223F8a684',
+//   //         amount: Number(newPrice.toFixed(6)) * 1000000000000000000,
 //   //       },
 //   //     };
 //   //     await contractProcessor.fetch({
@@ -86,14 +86,14 @@
 //   //   useEffect(() => {
 //   //     if (data.length !== 0) {
 //   //       if (price === undefined && discountRate === undefined) {
-//   //         setPrice(parseInt(data[0].attributes?.startingPrice) / 1000000);
-//   //         setCurrentPrice(parseInt(data[0].attributes?.startingPrice) / 1000000);
+//   //         setPrice(parseInt(data[0].attributes?.startingPrice) / 1000000000000000000);
+//   //         setCurrentPrice(parseInt(data[0].attributes?.startingPrice) / 1000000000000000000);
 //   //         setDiscountRate(parseInt(data[0].attributes?.discountRate));
 //   //         setEnd(parseInt(data[0].attributes?.end));
 //   //         const startTime = data[0].attributes?.end - 7 * 24 * 60 * 60;
 //   //         const time = new Date().getTime() / 1000 - startTime;
-//   //         const discount = (parseInt(data[0].attributes?.discountRate) * time) / 1000000;
-//   //         const newPrice = data[0].attributes?.startingPrice / 1000000 - discount + 0.001;
+//   //         const discount = (parseInt(data[0].attributes?.discountRate) * time) / 1000000000000000000;
+//   //         const newPrice = data[0].attributes?.startingPrice / 1000000000000000000 - discount + 0.001;
 //   //         setCurrentPrice(Number(newPrice.toFixed(6)));
 //   //       }
 //   //     }
@@ -197,7 +197,7 @@
 //             <div className="col-md-6 col-sm-12">
 //               <NFT
 //                 address={data[0].attributes?.nft}
-//                 chain="ropsten"
+//                 chain="bsc testnet"
 //                 fetchMetadata
 //                 tokenId={data[0].attributes?.tokenId}
 //                 isAuction={false}
@@ -221,7 +221,7 @@
 //                       const time = new Date().getTime() / 1000 - startTime;
 //                       console.log(startTime);
 //                       console.log(time);
-//                       const discount = (discountRate * time) / 1000000;
+//                       const discount = (discountRate * time) / 1000000000000000000;
 //                       const newPrice = price - discount + 0.01;
 //                       setCurrentPrice(Number(newPrice.toFixed(6)));
 //                     }}

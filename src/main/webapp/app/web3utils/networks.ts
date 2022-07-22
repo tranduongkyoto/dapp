@@ -18,7 +18,7 @@ export const networkConfigs: iNetworkConfigs = {
   },
   '0x3': {
     currencySymbol: 'ETH',
-    blockExplorerUrl: 'https://ropsten.etherscan.io/',
+    blockExplorerUrl: 'https://testnet.bscscan.com/',
   },
   '0x4': {
     currencySymbol: 'ETH',
@@ -91,7 +91,7 @@ export const getExplorer = (chain: string) => networkConfigs[chain]?.blockExplor
 export const getWrappedNative = (chain: string) => networkConfigs[chain]?.wrapped || null;
 
 type EthChain = 'eth' | '0x1';
-type RopstenChain = 'ropsten' | '0x3';
+type RopstenChain = 'bsc testnet' | '0x3';
 type RinkebyChain = 'rinkeby' | '0x4';
 type GoerliChain = 'goerli' | '0x5';
 type KovanChain = 'kovan' | '0x2a';

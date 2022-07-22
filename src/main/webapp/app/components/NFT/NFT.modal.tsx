@@ -59,7 +59,7 @@ const NFTModal: React.FC<INFTModal> = ({ attributes, setShowModal, address, toke
       <div className="row ">
         {/* <button onClick={() => test()}>TEST</button> */}
         <div className="col-md-5 col-sm-12">
-          <NFT address={address} chain="ropsten" fetchMetadata tokenId={tokenId} isAuction={false} />
+          <NFT address={address} chain="bsc testnet" fetchMetadata tokenId={tokenId} isAuction={false} />
         </div>
         <div className="col-md-7 col-sm-12 mt-2">
           <div>
