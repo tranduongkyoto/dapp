@@ -51,8 +51,8 @@ const CreateNftCampaign = () => {
         data?.des,
         nftAution.address,
         nftAution.tokenId,
-        nftAution.startingPrice * 1000000,
-        nftAution.lastPrice * 1000000,
+        nftAution.startingPrice * 1000000000000000000,
+        nftAution.lastPrice * 1000000000000000000,
         nftAution.discountRate
       );
       handleNewNotification('success', 'Contract is pending, Please wait! ');

@@ -70,11 +70,11 @@ const CreateCampaign = () => {
       return;
     } else {
       try {
-        const campaignStore = new ethers.Contract('0xdB8E82959E62090b6a68Cf4F3843Ac329B9eD01c', abi.abi, provider.getSigner(account));
+        const campaignStore = new ethers.Contract('0x512D5E619C9500f9EAD9fB08a1f4185bF6A63049', abi.abi, provider.getSigner(account));
         const transaction = await campaignStore.createCampaign(
           data?.name,
           data?.des,
-          Moralis.Units.Token(data.goal, 6),
+          Moralis.Units.Token(data.goal, 18),
           parseInt(data.endTime),
           theFile,
           data?.type

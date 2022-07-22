@@ -45,9 +45,9 @@ const Campaign = () => {
   });
 
   const onSubmit = async (data, e) => {
-    const USDC = new ethers.Contract('0x07865c6E87B9F70255377e024ace6630C1Eaa37F', usdcabi.abi, provider.getSigner());
+    const USDC = new ethers.Contract('0x7ef95a0FEE0Dd31b22626fA2e10Ee6A223F8a684', usdcabi.abi, provider.getSigner());
     try {
-      const transaction = await USDC.transfer(id, Moralis.Units.Token(data.amount, 6));
+      const transaction = await USDC.transfer(id, Moralis.Units.Token(data.amount, 18));
       handleNewNotification('success', 'Contract is pending, Please wait! ');
       const res = await transaction.wait();
       if (res?.status == 1) {
@@ -71,7 +71,7 @@ const Campaign = () => {
     if (isInitialized) {
       const getTransaction = async () => {
         const data = await axios.get(
-          `https://api-ropsten.etherscan.io/api?module=account&action=tokentx&contractaddress=0x07865c6E87B9F70255377e024ace6630C1Eaa37F&address=${id}&page=1&offset=100&startblock=0&endblock=99999999&sort=asc&apikey=FH674SA8K1BFH2SFB7KXYZXFB5GS63IXM4`
+          `https://api-testnet.bscscan.com/api?module=account&action=tokentx&contractaddress=0x7ef95a0FEE0Dd31b22626fA2e10Ee6A223F8a684&address=${id}&page=1&offset=100&startblock=0&endblock=99999999&sort=asc&apikey=FH674SA8K1BFH2SFB7KXYZXFB5GS63IXM4`
         );
         if (data?.data?.result) {
           setTransaction(data?.data?.result);
@@ -80,13 +80,13 @@ const Campaign = () => {
 
       const getBalanceOf = async () => {
         const data = await axios.get(
-          `https://api-ropsten.etherscan.io/api?module=account&action=tokenbalance&contractaddress=0x07865c6E87B9F70255377e024ace6630C1Eaa37F&address=${id}&tag=latest&apikey=FH674SA8K1BFH2SFB7KXYZXFB5GS63IXM4`
+          `https://api-testnet.bscscan.com/api?module=account&action=tokenbalance&contractaddress=0x7ef95a0FEE0Dd31b22626fA2e10Ee6A223F8a684&address=${id}&tag=latest&apikey=FH674SA8K1BFH2SFB7KXYZXFB5GS63IXM4`
         );
         if (data?.data?.result) {
           if (data?.data?.result == '0') {
             setBalanceOf(0);
           } else {
-            setBalanceOf(parseInt(data?.data?.result) / 1000000);
+            setBalanceOf(parseInt(data?.data?.result) / 1000000000000000000);
           }
         }
       };
@@ -96,7 +96,7 @@ const Campaign = () => {
         isEnd =
           isEnd ||
           new Date().getTime() > parseInt(data[0].attributes?.endTime) * 1000 ||
-          balanceOf >= parseInt(data[0].attributes.goal) / 1000000 ||
+          balanceOf >= parseInt(data[0].attributes.goal) / 1000000000000000000 ||
           withDrawDataTable.length == 1;
         //isEnd = true;
         isCreator = data[0].attributes?.creator === account;
@@ -124,7 +124,7 @@ const Campaign = () => {
               {getEllipsisTxt(lastest.hash, 3)}
             </a>
           </div>
-          <div className="col-md-auto col-sm-4 text-warning">{parseInt(lastest.value) / 1000000} USDC</div>
+          <div className="col-md-auto col-sm-4 text-warning">{parseInt(lastest.value) / 1000000000000000000} USDC</div>
           <div className="col-md-auto col-sm-4 font-weight-bold">Lastest</div>
           <div className="col-md-auto col-sm-4 font-italic">Thank for great action!</div>
         </div>
@@ -152,7 +152,7 @@ const Campaign = () => {
           new Date(parseInt(item.timeStamp) * 1000).toString().slice(0, 25),
           getEllipsisTxt(item.from),
           getEllipsisTxt(item.to),
-          parseInt(item?.value) / 1000000,
+          parseInt(item?.value) / 1000000000000000000,
           item.tokenSymbol,
         ])
     : [];
@@ -172,7 +172,7 @@ const Campaign = () => {
           new Date(parseInt(item.timeStamp) * 1000).toString().slice(0, 25),
           getEllipsisTxt(item.from),
           getEllipsisTxt(item.to),
-          parseInt(item?.value) / 1000000,
+          parseInt(item?.value) / 1000000000000000000,
           item.tokenSymbol,
         ])
     : [];
@@ -180,7 +180,9 @@ const Campaign = () => {
   const withDraw = async () => {
     const campaign = new ethers.Contract(id, cam.abi, provider.getSigner());
     try {
-      const transaction = await campaign.withDraw2('0x07865c6E87B9F70255377e024ace6630C1Eaa37F', balanceOf * 1000000);
+      console.log(balanceOf);
+      console.log(balanceOf * 1000000000000000000);
+      const transaction = await campaign.withDraw2('0x7ef95a0FEE0Dd31b22626fA2e10Ee6A223F8a684', Moralis.Units.Token(balanceOf, 18));
       handleNewNotification('success', 'Contract is pending, Please wait! ');
       const res = await transaction.wait();
       if (res?.status == 1) {
@@ -190,7 +192,7 @@ const Campaign = () => {
       }
       reset();
     } catch (error: any) {
-      console.log(error);
+      console.log(JSON.parse(JSON.stringify(error)));
       handleNewNotification(
         'error',
         JSON.parse(JSON.stringify(error))?.error?.message
@@ -209,7 +211,7 @@ const Campaign = () => {
     isEnd =
       isEnd ||
       new Date().getTime() > parseInt(data[0].attributes?.endTime) * 1000 ||
-      balanceOf >= parseInt(data[0].attributes.goal) / 1000000 ||
+      balanceOf >= parseInt(data[0].attributes.goal) / 1000000000000000000 ||
       withDrawDataTable.length == 1;
     //isEnd = true;
     isCreator = data[0].attributes?.creator === account;
@@ -248,7 +250,7 @@ const Campaign = () => {
               <div className="h3">
                 {' '}
                 {translate('campaign.crypto.goal') + ': '}
-                {parseInt(data[0].attributes.goal) / 1000000} USD
+                {parseInt(data[0].attributes.goal) / 1000000000000000000} USD
               </div>
             </div>
             <div className="col-md-5 col-sm-12">

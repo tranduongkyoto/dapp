@@ -21,10 +21,10 @@ const Campaigns = () => {
 
   const getBalanceOf = async (id: string) => {
     const data = await axios.get(
-      `https://api-ropsten.etherscan.io/api?module=account&action=tokenbalance&contractaddress=0x07865c6E87B9F70255377e024ace6630C1Eaa37F&address=${id}&tag=latest&apikey=FH674SA8K1BFH2SFB7KXYZXFB5GS63IXM4`
+      `https://api-testnet.bscscan.com/api?module=account&action=tokenbalance&contractaddress=0x7ef95a0FEE0Dd31b22626fA2e10Ee6A223F8a684&address=${id}&tag=latest&apikey=FH674SA8K1BFH2SFB7KXYZXFB5GS63IXM4`
     );
     if (data?.data?.result) {
-      return parseInt(data?.data?.result) / 1000000;
+      return parseInt(data?.data?.result) / 1000000000000000000;
     } else return 0;
   };
   // console.log(getBalanceOf());

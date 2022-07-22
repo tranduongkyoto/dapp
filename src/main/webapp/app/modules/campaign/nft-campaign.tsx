@@ -37,7 +37,7 @@ export default function NftCampaign() {
     const startTime = end - 7 * 24 * 60 * 60;
     console.log(startTime);
     const time = new Date().getTime() / 1000 - startTime;
-    const discount = (discountRate * time) / 1000000;
+    const discount = (discountRate * time) / 1000000000000000000;
     console.log(discount);
     const newPrice = price - discount + 0.001;
     setCurrentPrice(Number(newPrice.toFixed(6)));
@@ -73,13 +73,13 @@ export default function NftCampaign() {
     const getData = async () => {
       if (data.length !== 0) {
         if (price === undefined && discountRate === undefined) {
-          setPrice(parseInt(data[0].attributes?.startingPrice) / 1000000);
-          setCurrentPrice(parseInt(data[0].attributes?.startingPrice) / 1000000);
+          setPrice(parseInt(data[0].attributes?.startingPrice) / 1000000000000000000);
+          setCurrentPrice(parseInt(data[0].attributes?.startingPrice) / 1000000000000000000);
           setDiscountRate(parseInt(data[0].attributes?.discountRate));
           setEnd(parseInt(data[0].attributes?.end));
           const nftAuction = new ethers.Contract(id, abi.abi, provider.getSigner());
           const price = await nftAuction.getPrice();
-          setCurrentPrice(Number(parseInt(price._hex, 16) / 1000000));
+          setCurrentPrice(Number(parseInt(price._hex, 16) / 1000000000000000000));
         }
       }
     };
@@ -101,7 +101,7 @@ export default function NftCampaign() {
   const approve = async () => {
     const nftAuction = new ethers.Contract(id, abi.abi, provider.getSigner());
     const price = await nftAuction.getPrice();
-    setCurrentPrice(Number(parseInt(price._hex, 16) / 1000000));
+    setCurrentPrice(Number(parseInt(price._hex, 16) / 1000000000000000000));
     const USDC = new ethers.Contract('0x07865c6E87B9F70255377e024ace6630C1Eaa37F', abi2.abi, provider.getSigner());
     try {
       const transaction = await USDC.approve(id, parseInt(price._hex, 16));
@@ -214,8 +214,8 @@ export default function NftCampaign() {
                       setIsGetPrice(true);
                       const nftAuction = new ethers.Contract(id, abi.abi, provider.getSigner());
                       const price = await nftAuction.getPrice();
-                      console.log(parseInt(price._hex, 16) / 1000000);
-                      setCurrentPrice(Number(parseInt(price._hex, 16) / 1000000));
+                      console.log(parseInt(price._hex, 16) / 1000000000000000000);
+                      setCurrentPrice(Number(parseInt(price._hex, 16) / 1000000000000000000));
                       setTimeout(() => setIsGetPrice(false), 5000);
                     }}
                     size="large"
@@ -279,7 +279,7 @@ export default function NftCampaign() {
                   </div>
                   <div className="h3">
                     {' '}
-                    {translate('campaign.nft.price')} {parseInt(data[0].attributes?.sellPrice) / 1000000} USD
+                    {translate('campaign.nft.price')} {parseInt(data[0].attributes?.sellPrice) / 1000000000000000000} USD
                   </div>
                 </div>
               </>
