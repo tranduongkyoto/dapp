@@ -7,7 +7,7 @@ import { Translate, translate } from 'react-jhipster';
 
 const adminMenuItems = (
   <>
-    <MenuItem icon="users" to="/admin/user-management">
+    <MenuItem icon="users" to="/admin/user-manage">
       <Translate contentKey="global.menu.admin.userManagement">User management</Translate>
     </MenuItem>
     {/* jhipster-needle-add-element-to-admin-menu - JHipster will add entities to the admin menu here */}
@@ -23,7 +23,7 @@ const openAPIItem = (
 export const AdminMenu = ({ showOpenAPI }) => (
   <NavDropdown icon="users-cog" name={translate('global.menu.admin.main')} id="admin-menu" data-cy="adminMenu">
     {adminMenuItems}
-    {showOpenAPI && openAPIItem}
+    {/* {showOpenAPI} */}
   </NavDropdown>
 );
 

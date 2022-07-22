@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { ethers } from 'ethers';
 import { MetaMaskInpageProvider } from '@metamask/providers';
 import * as abi from '../contract/nftAution.json';
+import * as abi2 from '../contract/USDC.json';
 import { useMoralis, useMoralisQuery, useNFTTransfers, useWeb3ExecuteFunction } from 'react-moralis';
 import { useHistory, useParams } from 'react-router-dom';
 import { Loading, Tag, Button, Hero, Table } from 'web3uikit';
@@ -30,7 +31,6 @@ export default function NftCampaign() {
   const [discountRate, setDiscountRate] = useState<number>();
   const [end, setEnd] = useState<number>();
   const [buyPrice, setBuyPrice] = useState<number>();
-  const contractProcessor = useWeb3ExecuteFunction();
   const { handleNewNotification } = useNotificationCustom();
   const [isGetPrice, setIsGetPrice] = useState(false);
   const buy = async (nft, tokenId) => {
@@ -102,43 +102,23 @@ export default function NftCampaign() {
     const nftAuction = new ethers.Contract(id, abi.abi, provider.getSigner());
     const price = await nftAuction.getPrice();
     setCurrentPrice(Number(parseInt(price._hex, 16) / 1000000));
-
-    const options = {
-      contractAddress: '0x07865c6E87B9F70255377e024ace6630C1Eaa37F',
-      functionName: 'approve',
-      abi: [
-        {
-          inputs: [
-            { internalType: 'address', name: 'spender', type: 'address' },
-            { internalType: 'uint256', name: 'value', type: 'uint256' },
-          ],
-          name: 'approve',
-          outputs: [{ internalType: 'bool', name: '', type: 'bool' }],
-          stateMutability: 'nonpayable',
-          type: 'function',
-        },
-      ],
-      params: {
-        spender: id,
-        value: parseInt(price._hex, 16),
-      },
-    };
-    await contractProcessor.fetch({
-      params: options,
-      onSuccess: res => {
-        console.log('Success');
-        handleNewNotification('success', 'Contract is pending, please wait!');
-      },
-      onError: error => {
-        console.log(error);
-        handleNewNotification(
-          'error',
-          JSON.parse(JSON.stringify(error))?.error?.message
-            ? JSON.parse(JSON.stringify(error))?.error?.message
-            : JSON.parse(JSON.stringify(error))?.message
-        );
-      },
-    });
+    const USDC = new ethers.Contract('0x07865c6E87B9F70255377e024ace6630C1Eaa37F', abi2.abi, provider.getSigner());
+    try {
+      const transaction = await USDC.approve(id, parseInt(price._hex, 16));
+      handleNewNotification('success', 'Contract is pending, Please wait! ');
+      const res = await transaction.wait();
+      if (res?.status == 1) {
+        handleNewNotification('success', `Contract is confirmed with ${res?.confirmations} confirmations.!`);
+      }
+    } catch (error: any) {
+      console.log(JSON.parse(JSON.stringify(error)));
+      handleNewNotification(
+        'error',
+        JSON.parse(JSON.stringify(error))?.error?.message
+          ? JSON.parse(JSON.stringify(error))?.error?.message
+          : JSON.parse(JSON.stringify(error))?.message
+      );
+    }
   };
 
   if (data[0]) {

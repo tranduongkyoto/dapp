@@ -72,7 +72,8 @@
         "setting": "Setting",
         "start": "Create",
         "clear": "Clear"
-      }
+      },
+      "start": "Start"
     }
   }
 }

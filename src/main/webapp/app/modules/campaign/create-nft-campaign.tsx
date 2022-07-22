@@ -11,7 +11,8 @@ import { Link, useLocation } from 'react-router-dom';
 import { useForm, Controller, SubmitHandler } from 'react-hook-form';
 import { AppContext } from 'app/provider/appContext';
 import { NFT } from 'app/components/NFT';
-
+import { ethers } from 'ethers';
+import * as abi from '../contract/nftStore.json';
 const CreateNftCampaign = () => {
   const { nftAution, setnftAution, myNft, setMyNft } = useContext(AppContext);
   const inputFile = useRef(null);
@@ -19,18 +20,9 @@ const CreateNftCampaign = () => {
   const [theFile, setTheFile] = useState<any>();
   const { Moralis } = useMoralis();
   const Web3Api = useMoralisWeb3Api();
-  const contractProcessor = useWeb3ExecuteFunction();
   const dispatch = useNotification();
+  const provider = new ethers.providers.Web3Provider(window.ethereum);
 
-  // const onBannerClick = () => {
-  //   inputFile.current.click();
-  // };
-
-  // const changeHandler = event => {
-  //   const img = event.target.files[0];
-  //   setTheFile(img);
-  //   setSelectedFile(URL.createObjectURL(img));
-  // };
   const handleNewNotification = (type: notifyType, message?: string, icon?: TIconType, position?: IPosition) => {
     dispatch({
       type,
@@ -52,88 +44,31 @@ const CreateNftCampaign = () => {
   });
 
   const onSubmit = async (data, e) => {
-    const options = {
-      contractAddress: '0x1fcf3d0D9A9C4a0f02519c094DE4d326dbafdE98',
-      functionName: 'createNftCampaign',
-      abi: [
-        {
-          inputs: [
-            {
-              internalType: 'string',
-              name: 'name',
-              type: 'string',
-            },
-            {
-              internalType: 'string',
-              name: 'description',
-              type: 'string',
-            },
-            {
-              internalType: 'address',
-              name: '_address',
-              type: 'address',
-            },
-            {
-              internalType: 'uint256',
-              name: '_tokenId',
-              type: 'uint256',
-            },
-            {
-              internalType: 'uint256',
-              name: '_startingPrice',
-              type: 'uint256',
-            },
-            {
-              internalType: 'uint256',
-              name: '_lastPrice',
-              type: 'uint256',
-            },
-            {
-              internalType: 'uint256',
-              name: '_discountRate',
-              type: 'uint256',
-            },
-          ],
-          name: 'createNftCampaign',
-          outputs: [],
-          stateMutability: 'nonpayable',
-          type: 'function',
-        },
-      ],
-      params: {
-        name: data?.name,
-        description: data?.des,
-        _address: nftAution.address,
-        _tokenId: nftAution.tokenId,
-        _startingPrice: nftAution.startingPrice * 1000000,
-        _lastPrice: nftAution.lastPrice * 1000000,
-        _discountRate: nftAution.discountRate,
-      },
-    };
-    console.log(options);
-    await contractProcessor.fetch({
-      params: options,
-      onSuccess: res => {
-        handleNewNotification('success', 'Contract is pending, Please wait! ');
-        setSelectedFile(defaultImgs[1]);
-        setTheFile(null);
-        reset();
-        setnftAution(null);
-        window.localStorage.removeItem('myNft');
-      },
-      onError: error => {
-        console.log(error);
-        handleNewNotification(
-          'error',
-          JSON.parse(JSON.stringify(error))?.error?.message
-            ? JSON.parse(JSON.stringify(error))?.error?.message
-            : JSON.parse(JSON.stringify(error))?.message
-        );
-      },
-      onComplete: () => {
-        console.log();
-      },
-    });
+    try {
+      const nftStore = new ethers.Contract('0x1fcf3d0D9A9C4a0f02519c094DE4d326dbafdE98', abi.abi, provider.getSigner());
+      const transaction = await nftStore.createNftCampaign(
+        data?.name,
+        data?.des,
+        nftAution.address,
+        nftAution.tokenId,
+        nftAution.startingPrice * 1000000,
+        nftAution.lastPrice * 1000000,
+        nftAution.discountRate
+      );
+      handleNewNotification('success', 'Contract is pending, Please wait! ');
+      const res = await transaction.wait();
+      if (res?.status == 1) {
+        handleNewNotification('success', `Contract is confirmed with ${res?.confirmations} confirmations. Thank for!`);
+      }
+    } catch (error: any) {
+      console.log(error);
+      handleNewNotification(
+        'error',
+        JSON.parse(JSON.stringify(error))?.error?.message
+          ? JSON.parse(JSON.stringify(error))?.error?.message
+          : JSON.parse(JSON.stringify(error))?.message
+      );
+    }
   };
   useEffect(() => {
     console.log(nftAution);

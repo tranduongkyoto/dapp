@@ -17,7 +17,6 @@ const StartNftCampaigns = () => {
   const { data: auction, error: auctionErr } = useMoralisQuery('Auctionss');
   const history = useHistory();
   const provider = new ethers.providers.Web3Provider(window.ethereum);
-  const contractProcessor = useWeb3ExecuteFunction();
   const { handleNewNotification } = useNotificationCustom();
   const buy = id => {
     history.push(`/auction/${id}`);
@@ -51,8 +50,8 @@ const StartNftCampaigns = () => {
     }
   };
   console.log(auction);
-  if (!auction) {
-    return <div>No Response</div>;
+  if (auction.filter(item => item.attributes?.creator == account && !item.attributes?.isStart).length == 0) {
+    return <div>No Data</div>;
   }
 
   return (
@@ -85,7 +84,7 @@ const StartNftCampaigns = () => {
                               item.attributes?.campaignAddress
                             )
                           }
-                          text={translate('campaign.nft.create')}
+                          text={translate('campaign.nft.start')}
                           theme="primary"
                           type="button"
                         />

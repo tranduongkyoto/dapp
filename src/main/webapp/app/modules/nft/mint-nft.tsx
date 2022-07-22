@@ -9,7 +9,8 @@ import { IPosition, notifyType } from 'web3uikit/dist/components/Notification/ty
 import { TIconType } from 'web3uikit/dist/components/Icon/collection';
 import { Controller, useForm } from 'react-hook-form';
 import { encode } from 'base-64';
-
+import { ethers } from 'ethers';
+import * as abi from '../contract/myNft.json';
 const MintNft = () => {
   const { account } = useMoralis();
   const inputFile = useRef(null);
@@ -18,21 +19,26 @@ const MintNft = () => {
   const [theFile, setTheFile] = useState<any>();
   const { Moralis } = useMoralis();
   const Web3Api = useMoralisWeb3Api();
-  const contractProcessor = useWeb3ExecuteFunction();
   const dispatch = useNotification();
+  const provider = new ethers.providers.Web3Provider(window.ethereum);
   const onBannerClick = () => {
     inputFile.current.click();
   };
 
-  const changeHandler = event => {
+  const changeHandler = async event => {
     const file = event.target.files[0];
     console.log(file);
     console.log(file.type.slice(0, 5));
     if (file.type.slice(0, 5) !== 'image') {
       setIsImage(true);
     } else setIsImage(false);
-    setTheFile(file);
     setSelectedFile(URL.createObjectURL(file));
+    const imgFile = file;
+    const newFile = new Moralis.File(imgFile.name, imgFile);
+    await newFile.saveIPFS();
+    const nftImageJ = 'https://ipfs.moralis.io:2053/ipfs/' + newFile.name().slice(0, newFile.name().length - 4);
+    setTheFile(nftImageJ);
+    //setSelectedFile(URL.createObjectURL(file));
   };
   const handleNewNotification = (type: notifyType, message?: string, icon?: TIconType, position?: IPosition) => {
     dispatch({
@@ -61,82 +67,35 @@ const MintNft = () => {
       handleNewNotification('error', 'Please select image banner for Campaign');
       return;
     } else {
-      const imgFile = theFile;
-      const file = new Moralis.File(imgFile.name, imgFile);
-      await file.saveIPFS();
-      const nftImageJ = 'https://ipfs.moralis.io:2053/ipfs/' + file.name().slice(0, file.name().length - 4);
-
       const metadata = {
         description: data.des,
-        image: nftImageJ,
+        image: theFile,
         name: data.name,
       };
       const base64 = encode(JSON.stringify(metadata));
       const res = new Moralis.File('test.json', { base64 });
       await res.saveIPFS();
-      const uri = 'https://ipfs.moralis.io:2053/ipfs/' + res.name().slice(0, file.name().length - 4);
-      const options = {
-        contractAddress: '0xfab34f6db9657a74f7ea96a5308c84c4f34b9a91',
-        functionName: 'mintNFT',
-        abi: [
-          {
-            inputs: [
-              {
-                internalType: 'address',
-                name: 'recipient',
-                type: 'address',
-              },
-              {
-                internalType: 'string',
-                name: 'tokenURI',
-                type: 'string',
-              },
-            ],
-            name: 'mintNFT',
-            outputs: [
-              {
-                internalType: 'uint256',
-                name: '',
-                type: 'uint256',
-              },
-            ],
-            stateMutability: 'nonpayable',
-            type: 'function',
-          },
-        ],
-        params: {
-          recipient: data?.to ? data.to : account,
-          tokenURI: uri,
-        },
-      };
-      console.log(options);
-      await contractProcessor.fetch({
-        params: options,
-        onSuccess: res => {
-          console.log('Success');
-          handleNewNotification('success', 'Contract is pending, Please wait! ');
-          setSelectedFile(defaultImgs[1]);
-          setTheFile(null);
-          e.target.reset();
-        },
-        onError: error => {
-          console.log(JSON.parse(JSON.stringify(error)));
-          handleNewNotification(
-            'error',
-            JSON.parse(JSON.stringify(error))?.error?.message
-              ? JSON.parse(JSON.stringify(error))?.error?.message +
-                  ' ' +
-                  JSON.parse(JSON.stringify(error))?.reason +
-                  '  ' +
-                  JSON.parse(JSON.stringify(error))?.code
-              : JSON.parse(JSON.stringify(error))?.message +
-                  ' ' +
-                  JSON.parse(JSON.stringify(error))?.reason +
-                  '  ' +
-                  JSON.parse(JSON.stringify(error))?.code
-          );
-        },
-      });
+      const uri = 'https://ipfs.moralis.io:2053/ipfs/' + res.name().slice(0, res.name().length - 4);
+      try {
+        const myNft = new ethers.Contract('0xfab34f6db9657a74f7ea96a5308c84c4f34b9a91', abi.abi, provider.getSigner());
+        const transaction = await myNft.mintNFT(data?.to ? data.to : account, uri);
+        handleNewNotification('success', 'Contract is pending, Please wait! ');
+        const res = await transaction.wait();
+        if (res?.status == 1) {
+          handleNewNotification('success', `Contract is confirmed with ${res?.confirmations} confirmations. NFT is created!`);
+        }
+      } catch (error: any) {
+        console.log(error);
+        console.log(JSON.parse(JSON.stringify(error)));
+        handleNewNotification(
+          'error',
+          JSON.parse(JSON.stringify(error))?.error?.message
+            ? JSON.parse(JSON.stringify(error))?.error?.message
+            : JSON.parse(JSON.stringify(error))?.message
+        );
+      }
+      setSelectedFile(defaultImgs[1]);
+      setTheFile(null);
     }
   };
   const test = async () => {

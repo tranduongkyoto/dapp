@@ -1,32 +1,17 @@
+import React, { useContext, useEffect, useState } from 'react';
 import './campaign.scss';
-import React, { useState, useEffect, useContext } from 'react';
-import { convertDateTimeFromServer, convertDateTimeToServer, convertTimeStampToDate } from 'app/shared/util/date-utils';
 // import { Table } from 'reactstrap';
-import { Loading, CryptoCards, Table, Button } from 'web3uikit';
-import {
-  useMoralis,
-  useMoralisWeb3Api,
-  useWeb3ExecuteFunction,
-  useMoralisQuery,
-  useWeb3Transfer,
-  useERC20Balances,
-  useMoralisCloudFunction,
-  MoralisCloudFunctionParameters,
-} from 'react-moralis';
-import MoralisType from 'moralis';
-import { useParams } from 'react-router-dom';
-import { useForm } from 'react-hook-form';
-import axios from 'axios';
-import { result } from 'lodash';
-import { getEllipsisTxt, timeStampToDateTime } from 'app/web3utils';
-import { AppProvider } from 'app/provider/appProvider';
 import { AppContext } from 'app/provider/appContext';
-import { UserCustom } from 'app/provider/styles';
+import { getEllipsisTxt, timeStampToDateTime } from 'app/web3utils';
 import { useNotificationCustom } from 'app/web3utils/notification';
 import { ethers } from 'ethers';
-import * as campaignabi from '../../contract/campaignStore.json';
+import MoralisType from 'moralis';
 import { translate } from 'react-jhipster';
-
+import { useMoralis, useMoralisCloudFunction, useWeb3ExecuteFunction } from 'react-moralis';
+import { useParams } from 'react-router-dom';
+import { Button, Loading, Table } from 'web3uikit';
+import * as campaignabi from '../../contract/campaignStore.json';
+import * as abi from '../../contract/nftStore.json';
 interface transactionType {
   hash: string;
   from: string;
@@ -75,23 +60,23 @@ export default function UserManage() {
 
   const addCampaign = async (add: string, id: string) => {
     try {
-      // const campaignStore = new ethers.Contract('0x1fcf3d0D9A9C4a0f02519c094DE4d326dbafdE98', campaignabi.abi, provider.getSigner());
-      // const transaction = await campaignStore.addWhiteLister(add);
-      // handleNewNotification('success', 'Contract is pending, Please wait! ');
-      // const res = await transaction.wait();
-      // if (res?.status == 1) {
-      //handleNewNotification('success', `Contract is confirmed with ${res?.confirmations} confirmations. Thank for!`);
-      const User = Moralis.Object.extend('_User', { useMasterkey: true });
-      const query = new Moralis.Query(User);
-      //console.log(id);
-      console.log(add, id);
-      query.equalTo('objectId', id);
-      console.log(query);
-      const user = await query.first({ useMasterKey: true });
-      console.log(user);
-      user.set('isCryptoWhiteLister', true);
-      await user.save();
-      //}
+      const campaignStore = new ethers.Contract('0x1fcf3d0D9A9C4a0f02519c094DE4d326dbafdE98', campaignabi.abi, provider.getSigner());
+      const transaction = await campaignStore.addWhiteLister(add);
+      handleNewNotification('success', 'Contract is pending, Please wait! ');
+      const res = await transaction.wait();
+      if (res?.status == 1) {
+        handleNewNotification('success', `Contract is confirmed with ${res?.confirmations} confirmations. Thank for!`);
+        const User = Moralis.Object.extend('_User', { useMasterkey: true });
+        const query = new Moralis.Query(User);
+        //console.log(id);
+        console.log(add, id);
+        query.equalTo('objectId', id);
+        console.log(query);
+        const user = await query.first({ useMasterKey: true });
+        console.log(user);
+        user.set('isCryptoWhiteLister', true);
+        await user.save();
+      }
     } catch (error: any) {
       console.log(error);
       handleNewNotification(
@@ -103,45 +88,32 @@ export default function UserManage() {
     }
   };
   const addNft = async (add: string) => {
-    const options = {
-      contractAddress: '0xd784DD5D8C9E7F7681BDF268e5FeC11CCA6Ca14A',
-      functionName: 'addWhiteLister',
-      abi: [
-        {
-          inputs: [
-            {
-              internalType: 'address',
-              name: 'user',
-              type: 'address',
-            },
-          ],
-          name: 'addWhiteLister',
-          outputs: [],
-          stateMutability: 'nonpayable',
-          type: 'function',
-        },
-      ],
-      params: {
-        user: add,
-      },
-    };
-    console.log(options);
-    await contractProcessor.fetch({
-      params: options,
-      onSuccess: res => {
-        console.log('Success');
-        handleNewNotification('success', 'Contract is pending, please wait!');
-      },
-      onError: error => {
-        console.log(error);
-        handleNewNotification(
-          'error',
-          JSON.parse(JSON.stringify(error))?.error?.message
-            ? JSON.parse(JSON.stringify(error))?.error?.message
-            : JSON.parse(JSON.stringify(error))?.message
-        );
-      },
-    });
+    try {
+      const nftStore = new ethers.Contract('0x1fcf3d0D9A9C4a0f02519c094DE4d326dbafdE98', abi.abi, provider.getSigner());
+      const transaction = await nftStore.addWhiteLister(add);
+      handleNewNotification('success', 'Contract is pending, Please wait! ');
+      const res = await transaction.wait();
+      if (res?.status == 1) {
+        handleNewNotification('success', `Contract is confirmed with ${res?.confirmations} confirmations. Thank for!`);
+        // const User = Moralis.Object.extend('_User', { useMasterkey: true });
+        // const query = new Moralis.Query(User);
+        // console.log(add, id);
+        // query.equalTo('objectId', id);
+        // console.log(query);
+        // const user = await query.first({ useMasterKey: true });
+        // console.log(user);
+        // user.set('isNFTWhiteLister', true);
+        // await user.save();
+      }
+    } catch (error: any) {
+      console.log(error);
+      handleNewNotification(
+        'error',
+        JSON.parse(JSON.stringify(error))?.error?.message
+          ? JSON.parse(JSON.stringify(error))?.error?.message
+          : JSON.parse(JSON.stringify(error))?.message
+      );
+    }
   };
   const removeCampaign = async (add: string) => {
     try {
@@ -169,45 +141,32 @@ export default function UserManage() {
     }
   };
   const removeNft = async (add: string) => {
-    const options = {
-      contractAddress: '0xd784DD5D8C9E7F7681BDF268e5FeC11CCA6Ca14A',
-      functionName: 'removeWhiteLister',
-      abi: [
-        {
-          inputs: [
-            {
-              internalType: 'address',
-              name: 'user',
-              type: 'address',
-            },
-          ],
-          name: 'removeWhiteLister',
-          outputs: [],
-          stateMutability: 'nonpayable',
-          type: 'function',
-        },
-      ],
-      params: {
-        user: add,
-      },
-    };
-    console.log(options);
-    await contractProcessor.fetch({
-      params: options,
-      onSuccess: res => {
-        console.log('Success');
-        handleNewNotification('success', 'Contract is pending, please wait!');
-      },
-      onError: error => {
-        console.log(error);
-        handleNewNotification(
-          'error',
-          JSON.parse(JSON.stringify(error))?.error?.message
-            ? JSON.parse(JSON.stringify(error))?.error?.message
-            : JSON.parse(JSON.stringify(error))?.message
-        );
-      },
-    });
+    try {
+      const nftStore = new ethers.Contract('0x1fcf3d0D9A9C4a0f02519c094DE4d326dbafdE98', abi.abi, provider.getSigner());
+      const transaction = await nftStore.removeWhiteLister(add);
+      handleNewNotification('success', 'Contract is pending, Please wait! ');
+      const res = await transaction.wait();
+      if (res?.status == 1) {
+        handleNewNotification('success', `Contract is confirmed with ${res?.confirmations} confirmations. Thank for!`);
+        // const User = Moralis.Object.extend('_User', { useMasterkey: true });
+        // const query = new Moralis.Query(User);
+        // console.log(add, id);
+        // query.equalTo('objectId', id);
+        // console.log(query);
+        // const user = await query.first({ useMasterKey: true });
+        // console.log(user);
+        // user.set('isNFTWhiteLister', true);
+        // await user.save();
+      }
+    } catch (error: any) {
+      console.log(error);
+      handleNewNotification(
+        'error',
+        JSON.parse(JSON.stringify(error))?.error?.message
+          ? JSON.parse(JSON.stringify(error))?.error?.message
+          : JSON.parse(JSON.stringify(error))?.message
+      );
+    }
   };
 
   return (
