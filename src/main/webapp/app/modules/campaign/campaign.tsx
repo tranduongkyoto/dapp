@@ -27,10 +27,9 @@ const Campaign = () => {
   const { id } = useParams<{ id: string }>();
   const [balanceOf, setBalanceOf] = useState<number>();
   const [transaction, setTransaction] = useState<transactionType[]>();
-  const { data, error } = useMoralisQuery('Campaigns', query => query.contains('campaignAddress', id));
+  const { data, error } = useMoralisQuery('Camp', query => query.contains('campaignAddress', id));
   const { Moralis, account, isInitialized } = useMoralis();
   const { fetch, error: error2, isFetching } = useWeb3Transfer();
-  const contractProcessor = useWeb3ExecuteFunction();
   const { handleNewNotification } = useNotificationCustom();
   const [sub, setSub] = useState(false);
   const history = useHistory();

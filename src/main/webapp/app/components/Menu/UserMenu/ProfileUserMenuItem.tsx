@@ -48,7 +48,7 @@ const ProfileUserMenuItem: React.FC<ProfileUserMenuItemProps> = ({ isLoading, ha
     return (
       <UserMenuItem as="button" disabled={disabled} onClick={handleNoProfileClick}>
         <Flex alignItems="center" justifyContent="space-between" width="100%">
-          {'Make a Profile'}
+          {'Update Profile'}
           <Dot />
         </Flex>
       </UserMenuItem>

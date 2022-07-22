@@ -33,7 +33,6 @@ import UserManage from './modules/administration/user-management/user-manage';
 import SendNewCamp from './modules/email/sendNewCamp';
 import DashBoard from './modules/dashboard/dashboard';
 import StartNftCampaigns from './modules/campaign/start-nft-campaigns';
-import StartNftCampaign from './modules/campaign/start-nft-campaign';
 
 const Account = Loadable({
   loader: () => import(/* webpackChunkName: "account" */ 'app/modules/account'),
@@ -57,7 +56,7 @@ const Routes = () => {
       <ErrorBoundaryRoute path="/campaigns" component={Campaigns} />
       <ErrorBoundaryRoute path="/start-nft-campaigns" component={StartNftCampaigns} />
       <ErrorBoundaryRoute path="/nft-campaigns" component={NftCampaigns} />
-      <ErrorBoundaryRoute path="/nft-campaign/start/:id" component={StartNftCampaign} />
+      {/* <ErrorBoundaryRoute path="/nft-campaign/start/:id" component={StartNftCampaign} /> */}
       <ErrorBoundaryRoute path="/campaign/create/traditional" component={CreateCampaign} />
       <ErrorBoundaryRoute path="/campaign/create/nft" component={CreateNftCampaign} />
       <ErrorBoundaryRoute path="/campaign/create" component={Selection} />

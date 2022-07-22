@@ -12,7 +12,6 @@ import { translate } from 'react-jhipster';
 export default function ProfileSetting() {
   const { Moralis } = useMoralis();
   const Web3Api = useMoralisWeb3Api();
-  const contractProcessor = useWeb3ExecuteFunction();
   const dispatch = useNotification();
 
   const handleNewNotification = (type: notifyType, message?: string, icon?: TIconType, position?: IPosition) => {

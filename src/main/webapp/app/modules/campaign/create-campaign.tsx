@@ -20,10 +20,7 @@ const CreateCampaign = () => {
   const [theFile, setTheFile] = useState<any>();
   const { Moralis, account } = useMoralis();
   const Web3Api = useMoralisWeb3Api();
-  const contractProcessor = useWeb3ExecuteFunction();
   const dispatch = useNotification();
-  //console.log(window.ethereum);
-  //const provider = new ethers.providers.JsonRpcProvider('https://speedy-nodes-nyc.moralis.io/cc62c6b608990d64ec2ac8ca/eth/ropsten');
   const provider = new ethers.providers.Web3Provider(window.ethereum);
   const signer = provider.getSigner(account);
   const onBannerClick = () => {
@@ -67,18 +64,13 @@ const CreateCampaign = () => {
     test();
   }, []);
 
-  // if (provider) {
-  //   console.log(provider.listAccounts());
-  //   // console.log(signer);
-  //   // console.log(provider);
-  // }
   const onSubmit = async (data, e) => {
     if (!theFile) {
       handleNewNotification('error', 'Please select image banner for Campaign');
       return;
     } else {
       try {
-        const campaignStore = new ethers.Contract('0xd9972bFDDd96c182f0Cd85c32a65D26485627a54', abi.abi, provider.getSigner(account));
+        const campaignStore = new ethers.Contract('0xdB8E82959E62090b6a68Cf4F3843Ac329B9eD01c', abi.abi, provider.getSigner(account));
         const transaction = await campaignStore.createCampaign(
           data?.name,
           data?.des,
@@ -104,77 +96,6 @@ const CreateCampaign = () => {
             : JSON.parse(JSON.stringify(error))?.message
         );
       }
-      // const options = {
-      //   contractAddress: '0xd9972bFDDd96c182f0Cd85c32a65D26485627a54',
-      //   functionName: 'createCampaign',
-      //   abi: [
-      //     {
-      //       inputs: [
-      //         {
-      //           internalType: 'string',
-      //           name: 'name',
-      //           type: 'string',
-      //         },
-      //         {
-      //           internalType: 'string',
-      //           name: 'description',
-      //           type: 'string',
-      //         },
-      //         {
-      //           internalType: 'uint256',
-      //           name: 'goal',
-      //           type: 'uint256',
-      //         },
-      //         {
-      //           internalType: 'uint256',
-      //           name: 'endTime',
-      //           type: 'uint256',
-      //         },
-      //         {
-      //           internalType: 'string',
-      //           name: 'coverImgUrl',
-      //           type: 'string',
-      //         },
-      //         {
-      //           internalType: 'string',
-      //           name: 'campaignType',
-      //           type: 'string',
-      //         },
-      //       ],
-      //       name: 'createCampaign',
-      //       outputs: [],
-      //       stateMutability: 'nonpayable',
-      //       type: 'function',
-      //     },
-      //   ],
-      //   params: {
-      //     name: data?.name,
-      //     description: data?.des,
-      //     goal: Moralis.Units.Token(data.goal, 6),
-      //     endTime: parseInt(data.endTime),
-      //     coverImgUrl: theFile,
-      //     campaignType: data?.name,
-      //   },
-      // };
-      // console.log(options);
-      // await contractProcessor.fetch({
-      //   params: options,
-      //   onSuccess: res => {
-      //     console.log(res);
-      //     handleNewNotification('success', 'Contract is pending, please wait!');
-      //     reset();
-      //   },
-      //   onError: error => {
-      //     console.log(error);
-      //     console.log(JSON.parse(JSON.stringify(error))?.message);
-      //     handleNewNotification(
-      //       'error',
-      //       JSON.parse(JSON.stringify(error))?.message
-      //         ? JSON.parse(JSON.stringify(error))?.message
-      //         : JSON.parse(JSON.stringify(error))?.error?.message
-      //     );
-      //   },
-      // });
       setSelectedFile(defaultImgs[1]);
       setTheFile(null);
     }
