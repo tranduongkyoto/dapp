@@ -9,6 +9,17 @@ export interface ICampaignProps {
   goal?: string;
 }
 
+export interface IOrgProps {
+  /**
+   * Address of the NFT Collection
+   */
+  organizationAddress: string;
+  coverImgUrl?: string;
+  name?: string;
+  description?: string;
+  creator?: string;
+}
+
 /**
  * NFT-Metadata-Standard: https://docs.opensea.io/docs/metadata-standards
  */
