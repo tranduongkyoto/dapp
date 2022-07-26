@@ -38,6 +38,7 @@ import Organizations from './modules/organization/organizations';
 import RegisterOrg from './modules/organization/register-org';
 import YourOrg from './modules/organization/your-org';
 import Organization from './modules/organization/org';
+import Proposal from './modules/organization/proposal';
 
 const Account = Loadable({
   loader: () => import(/* webpackChunkName: "account" */ 'app/modules/account'),
@@ -68,6 +69,7 @@ const Routes = () => {
       <ErrorBoundaryRoute path="/campaign/create" component={Selection} />
       <ErrorBoundaryRoute path="/campaign/:id" component={Campaign} />
       <ErrorBoundaryRoute path="/auction/:id" component={NftCampaign} />
+      <ErrorBoundaryRoute path="/organization/:id/proposal/:pid" component={Proposal} />
       <ErrorBoundaryRoute path="/organization/:id" component={Organization} />
       <ErrorBoundaryRoute path="/video" component={Video} />
       <PrivateRouteCustom path="/register-org" component={RegisterOrg} />

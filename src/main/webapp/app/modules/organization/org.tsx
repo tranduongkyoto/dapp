@@ -6,10 +6,14 @@ import { ethers } from 'ethers';
 import { Controller, useForm } from 'react-hook-form';
 import { translate } from 'react-jhipster';
 import { useMoralis, useMoralisQuery, useWeb3Transfer } from 'react-moralis';
-import { useHistory, useParams } from 'react-router-dom';
+import { Link, useHistory, useParams } from 'react-router-dom';
 import { Button, Input, Loading, Table } from 'web3uikit';
 import * as cam from '../contract/campaign.json';
 import * as usdcabi from '../contract/USDT.json';
+import * as org from '../contract/Organization.json';
+import CreateProposal from './create-proposal';
+import Proposal from './proposal';
+import * as orgabi from '../contract/Organization.json';
 interface transactionType {
   hash: string;
   from: string;
@@ -18,17 +22,35 @@ interface transactionType {
   timeStamp: string;
   tokenSymbol: string;
 }
+interface ProposalType {
+  description: string;
+  amount: number;
+  deadline: number;
+  endPrice: number;
+  id: number;
+  isProposalForNFT: number;
+  passed: boolean;
+  startingPrice: number;
+  status: number;
+  token: number;
+  votesDown: number;
+  votesUp: number;
+}
 const Organization = () => {
   const { id } = useParams<{ id: string }>();
-  const [balanceOf, setBalanceOf] = useState<number>();
+  const [balanceOf, setBalanceOf] = useState<number>(0);
   const [transaction, setTransaction] = useState<transactionType[]>();
   const { data, error } = useMoralisQuery('Orgs', query => query.contains('OrganizationAddress', id));
   const { Moralis, account, isInitialized } = useMoralis();
   const { fetch, error: error2, isFetching } = useWeb3Transfer();
   const { handleNewNotification } = useNotificationCustom();
   const [sub, setSub] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [showProposalModal, setShowProposalModal] = useState(false);
+  const [proposal, setProposal] = useState<ProposalType>();
   const history = useHistory();
   const provider = new ethers.providers.Web3Provider(window.ethereum);
+  var count;
   const {
     register,
     handleSubmit,
@@ -85,19 +107,42 @@ const Organization = () => {
           }
         }
       };
+      const getProposal = async () => {
+        const Organization = new ethers.Contract(id, org.abi, provider.getSigner(account));
+        const res = await Organization.nextProposal();
+        console.log(res);
+        count = parseInt(res._hex, 16);
+        console.log(count);
+        const proposalList = [...Array(count - 1).keys()];
+        console.log(proposalList);
+        Promise.allSettled(proposalList.map(async item => await Organization.Proposals(item + 1))).then(values =>
+          setProposal(
+            values
+              .filter(item => item.status == 'fulfilled')
+              .map(item => item?.value)
+              .map(item => {
+                const obj = {
+                  description: item?.description,
+                  amount: parseInt(item?.amount._hex, 16),
+                  deadline: parseInt(item?.deadline._hex, 16),
+                  endPrice: parseInt(item?.endPrice._hex, 16),
+                  id: parseInt(item?.id._hex, 16),
+                  isProposalForNFT: item?.isProposalForNFT,
+                  passed: item?.passed,
+                  startingPrice: parseInt(item?.startingPrice._hex, 16),
+                  status: parseInt(item?.status._hex, 16),
+                  token: item?.token,
+                  votesDown: parseInt(item?.votesDown._hex, 16),
+                  votesUp: parseInt(item?.votesUp._hex, 16),
+                };
+                return obj;
+              })[count - 2]
+          )
+        );
+      };
       getTransaction();
       getBalanceOf();
-      // if (data[0]) {
-      //   isEnd =
-      //     isEnd ||
-      //     new Date().getTime() > parseInt(data[0].attributes?.endTime) * 1000 ||
-      //     balanceOf >= parseInt(data[0].attributes.goal) / 1000000000000000000 ||
-      //     withDrawDataTable.length == 1;
-      //   //isEnd = true;
-      //   isCreator = data[0].attributes?.creator === account;
-      //   console.log(isEnd);
-      //   console.log(isCreator);
-      // }
+      getProposal();
     }
   }, [isInitialized, sub]);
   const lastestTxn = () => {
@@ -171,17 +216,19 @@ const Organization = () => {
           item.tokenSymbol,
         ])
     : [];
-
-  const withDraw = async () => {
-    const campaign = new ethers.Contract(id, cam.abi, provider.getSigner());
+  const countVote = async () => {
     try {
-      console.log(balanceOf);
-      console.log(balanceOf * 1000000000000000000);
-      const transaction = await campaign.withDraw2('0x7ef95a0FEE0Dd31b22626fA2e10Ee6A223F8a684', Moralis.Units.Token(balanceOf, 18));
+      const Organization = new ethers.Contract(id, orgabi.abi, provider.getSigner(account));
+      var transaction;
+      if (new Date().getTime() > proposal.deadline * 1000) {
+        transaction = await Organization.countVoteWithEndTime(proposal.id);
+      } else {
+        transaction = await Organization.countVoteBeforeEnd(proposal.id);
+      }
       handleNewNotification('success', 'Contract is pending, Please wait! ');
+      console.log(provider.getSigner());
       const res = await transaction.wait();
       if (res?.status == 1) {
-        console.log(res);
         handleNewNotification('success', `Contract is confirmed with ${res?.confirmations} confirmations. Thank for your donation!`);
         setSub(!sub);
       }
@@ -194,34 +241,44 @@ const Organization = () => {
           ? JSON.parse(JSON.stringify(error))?.error?.message
           : JSON.parse(JSON.stringify(error))?.message
       );
+      reset();
     }
   };
-  // var isEnd = false;
-  // var isCreator;
-  if (data) {
-    console.log(data);
-  }
+  const withDraw = async () => {
+    try {
+      const Organization = new ethers.Contract(id, orgabi.abi, provider.getSigner(account));
+      const transaction = await Organization.withDraw(proposal.id);
+      handleNewNotification('success', 'Contract is pending, Please wait! ');
+      console.log(provider.getSigner());
+      const res = await transaction.wait();
+      if (res?.status == 1) {
+        handleNewNotification('success', `Contract is confirmed with ${res?.confirmations} confirmations. Thank for your donation!`);
+        setSub(!sub);
+      }
+      // reset();
+    } catch (error: any) {
+      console.log(JSON.parse(JSON.stringify(error)));
+      handleNewNotification(
+        'error',
+        JSON.parse(JSON.stringify(error))?.error?.message
+          ? JSON.parse(JSON.stringify(error))?.error?.message
+          : JSON.parse(JSON.stringify(error))?.message
+      );
+      // reset();
+    }
+  };
   if (!data) {
     return <div>No Response</div>;
   }
 
-  // if (data[0]) {
-  //   isEnd =
-  //     isEnd ||
-  //     new Date().getTime() > parseInt(data[0].attributes?.endTime) * 1000 ||
-  //     balanceOf >= parseInt(data[0].attributes.goal) / 1000000000000000000 ||
-  //     withDrawDataTable.length == 1;
-  //   //isEnd = true;
-  //   isCreator = data[0].attributes?.creator === account;
-  //   console.log(isEnd);
-  //   console.log(isCreator);
-  // }
+  if (proposal) {
+    console.log(proposal);
+  }
   return (
     <>
       {data.length === 0 ? (
         <div
           style={{
-            // backgroundColor: '#ECECFE',
             borderRadius: '8px',
             padding: '20px',
           }}
@@ -234,21 +291,22 @@ const Organization = () => {
             <div className="col-md-4 col-sm-12 pl-5">
               <div className="h1">{data[0].attributes?.name.toString()}</div>
               <div className="h3">{data[0].attributes?.description}</div>
-              {/* <div className="h1">Campaign Start</div> */}
-              {/* <div className="h3">{isEnd ? translate('campaign.crypto.end') : translate('campaign.crypto.progress')}</div> */}
-              {/* <div>
-                {translate('campaign.crypto.endAt') + ': '}
-                {new Date(parseInt(data[0].attributes?.endTime) * 1000).toString().slice(0, 25)}
-              </div> */}
               <div className=" font-weight-bold h3">
                 {translate('campaign.crypto.balance') + ': '}
-                {+balanceOf ? balanceOf : 0} USD
+                {balanceOf} USD
               </div>
-              {/* <div className="h3">
-                {' '}
-                {translate('campaign.crypto.goal') + ': '}
-                {parseInt(data[0].attributes.goal) / 1000000000000000000} USD
-              </div> */}
+              <div>
+                {proposal && (proposal.status == 2 || (proposal.status == 1 && proposal.passed != true)) && (
+                  <Button
+                    id="test-button-primary"
+                    onClick={() => setShowModal(true)}
+                    text="Create Proposal"
+                    theme="primary"
+                    type="button"
+                    size="large"
+                  ></Button>
+                )}
+              </div>
             </div>
             <div className="col-md-5 col-sm-12">
               <img
@@ -262,7 +320,8 @@ const Organization = () => {
                 src={`${data[0].attributes?.coverImgUrl}`}
               ></img>
             </div>
-            {/* {
+          </div>
+          {/* {
               <>
                 <div className="col-md-5"></div>
                 <div className="col-md-7 ">
@@ -280,6 +339,71 @@ const Organization = () => {
                 </div>
               </>
             } */}
+          <div className="row  justify-content-center main mt-2">
+            <div className="col-md-9 donate mt-5">
+              {proposal && proposal.status != 2 && (
+                <Table
+                  columnsConfig="1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr"
+                  data={[
+                    [
+                      proposal.id,
+                      proposal.description,
+                      proposal.amount / 1000000000000000000,
+                      proposal.votesUp,
+                      proposal.votesDown,
+                      proposal.status == 0 && new Date().getTime() > proposal.deadline * 1000
+                        ? 'Ongoing'
+                        : proposal.status == 1
+                        ? proposal.passed.toString()
+                        : 'Wait count',
+                      <Button
+                        id="test-button-primary"
+                        onClick={() => setShowProposalModal(true)}
+                        text="Vote"
+                        theme="primary"
+                        type="button"
+                        size="large"
+                      ></Button>,
+                      proposal.status == 0 ? (
+                        <Button
+                          id="test-button-primary"
+                          onClick={() => countVote()}
+                          text="Count"
+                          theme="primary"
+                          type="button"
+                          size="large"
+                        ></Button>
+                      ) : (
+                        <Button
+                          id="test-button-primary"
+                          onClick={() => withDraw()}
+                          text="Withdraw"
+                          theme="primary"
+                          type="button"
+                          size="large"
+                          disabled={proposal.status == 2}
+                        ></Button>
+                      ),
+                    ],
+                  ]}
+                  header={[
+                    <span>Id</span>,
+                    <span>Description</span>,
+                    <span>Value</span>,
+                    <span>Vote Up</span>,
+                    <span>Vote Down</span>,
+                    <span>Status</span>,
+                  ]}
+                  maxPages={3}
+                  noPagination
+                  onPageNumberChanged={function noRefCheck() {}}
+                  onRowClick={function noRefCheck() {}}
+                  pageSize={5}
+                />
+              )}
+            </div>
+          </div>
+          <div className="row  justify-content-center main mt-2">
             <div className="col-md-6 donate mt-5">
               <div className="row justify-content-center">
                 <div className="col-md-3 mt-4 text-center">
@@ -340,8 +464,12 @@ const Organization = () => {
                 </div>
               </div>
             </div>
-            {/* <div className="col-md-8 tran-lastest my-5">{lastestTxn()}</div> */}
-            <div className="col-md-8 h1 text-center">{translate('campaign.crypto.recent')}</div>
+          </div>
+          <div className="row  justify-content-center main mt-3">
+            <div className="col-md-8 tran-lastest my-5">{lastestTxn()}</div>
+          </div>
+          <div className="row  justify-content-center main mt-3">
+            <div className="col-md-8 h4 text-center mt-5">{translate('campaign.crypto.recent')}</div>
             <div className="col-md-8">
               <Table
                 columnsConfig="2fr 3fr 2fr 2fr 2fr 2fr"
@@ -359,62 +487,74 @@ const Organization = () => {
                 pageSize={10}
               />
             </div>
-            {
-              <div className="col-md-6 donate mt-5">
-                <div className="row justify-content-center">
-                  <div className="col-md-3 mt-3 text-center">
-                    <img src="content/icons/cryptoYellow.svg"></img>
-                  </div>
-                  <div className="col-md-4 text-center">
-                    <img src="content/icons/qrCode.svg" alt="" />
-                  </div>
-                  <div className="col-md-5 text-center mt-4">
-                    {withDrawDataTable.length == 0 ? (
-                      <Button
-                        id="test-button-primary"
-                        onClick={() => withDraw()}
-                        text="With Draw"
-                        theme="primary"
-                        type="button"
-                        size="large"
-                      ></Button>
-                    ) : (
-                      <Button
-                        id="test-button-primary"
-                        //onClick={}
-                        text="Drawed"
-                        theme="primary"
-                        type="button"
-                        size="large"
-                        disabled={true}
-                      ></Button>
-                    )}
-                  </div>
+          </div>
+          <div className="row  justify-content-center main mt-3">
+            <div className="col-md-6 donate mt-5">
+              <div className="row justify-content-center">
+                <div className="col-md-3 mt-3 text-center">
+                  <img src="content/icons/cryptoYellow.svg"></img>
+                </div>
+                <div className="col-md-4 text-center">
+                  <img src="content/icons/qrCode.svg" alt="" />
+                </div>
+                <div className="col-md-5 text-center mt-4">
+                  {withDrawDataTable.length == 0 ? (
+                    <Button
+                      id="test-button-primary"
+                      onClick={() => withDraw()}
+                      text="With Draw"
+                      theme="primary"
+                      type="button"
+                      size="large"
+                    ></Button>
+                  ) : (
+                    <Button
+                      id="test-button-primary"
+                      //onClick={}
+                      text="Drawed"
+                      theme="primary"
+                      type="button"
+                      size="large"
+                      disabled={true}
+                    ></Button>
+                  )}
                 </div>
               </div>
-            }
-            {
-              <>
-                <div className="col-md-8 h1 text-center">With Draw History</div>
-                <div className="col-md-8 mt-5">
-                  <Table
-                    columnsConfig="2fr 3fr 2fr 2fr 2fr 2fr"
-                    data={withDrawDataTable}
-                    header={[
-                      <span>TxT Hash</span>,
-                      <span>Time</span>,
-                      <span>From</span>,
-                      <span>To</span>,
-                      <span>Value</span>,
-                      <span>Token</span>,
-                    ]}
-                    maxPages={3}
-                    onPageNumberChanged={function noRefCheck() {}}
-                    pageSize={10}
-                  />
-                </div>
-              </>
-            }
+            </div>
+          </div>
+          <div className="row  justify-content-center main mt-3">
+            <div className="col-md-8 h4 text-center mt-5">With Draw History</div>
+            <div className="col-md-8">
+              <Table
+                columnsConfig="2fr 3fr 2fr 2fr 2fr 2fr"
+                data={withDrawDataTable}
+                header={[
+                  <span>TxT Hash</span>,
+                  <span>Time</span>,
+                  <span>From</span>,
+                  <span>To</span>,
+                  <span>Value</span>,
+                  <span>Token</span>,
+                ]}
+                maxPages={3}
+                onPageNumberChanged={function noRefCheck() {}}
+                pageSize={10}
+              />
+            </div>
+          </div>
+          <div>
+            {showModal && (
+              <CreateProposal
+                setShowModal={setShowModal}
+                transaction={transaction}
+                sub={sub}
+                setSub={setSub}
+                balanceOf={balanceOf && balanceOf}
+              />
+            )}
+          </div>
+          <div>
+            {showProposalModal && <Proposal setShowProposalModal={setShowProposalModal} sub={sub} setSub={setSub} proposal={proposal} />}
           </div>
         </>
       )}

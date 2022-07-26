@@ -1,18 +1,16 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { Translate, translate } from 'react-jhipster';
-import './create-campaign.scss';
-import { Input, useNotification } from 'web3uikit';
-import { useMoralis, useMoralisWeb3Api, useWeb3ExecuteFunction } from 'react-moralis';
-import { defaultImgs } from '../../shared/util/defaultImgs';
-import { messages } from 'app/config/constants';
-import { IPosition, notifyType } from 'web3uikit/dist/components/Notification/types';
-import { TIconType } from 'web3uikit/dist/components/Icon/collection';
-import { useForm, Controller, SubmitHandler } from 'react-hook-form';
-import { Select } from 'app/components/Select';
 import { Radios } from 'app/components/Radios';
+import { Select } from 'app/components/Select';
 import { ethers } from 'ethers';
+import React, { useEffect, useRef, useState } from 'react';
+import { Controller, useForm } from 'react-hook-form';
+import { Translate, translate } from 'react-jhipster';
+import { useMoralis, useMoralisWeb3Api } from 'react-moralis';
+import { Input, useNotification } from 'web3uikit';
+import { TIconType } from 'web3uikit/dist/components/Icon/collection';
+import { IPosition, notifyType } from 'web3uikit/dist/components/Notification/types';
+import { defaultImgs } from '../../shared/util/defaultImgs';
 import * as abi from '../contract/campaignStore.json';
-import { sign } from 'crypto';
+import './create-campaign.scss';
 
 const CreateCampaign = () => {
   const inputFile = useRef(null);
@@ -208,8 +206,8 @@ const CreateCampaign = () => {
                     label={translate('campaign.crypto.goal')}
                     validation={{
                       required: true,
-                      numberMin: 100,
-                      numberMax: 9999999,
+                      numberMin: 10,
+                      numberMax: 1000,
                       // regExp: '^[^@s]+@[^@s]+.[^@s]+$',
                       // regExpInvalidMessage: 'That is not a valid email address',
                     }}
