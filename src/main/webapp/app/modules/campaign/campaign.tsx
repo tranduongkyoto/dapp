@@ -11,7 +11,7 @@ import { result, truncate } from 'lodash';
 import { getEllipsisTxt, timeStampToDateTime } from 'app/web3utils';
 import { useNotificationCustom } from 'app/web3utils/notification';
 import { ethers } from 'ethers';
-import * as usdcabi from '../contract/USDC.json';
+import * as usdcabi from '../contract/USDT.json';
 import * as cam from '../contract/campaign.json';
 import { faClosedCaptioning } from '@fortawesome/free-solid-svg-icons';
 import { translate } from 'react-jhipster';
@@ -124,7 +124,7 @@ const Campaign = () => {
               {getEllipsisTxt(lastest.hash, 3)}
             </a>
           </div>
-          <div className="col-md-auto col-sm-4 text-warning">{parseInt(lastest.value) / 1000000000000000000} USDC</div>
+          <div className="col-md-auto col-sm-4 text-warning">{parseInt(lastest.value) / 1000000000000000000} USDT</div>
           <div className="col-md-auto col-sm-4 font-weight-bold">Lastest</div>
           <div className="col-md-auto col-sm-4 font-italic">Thank for great action!</div>
         </div>
@@ -136,46 +136,46 @@ const Campaign = () => {
         </div>
       );
   };
-  const dataTable = transaction
-    ? transaction
-        .filter(item => item.from != id)
-        .map((item, key) => [
-          <a
-            href={'https://testnet.bscscan.com/tx/' + `${item?.hash}`}
-            target="_blank"
-            style={{
-              textDecoration: 'none',
-            }}
-          >
-            {getEllipsisTxt(item.hash)}
-          </a>,
-          new Date(parseInt(item.timeStamp) * 1000).toString().slice(0, 25),
-          getEllipsisTxt(item.from),
-          getEllipsisTxt(item.to),
-          parseInt(item?.value) / 1000000000000000000,
-          item.tokenSymbol,
-        ])
-    : [];
-  const withDrawDataTable = transaction
-    ? transaction
-        .filter(item => item.from == id)
-        .map((item, key) => [
-          <a
-            href={'https://testnet.bscscan.com/tx/' + `${item?.hash}`}
-            target="_blank"
-            style={{
-              textDecoration: 'none',
-            }}
-          >
-            {getEllipsisTxt(item.hash)}
-          </a>,
-          new Date(parseInt(item.timeStamp) * 1000).toString().slice(0, 25),
-          getEllipsisTxt(item.from),
-          getEllipsisTxt(item.to),
-          parseInt(item?.value) / 1000000000000000000,
-          item.tokenSymbol,
-        ])
-    : [];
+  const dataTable =
+    transaction &&
+    transaction
+      .filter(item => item.from != id)
+      .map((item, key) => [
+        <a
+          href={'https://testnet.bscscan.com/tx/' + `${item?.hash}`}
+          target="_blank"
+          style={{
+            textDecoration: 'none',
+          }}
+        >
+          {getEllipsisTxt(item.hash)}
+        </a>,
+        new Date(parseInt(item.timeStamp) * 1000).toString().slice(0, 25),
+        getEllipsisTxt(item.from),
+        getEllipsisTxt(item.to),
+        parseInt(item?.value) / 1000000000000000000,
+        item.tokenSymbol,
+      ]);
+  const withDrawDataTable =
+    transaction &&
+    transaction
+      .filter(item => item.from == id)
+      .map((item, key) => [
+        <a
+          href={'https://testnet.bscscan.com/tx/' + `${item?.hash}`}
+          target="_blank"
+          style={{
+            textDecoration: 'none',
+          }}
+        >
+          {getEllipsisTxt(item.hash)}
+        </a>,
+        new Date(parseInt(item.timeStamp) * 1000).toString().slice(0, 25),
+        getEllipsisTxt(item.from),
+        getEllipsisTxt(item.to),
+        parseInt(item?.value) / 1000000000000000000,
+        item.tokenSymbol,
+      ]);
 
   const withDraw = async () => {
     const campaign = new ethers.Contract(id, cam.abi, provider.getSigner());
@@ -211,8 +211,8 @@ const Campaign = () => {
     isEnd =
       isEnd ||
       new Date().getTime() > parseInt(data[0].attributes?.endTime) * 1000 ||
-      balanceOf >= parseInt(data[0].attributes.goal) / 1000000000000000000 ||
-      withDrawDataTable.length == 1;
+      balanceOf >= parseInt(data[0].attributes.goal) / 1000000000000000000;
+    // || withDrawDataTable.length == 1;
     //isEnd = true;
     isCreator = data[0].attributes?.creator === account;
     console.log(isEnd);

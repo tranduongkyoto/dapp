@@ -70,7 +70,7 @@ const CreateCampaign = () => {
       return;
     } else {
       try {
-        const campaignStore = new ethers.Contract('0x512D5E619C9500f9EAD9fB08a1f4185bF6A63049', abi.abi, provider.getSigner(account));
+        const campaignStore = new ethers.Contract('0xc7E8AF279f798e6632f91708946B0e78b451DA3C', abi.abi, provider.getSigner(account));
         const transaction = await campaignStore.createCampaign(
           data?.name,
           data?.des,

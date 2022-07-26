@@ -160,7 +160,7 @@ export function Profile() {
               </div>
             </div>
             <div className="col-md-auto col-sm-4 text-success mx-auto">
-              <div className=" text-center">USDC</div>
+              <div className=" text-center">USDT</div>
               <div>
                 <Tag color="green" text="1000"></Tag>
               </div>

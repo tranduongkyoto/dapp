@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { ethers } from 'ethers';
 import { MetaMaskInpageProvider } from '@metamask/providers';
 import * as abi from '../contract/nftAution.json';
-import * as abi2 from '../contract/USDC.json';
+import * as abi2 from '../contract/USDT.json';
 import { useMoralis, useMoralisQuery, useNFTTransfers, useWeb3ExecuteFunction } from 'react-moralis';
 import { useHistory, useParams } from 'react-router-dom';
 import { Loading, Tag, Button, Hero, Table } from 'web3uikit';
@@ -72,6 +72,8 @@ export default function NftCampaign() {
         'error',
         JSON.parse(JSON.stringify(error))?.error?.message
           ? JSON.parse(JSON.stringify(error))?.error?.message
+          : JSON.parse(JSON.stringify(error))?.reason
+          ? JSON.parse(JSON.stringify(error))?.reason
           : JSON.parse(JSON.stringify(error))?.message
       );
     }
@@ -110,9 +112,9 @@ export default function NftCampaign() {
     const nftAuction = new ethers.Contract(id, abi.abi, provider.getSigner());
     const price = await nftAuction.getPrice();
     setCurrentPrice(Number(parseInt(price._hex, 16) / 1000000000000000000));
-    const USDC = new ethers.Contract('0x7ef95a0FEE0Dd31b22626fA2e10Ee6A223F8a684', abi2.abi, provider.getSigner());
+    const USDT = new ethers.Contract('0x7ef95a0FEE0Dd31b22626fA2e10Ee6A223F8a684', abi2.abi, provider.getSigner());
     try {
-      const transaction = await USDC.approve(id, Moralis.Units.Token(parseInt(price._hex, 16) / 1000000000000000000, 18));
+      const transaction = await USDT.approve(id, Moralis.Units.Token(parseInt(price._hex, 16) / 1000000000000000000, 18));
       handleNewNotification('success', 'Contract is pending, Please wait! ');
       const res = await transaction.wait();
       if (res?.status == 1) {
