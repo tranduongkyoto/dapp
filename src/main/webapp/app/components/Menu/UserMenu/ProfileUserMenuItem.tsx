@@ -56,9 +56,16 @@ const ProfileUserMenuItem: React.FC<ProfileUserMenuItemProps> = ({ isLoading, ha
   }
 
   return (
-    <UserMenuItem as="button" disabled={disabled} onClick={handleClick}>
-      {'Your Profile'}
-    </UserMenuItem>
+    <>
+      <UserMenuItem as="button" disabled={disabled} onClick={handleNoProfileClick}>
+        <Flex alignItems="center" justifyContent="space-between" width="100%">
+          {'Update Profile'}
+        </Flex>
+      </UserMenuItem>
+      <UserMenuItem as="button" disabled={disabled} onClick={handleClick}>
+        {'Your Profile'}
+      </UserMenuItem>
+    </>
   );
 };
 

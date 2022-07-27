@@ -1,20 +1,21 @@
-import { Radios } from 'app/components/Radios';
-import { Select } from 'app/components/Select';
-import { ethers } from 'ethers';
-import React, { useEffect, useRef, useState } from 'react';
-import { Controller, useForm } from 'react-hook-form';
+import React, { useState, useRef, useEffect } from 'react';
 import { Translate, translate } from 'react-jhipster';
-import { useMoralis, useMoralisWeb3Api } from 'react-moralis';
 import { Input, useNotification } from 'web3uikit';
-import { TIconType } from 'web3uikit/dist/components/Icon/collection';
-import { IPosition, notifyType } from 'web3uikit/dist/components/Notification/types';
+import { useMoralis, useMoralisWeb3Api, useWeb3ExecuteFunction } from 'react-moralis';
 import { defaultImgs } from '../../shared/util/defaultImgs';
-import * as abi from '../contract/campaignStore.json';
-import './create-campaign.scss';
-
-const CreateCampaign = () => {
+import { messages } from 'app/config/constants';
+import { IPosition, notifyType } from 'web3uikit/dist/components/Notification/types';
+import { TIconType } from 'web3uikit/dist/components/Icon/collection';
+import { useForm, Controller, SubmitHandler } from 'react-hook-form';
+import { Select } from 'app/components/Select';
+import { Radios } from 'app/components/Radios';
+import { ethers } from 'ethers';
+import * as abi from '../contract/OrganizationStore.json';
+import { sign } from 'crypto';
+import './registerOrg.scss';
+const RegisterOrg = () => {
   const inputFile = useRef(null);
-  const [selectedFile, setSelectedFile] = useState(defaultImgs[1]);
+  const [selectedFile, setSelectedFile] = useState(defaultImgs[2]);
   const [theFile, setTheFile] = useState<any>();
   const { Moralis, account } = useMoralis();
   const Web3Api = useMoralisWeb3Api();
@@ -63,22 +64,21 @@ const CreateCampaign = () => {
   }, []);
 
   const onSubmit = async (data, e) => {
+    console.log({
+      name: data?.name,
+      des: data?.des,
+      url: theFile,
+      type: data?.type,
+      to: data?.to,
+    });
     if (!theFile) {
       handleNewNotification('error', 'Please select image banner for Campaign');
       return;
     } else {
       try {
-        const campaignStore = new ethers.Contract('0xc7E8AF279f798e6632f91708946B0e78b451DA3C', abi.abi, provider.getSigner(account));
-        const transaction = await campaignStore.createCampaign(
-          data?.name,
-          data?.des,
-          Moralis.Units.Token(data.goal, 18),
-          parseInt(data.endTime),
-          theFile,
-          data?.type
-        );
+        const orgStore = new ethers.Contract('0x9C8d12bd5c0acd1d019125001F72498aF8fa266F', abi.abi, provider.getSigner(account));
+        const transaction = await orgStore.createOrganization(data?.name, data?.des, theFile, data?.type, data?.to);
         handleNewNotification('success', 'Contract is pending, Please wait! ');
-        console.log(provider.getSigner());
         const res = await transaction.wait();
         if (res?.status == 1) {
           console.log(res);
@@ -94,7 +94,7 @@ const CreateCampaign = () => {
             : JSON.parse(JSON.stringify(error))?.message
         );
       }
-      setSelectedFile(defaultImgs[1]);
+      setSelectedFile(defaultImgs[2]);
       setTheFile(null);
     }
   };
@@ -125,20 +125,11 @@ const CreateCampaign = () => {
           }}
         >
           {/* <div className=" text-center font-weight-bold ">Create Campaign</div> */}
-          <div className="settingsPage justify-content-center ">
-            <div className="pfp">
-              <div className="h4 font-weight-bold">
-                {' '}
-                <Translate contentKey="campaign.crypto.form"></Translate>
-              </div>
-              <div className="pfpOptions">
-                {/* <div className="h6">
-                  {' '}
-                  <Translate contentKey="campaign.crypto.banner"></Translate>
-                </div> */}
-                <img src={selectedFile} onClick={onBannerClick} className="banner"></img>
-                <input type="file" name="file" ref={inputFile} onChange={changeHandler} style={{ display: 'none' }} required />
-              </div>
+          <div className="justify-content-center ">
+            <div className="h4 font-weight-bold">Register Organization</div>
+            <div>
+              <img src={selectedFile} onClick={onBannerClick} className="orgBanner"></img>
+              <input type="file" name="file" ref={inputFile} onChange={changeHandler} style={{ display: 'none' }} required />
             </div>
             <form onSubmit={handleSubmit(onSubmit)}>
               <Controller
@@ -192,9 +183,8 @@ const CreateCampaign = () => {
                   />
                 )}
               />
-
               <Controller
-                name="goal"
+                name="to"
                 control={control}
                 defaultValue=""
                 render={({ field }) => (
@@ -203,15 +193,13 @@ const CreateCampaign = () => {
                     value={field.value}
                     onBlur={field.onBlur}
                     onChange={field.onChange}
-                    label={translate('campaign.crypto.goal')}
+                    label="Owner"
                     validation={{
                       required: true,
-                      numberMin: 10,
-                      numberMax: 1000,
-                      // regExp: '^[^@s]+@[^@s]+.[^@s]+$',
-                      // regExpInvalidMessage: 'That is not a valid email address',
+                      regExp: '^0x[a-fA-F0-9]{40}$',
+                      regExpInvalidMessage: 'That is not a valid Ethereum Address',
                     }}
-                    type="number"
+                    type="text"
                     style={{
                       marginTop: '30px',
                     }}
@@ -256,7 +244,7 @@ const CreateCampaign = () => {
                     ]}
                     traditionalHTML5={true}
                     style={{
-                      marginTop: '40px',
+                      marginTop: '30px',
                     }}
                     validation={{
                       required: true,
@@ -265,29 +253,9 @@ const CreateCampaign = () => {
                 )}
               />
 
-              <div className="mt-3">
-                <Controller
-                  name="endTime"
-                  control={control}
-                  defaultValue=""
-                  render={({ field }) => (
-                    <Radios
-                      id="radios2"
-                      onBlur={field.onBlur}
-                      onChange={field.onChange}
-                      items={[translate('campaign.crypto.7'), translate('campaign.crypto.14'), translate('campaign.crypto.30')]}
-                      title={translate('campaign.crypto.time')}
-                      validation={{
-                        required: true,
-                      }}
-                    />
-                  )}
-                />
-              </div>
-
               <button
                 type="submit"
-                className="mt-2"
+                className="mt-3"
                 style={{
                   borderRadius: '15px',
                   width: '100px',
@@ -301,7 +269,7 @@ const CreateCampaign = () => {
               </button>
               <button
                 type="reset"
-                className=" ml-1 mt-2"
+                className=" ml-1 mt-3"
                 style={{
                   borderRadius: '15px',
                   width: '100px',
@@ -322,4 +290,4 @@ const CreateCampaign = () => {
   );
 };
 
-export default CreateCampaign;
+export default RegisterOrg;

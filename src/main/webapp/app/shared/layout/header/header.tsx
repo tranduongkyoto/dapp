@@ -1,18 +1,16 @@
-import './header.scss';
-
-import React, { useContext, useState, useEffect } from 'react';
-import { Translate, Storage } from 'react-jhipster';
-import { Navbar, Nav, NavbarToggler, Collapse } from 'reactstrap';
-
-import LoadingBar from 'react-redux-loading-bar';
-
-import { Home, Brand, Email, DashBoard } from './header-components';
-import { AdminMenu, AccountMenu, LocaleMenu, Campaign } from '../menus';
-import { Input, Button, ConnectButton } from 'web3uikit';
-import { useMoralis, useMoralisWeb3Api, useMoralisFile } from 'react-moralis';
 import UserMenu from 'app/components/Menu/UserMenu';
 import { AppContext } from 'app/provider/appContext';
+import React, { useContext, useEffect, useState } from 'react';
+import { Storage, Translate } from 'react-jhipster';
+import { useMoralis } from 'react-moralis';
+import LoadingBar from 'react-redux-loading-bar';
+import { Collapse, Nav, Navbar, NavbarToggler } from 'reactstrap';
+import { AdminMenu, Campaign, LocaleMenu } from '../menus';
+import { Donation } from '../menus/donation';
 import { Nft } from '../menus/nft';
+import { Organization } from '../menus/organization';
+import { Brand, DashBoard, Email, Home } from './header-components';
+import './header.scss';
 
 export interface IHeaderProps {
   isAuthenticated: boolean;
@@ -60,13 +58,15 @@ const Header = (props: IHeaderProps) => {
         <Collapse isOpen={menuOpen} navbar>
           <Nav id="header-tabs" className="ml-auto" navbar>
             <Home />
+            {isAuthenticated && <Donation />}
+            {isAuthenticated && <Organization />}
             {isAuthenticated && <Campaign />}
             {isAuthenticated && <Nft />}
             {isAuthenticated && <Email />}
             {isAuthenticated && isAdmin && <AdminMenu showOpenAPI="true" />}
             {isAuthenticated && isAdmin && <DashBoard />}
             <LocaleMenu currentLocale={props.currentLocale} onClick={handleLocaleChange} />
-            <AccountMenu isAuthenticated={isAuthenticated} />
+            {/* <AccountMenu isAuthenticated={isAuthenticated} /> */}
             <UserMenu />
           </Nav>
         </Collapse>

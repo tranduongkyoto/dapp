@@ -45,7 +45,7 @@ const CreateNftCampaign = () => {
 
   const onSubmit = async (data, e) => {
     try {
-      const nftStore = new ethers.Contract('0x50703a8CFC6C7395a90cDeD596e7E31389D1E25E', abi.abi, provider.getSigner());
+      const nftStore = new ethers.Contract('0xAa6190916A4f25039A50de315081f419e8A55FE2', abi.abi, provider.getSigner());
       const transaction = await nftStore.createNftCampaign(
         data?.name,
         data?.des,
