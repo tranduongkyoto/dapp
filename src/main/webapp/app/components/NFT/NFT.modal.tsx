@@ -111,7 +111,7 @@ const NFTModal: React.FC<INFTModal> = ({ attributes, setShowModal, address, toke
                   validation={{
                     required: true,
                     numberMin: 10,
-                    numberMax: 9999999,
+                    numberMax: 1000,
                   }}
                   type="number"
                   style={
