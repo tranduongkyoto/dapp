@@ -147,7 +147,7 @@ const Organization = () => {
   }, [isInitialized, sub]);
   const lastestTxn = () => {
     if (transaction && transaction.length != 0) {
-      const lastest = transaction.filter(item => item.from !== '0x95f82f63b1d3eb775e37d7d2e401700ff395128f')[0];
+      const lastest = transaction.filter(item => item.from !== id).reverse()[0];
       return (
         <div className="row py-3 justify-content-center">
           <div className="col-md-auto col-sm-4">
@@ -377,7 +377,7 @@ const Organization = () => {
                         <Button
                           id="test-button-primary"
                           onClick={() => withDraw()}
-                          text="Withdraw"
+                          text="Implement"
                           theme="primary"
                           type="button"
                           size="large"
