@@ -63,7 +63,6 @@ const Routes = () => {
       <ErrorBoundaryRoute path="/organizations" component={Organizations} />
       <ErrorBoundaryRoute path="/start-nft-campaigns" component={StartNftCampaigns} />
       <ErrorBoundaryRoute path="/nft-campaigns" component={NftCampaigns} />
-      {/* <ErrorBoundaryRoute path="/nft-campaign/start/:id" component={StartNftCampaign} /> */}
       <ErrorBoundaryRoute path="/campaign/create/traditional" component={CreateCampaign} />
       <ErrorBoundaryRoute path="/campaign/create/nft" component={CreateNftCampaign} />
       <ErrorBoundaryRoute path="/campaign/create" component={Selection} />
