@@ -15,6 +15,7 @@ import * as usdcabi from '../contract/USDT.json';
 import * as cam from '../contract/campaign.json';
 import { faClosedCaptioning } from '@fortawesome/free-solid-svg-icons';
 import { translate } from 'react-jhipster';
+
 interface transactionType {
   hash: string;
   from: string;
@@ -22,6 +23,13 @@ interface transactionType {
   value: string;
   timeStamp: string;
   tokenSymbol: string;
+}
+
+interface StatusType {
+  isEndTime: boolean;
+  drawed: boolean;
+  balanceOf: number;
+  raised: number;
 }
 const Campaign = () => {
   const { id } = useParams<{ id: string }>();
@@ -34,6 +42,12 @@ const Campaign = () => {
   const [sub, setSub] = useState(false);
   const history = useHistory();
   const provider = new ethers.providers.Web3Provider(window.ethereum);
+  const [status, setStatus] = useState<StatusType>({
+    isEndTime: false,
+    drawed: false,
+    balanceOf: 0,
+    raised: 0,
+  });
   const {
     register,
     handleSubmit,
@@ -90,6 +104,27 @@ const Campaign = () => {
           }
         }
       };
+      const getStatus = async () => {
+        const campaign = new ethers.Contract(id, cam.abi, provider.getSigner());
+        try {
+          const transaction = await campaign.getStatus('0x7ef95a0FEE0Dd31b22626fA2e10Ee6A223F8a684');
+          if (transaction) {
+            const obj = {
+              isEndTime: transaction?._isEndTime,
+              drawed: transaction?._drawed,
+              balanceOf: parseInt(transaction._balanceOf._hex, 16) / 1000000000000000000,
+              raised: parseInt(transaction._raised._hex, 16),
+            };
+            console.log(obj);
+            setStatus(obj);
+            //if (isLoading2) setIsLoading2(false);
+          }
+          //if (isLoading) setIsLoading(false);
+        } catch (error: any) {
+          console.log(JSON.parse(JSON.stringify(error)));
+        }
+      };
+      getStatus();
       getTransaction();
       getBalanceOf();
       if (data[0]) {
@@ -136,47 +171,49 @@ const Campaign = () => {
         </div>
       );
   };
-  const dataTable =
-    transaction &&
-    transaction
-      .filter(item => item.from != id)
-      .map((item, key) => [
-        <a
-          href={'https://testnet.bscscan.com/tx/' + `${item?.hash}`}
-          target="_blank"
-          style={{
-            textDecoration: 'none',
-          }}
-        >
-          {getEllipsisTxt(item.hash)}
-        </a>,
-        new Date(parseInt(item.timeStamp) * 1000).toString().slice(0, 25),
-        getEllipsisTxt(item.from),
-        getEllipsisTxt(item.to),
-        parseInt(item?.value) / 1000000000000000000,
-        item.tokenSymbol,
-      ]);
-  const withDrawDataTable =
-    transaction &&
-    transaction
-      .filter(item => item.from == id)
-      .map((item, key) => [
-        <a
-          href={'https://testnet.bscscan.com/tx/' + `${item?.hash}`}
-          target="_blank"
-          style={{
-            textDecoration: 'none',
-          }}
-        >
-          {getEllipsisTxt(item.hash)}
-        </a>,
-        new Date(parseInt(item.timeStamp) * 1000).toString().slice(0, 25),
-        getEllipsisTxt(item.from),
-        getEllipsisTxt(item.to),
-        parseInt(item?.value) / 1000000000000000000,
-        item.tokenSymbol,
-      ]);
-
+  const dataTable = transaction
+    ? transaction
+        .filter(item => item.from != id)
+        .map((item, key) => [
+          <a
+            href={'https://testnet.bscscan.com/tx/' + `${item?.hash}`}
+            target="_blank"
+            style={{
+              textDecoration: 'none',
+            }}
+          >
+            {getEllipsisTxt(item.hash)}
+          </a>,
+          new Date(parseInt(item.timeStamp) * 1000).toString().slice(0, 25),
+          getEllipsisTxt(item.from),
+          getEllipsisTxt(item.to),
+          parseInt(item?.value) / 1000000000000000000,
+          item.tokenSymbol,
+        ])
+    : [];
+  const withDrawDataTable = transaction
+    ? transaction
+        .filter(item => item.from == id)
+        .map((item, key) => [
+          <a
+            href={'https://testnet.bscscan.com/tx/' + `${item?.hash}`}
+            target="_blank"
+            style={{
+              textDecoration: 'none',
+            }}
+          >
+            {getEllipsisTxt(item.hash)}
+          </a>,
+          new Date(parseInt(item.timeStamp) * 1000).toString().slice(0, 25),
+          getEllipsisTxt(item.from),
+          getEllipsisTxt(item.to),
+          parseInt(item?.value) / 1000000000000000000,
+          item.tokenSymbol,
+        ])
+    : [];
+  if (withDrawDataTable) {
+    console.log(withDrawDataTable);
+  }
   const withDraw = async () => {
     const campaign = new ethers.Contract(id, cam.abi, provider.getSigner());
     try {
@@ -276,7 +313,7 @@ const Campaign = () => {
                     theme="primary"
                     type="button"
                     size="large"
-                    disabled={isEnd}
+                    disabled={status.isEndTime || status.drawed}
                   ></Button>
                 </div>
               </>
@@ -331,9 +368,9 @@ const Campaign = () => {
                         border: 'hidden',
                         marginLeft: '20px',
                         fontWeight: 'bold',
-                        opacity: `${isEnd ? '50%' : 'none'}`,
+                        opacity: `${status.isEndTime || status.drawed ? '50%' : 'none'}`,
                       }}
-                      disabled={isEnd}
+                      disabled={status.isEndTime || status.drawed}
                     >
                       {translate('campaign.crypto.donate')}
                     </button>
@@ -360,7 +397,7 @@ const Campaign = () => {
                 pageSize={10}
               />
             </div>
-            {isEnd && isCreator && (
+            {status.drawed && isCreator && (
               <div className="col-md-6 donate mt-5">
                 <div className="row justify-content-center">
                   <div className="col-md-3 mt-3 text-center">
@@ -394,7 +431,7 @@ const Campaign = () => {
                 </div>
               </div>
             )}
-            {isEnd && (
+            {status.drawed && (
               <>
                 <div className="col-md-8 h1 text-center">With Draw History</div>
                 <div className="col-md-8 mt-5">

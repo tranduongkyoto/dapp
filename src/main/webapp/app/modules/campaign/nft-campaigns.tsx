@@ -1,11 +1,12 @@
 import React, { Attributes, useState } from 'react';
 import { Link, useHistory, useLocation } from 'react-router-dom';
-import { Input, Button, DatePicker, Select, TabList, Tab, Icon } from 'web3uikit';
+import { Input, Button, DatePicker, Select, TabList, Tab, Icon, Tag } from 'web3uikit';
 import { useMoralis, useMoralisWeb3Api, useWeb3ExecuteFunction, useMoralisQuery } from 'react-moralis';
 import { NFT } from 'app/components/NFT';
 import { ethers } from 'ethers';
 import * as abi from '../contract/nftAution.json';
 import { translate } from 'react-jhipster';
+import NftAuctionItem from './nft-auction-item';
 const NftCampaigns = () => {
   const { account, Moralis } = useMoralis();
   const [list, setList] = useState<any>();
@@ -34,47 +35,41 @@ const NftCampaigns = () => {
 
   return (
     <>
-      <div className="row main">
-        {auction &&
-          auction
-            .filter(item => item.attributes?.isStart)
-            .map((item, index: number) => {
+      <div>
+        <div className="row justify-content-center">
+          <Tag color="blue" text="Ongoing" fontSize="20px"></Tag>
+        </div>
+        <div className="row main">
+          {auction &&
+            auction.map((item, index: number) => {
               return (
-                <div className="col-md-4 mt-5" key={index}>
-                  <NFT
-                    address={item.attributes?.nft}
-                    chain="bsc testnet"
-                    fetchMetadata
-                    tokenId={item.attributes?.tokenId}
-                    isAuction={false}
-                    auctionLink={`/auction/${item.attributes?.campaignAddress}`}
-                  />
-
-                  <div className="row ml-5 justify-content-center ">
-                    {/* <div className="col-md-6">
-                      {!item.attributes?.isStart && (
-                        <Button
-                          id="test-button-primary"
-                          onClick={() => start(item.attributes?.nft, item.attributes?.tokenId, account)}
-                          text="Start"
-                          theme="primary"
-                          type="button"
-                        />
-                      )}
-                    </div> */}
-                    <div className="col-md-6">
-                      <Button
-                        id="test-button-primary"
-                        onClick={() => buy(item.attributes?.campaignAddress)}
-                        text={translate('campaign.nft.buy')}
-                        theme="primary"
-                        type="button"
-                      />
-                    </div>
-                  </div>
-                </div>
+                <NftAuctionItem
+                  nft={item.attributes?.nft}
+                  tokenId={item.attributes?.tokenId}
+                  campaignAddress={item.attributes?.campaignAddress}
+                  onGoing={true}
+                />
               );
             })}
+        </div>
+      </div>
+      <div>
+        <div className="row justify-content-center">
+          <Tag color="grey" text="Ended" fontSize="20px"></Tag>
+        </div>
+        <div className="row main">
+          {auction &&
+            auction.map((item, index: number) => {
+              return (
+                <NftAuctionItem
+                  nft={item.attributes?.nft}
+                  tokenId={item.attributes?.tokenId}
+                  campaignAddress={item.attributes?.campaignAddress}
+                  onGoing={false}
+                />
+              );
+            })}
+        </div>
       </div>
     </>
   );

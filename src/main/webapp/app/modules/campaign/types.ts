@@ -1,12 +1,19 @@
 export interface ICampaignProps {
-  /**
-   * Address of the NFT Collection
-   */
   campaignAddress: string;
   coverImgUrl?: string;
   name?: string;
   description?: string;
   goal?: string;
+  onGoing: boolean;
+}
+
+export interface INftAuctionProps {
+  campaignAddress: string;
+  name?: string;
+  onGoing?: boolean;
+  nft: string;
+  tokenId: string;
+  creator?: string;
 }
 
 export interface IOrgProps {
