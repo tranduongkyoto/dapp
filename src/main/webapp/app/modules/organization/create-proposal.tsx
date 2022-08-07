@@ -58,7 +58,15 @@ const CreateProposal: React.FC<ICreateProposalProps> = ({ setShowModal, transact
     console.log(obj);
     console.log(['0x6fD11ff94Ca57389F3bDe9036127404F4D82b81d', '0x8194589111EEbFa77CdB9BF37F07E066fCB5C543']);
     try {
-      const canVote = transaction.map(item => item.from);
+      function onlyUnique(value, index, self) {
+        return self.indexOf(value) === index;
+      }
+      const canVote = transaction
+        .filter(item => item.from != id)
+        .map(item => item.from)
+        .filter(onlyUnique);
+      console.log(id);
+      console.log(canVote);
       const Organization = new ethers.Contract(id, abi.abi, provider.getSigner(account));
       console.log(Organization);
       const transaction2 = await Organization.createProposal(

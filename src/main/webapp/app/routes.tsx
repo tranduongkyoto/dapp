@@ -72,7 +72,7 @@ const Routes = () => {
       <ErrorBoundaryRoute path="/organization/:id" component={Organization} />
       <ErrorBoundaryRoute path="/video" component={Video} />
       <PrivateRouteCustom path="/register-org" component={RegisterOrg} />
-      <PrivateRouteCustom path="/your-org" component={YourOrg} />
+      <PrivateRouteCustom path="/your-organization/:id" component={YourOrg} />
       <PrivateRouteCustom path="/nft/mint" component={MintNft} />
       <PrivateRouteCustom path="/my-nft/:id" component={Nfts} />
       <PrivateRouteCustom path="/your-nft-auction/:id" component={MyNftAuction} />
