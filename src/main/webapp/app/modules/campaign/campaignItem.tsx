@@ -9,37 +9,74 @@ const { image } = NFTUtils;
 const { DivStyled } = styles;
 import colors from '../../styles/colors';
 import axios from 'axios';
-const CampaignItem: React.FC<ICampaignProps> = ({ campaignAddress, name, description, coverImgUrl, goal }) => {
+import { ethers } from 'ethers';
+import * as cam from '../contract/campaign.json';
+
+interface StatusType {
+  isEndTime: boolean;
+  drawed: boolean;
+  balanceOf: number;
+  raised: number;
+}
+const CampaignItem: React.FC<ICampaignProps> = ({ campaignAddress, name, description, coverImgUrl, goal, onGoing }) => {
   const [isLoading, setIsLoading] = useState(true);
+  const [isLoading2, setIsLoading2] = useState(true);
   const [balanceOf, setBalanceOf] = useState<number>();
   const { data, error } = useMoralisQuery('Camp', query => query.contains('campaignAddress', campaignAddress));
   const { Moralis, account, isInitialized } = useMoralis();
+  const provider = new ethers.providers.Web3Provider(window.ethereum);
+  const [status, setStatus] = useState<StatusType>({
+    isEndTime: false,
+    drawed: false,
+    balanceOf: 0,
+    raised: 0,
+  });
+
   if (data) {
-    console.log(data);
+    //console.log(data);
   }
 
   useEffect(() => {
-    console.log('34');
+    //console.log('34');
     const getBalanceOf = async () => {
       const data = await axios.get(
         `https://api-testnet.bscscan.com/api?module=account&action=tokenbalance&contractaddress=0x7ef95a0FEE0Dd31b22626fA2e10Ee6A223F8a684&address=${campaignAddress}&tag=latest&apikey=FH674SA8K1BFH2SFB7KXYZXFB5GS63IXM4`
       );
-      console.log(data);
+      //console.log(data);
       if (data?.data?.result) {
-        console.log(data?.data?.result);
         if (data?.data?.result == '0') {
-          setBalanceOf(0);
+          if (!balanceOf) setBalanceOf(0);
           if (isLoading) setIsLoading(false);
         } else {
-          console.log(data?.data?.result);
-          setBalanceOf(parseInt(data?.data?.result) / 1000000000000000000);
+          if (!balanceOf) setBalanceOf(parseInt(data?.data?.result) / 1000000000000000000);
           if (isLoading) setIsLoading(false);
         }
       }
     };
+    const getStatus = async () => {
+      const campaign = new ethers.Contract(campaignAddress, cam.abi, provider.getSigner());
+      try {
+        const transaction = await campaign.getStatus('0x7ef95a0FEE0Dd31b22626fA2e10Ee6A223F8a684');
+        if (transaction) {
+          const obj = {
+            isEndTime: transaction?._isEndTime,
+            drawed: transaction?._drawed,
+            balanceOf: parseInt(transaction._balanceOf._hex, 16) / 1000000000000000000,
+            raised: parseInt(transaction._raised._hex, 16),
+          };
+          console.log(obj);
+          setStatus(obj);
+          if (isLoading2) setIsLoading2(false);
+        }
+        if (isLoading) setIsLoading(false);
+      } catch (error: any) {
+        console.log(JSON.parse(JSON.stringify(error)));
+      }
+    };
     getBalanceOf();
-  });
-  if (isLoading) {
+    getStatus();
+  }, []);
+  if (isLoading || isLoading2) {
     return (
       <div data-testid="nft-metadata-loading">
         <DivStyled id="nft">
@@ -52,11 +89,15 @@ const CampaignItem: React.FC<ICampaignProps> = ({ campaignAddress, name, descrip
       </div>
     );
   }
-
+  if (onGoing && status && (status.isEndTime || status.drawed)) {
+    return <></>;
+  }
+  if (!onGoing && status && !(status.isEndTime || status.drawed)) {
+    return <></>;
+  }
   return (
     <>
-      {' '}
-      <div>
+      <div className="col-md-4">
         <DivStyled id="nft">
           <Link
             to={`/campaign/${campaignAddress}`}
@@ -75,7 +116,6 @@ const CampaignItem: React.FC<ICampaignProps> = ({ campaignAddress, name, descrip
                     <Typography variant="caption14" color={colors.blueDark}>
                       {name}
                     </Typography>
-                    {/* <Typography variant="caption12">{goal}</Typography> */}
                   </div>
                 </div>
               </div>
@@ -83,7 +123,7 @@ const CampaignItem: React.FC<ICampaignProps> = ({ campaignAddress, name, descrip
                 <Tag color="blue" text={(parseInt(goal) / 1000000000000000000).toString()} />
               </div>
               <div className="col-md-3 mt-2">
-                <Tag color="yellow" text={balanceOf.toString()} />
+                <Tag color="yellow" text={balanceOf && balanceOf.toString()} />
               </div>
             </div>
           </div>

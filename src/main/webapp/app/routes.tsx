@@ -63,7 +63,6 @@ const Routes = () => {
       <ErrorBoundaryRoute path="/organizations" component={Organizations} />
       <ErrorBoundaryRoute path="/start-nft-campaigns" component={StartNftCampaigns} />
       <ErrorBoundaryRoute path="/nft-campaigns" component={NftCampaigns} />
-      {/* <ErrorBoundaryRoute path="/nft-campaign/start/:id" component={StartNftCampaign} /> */}
       <ErrorBoundaryRoute path="/campaign/create/traditional" component={CreateCampaign} />
       <ErrorBoundaryRoute path="/campaign/create/nft" component={CreateNftCampaign} />
       <ErrorBoundaryRoute path="/campaign/create" component={Selection} />
@@ -73,7 +72,7 @@ const Routes = () => {
       <ErrorBoundaryRoute path="/organization/:id" component={Organization} />
       <ErrorBoundaryRoute path="/video" component={Video} />
       <PrivateRouteCustom path="/register-org" component={RegisterOrg} />
-      <PrivateRouteCustom path="/your-org" component={YourOrg} />
+      <PrivateRouteCustom path="/your-organization/:id" component={YourOrg} />
       <PrivateRouteCustom path="/nft/mint" component={MintNft} />
       <PrivateRouteCustom path="/my-nft/:id" component={Nfts} />
       <PrivateRouteCustom path="/your-nft-auction/:id" component={MyNftAuction} />

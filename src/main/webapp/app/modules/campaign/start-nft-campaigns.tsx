@@ -9,6 +9,7 @@ import { default as MoralisType } from 'moralis/types';
 
 import { useNotificationCustom } from 'app/web3utils/notification';
 import { translate } from 'react-jhipster';
+import StartNftAuctionItem from './start-nft-auction-item';
 const StartNftCampaigns = () => {
   const { account, Moralis } = useMoralis();
   const [list, setList] = useState<any>();
@@ -63,42 +64,17 @@ const StartNftCampaigns = () => {
     <>
       <div className="row main">
         {auction &&
-          auction
-            .filter(item => item.attributes?.creator == account && !item.attributes?.isStart)
-            .map((item, index: number) => {
-              return (
-                <div className="col-md-4 mt-5" key={index}>
-                  <NFT
-                    address={item.attributes?.nft}
-                    chain="bsc testnet"
-                    fetchMetadata
-                    tokenId={item.attributes?.tokenId}
-                    isAuction={false}
-                    //auctionLink={`/nft-campaign/start/${item.attributes?.campaignAddress}`}
-                  />
-                  <div className="row ml-5 justify-content-center ">
-                    <div className="col-md-6">
-                      {
-                        <Button
-                          id="test-button-primary"
-                          onClick={() =>
-                            start(
-                              item.attributes?.nft,
-                              item.attributes?.tokenId,
-                              item.attributes?.creator,
-                              item.attributes?.campaignAddress
-                            )
-                          }
-                          text={translate('campaign.nft.start')}
-                          theme="primary"
-                          type="button"
-                        />
-                      }
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
+          auction.map((item, index: number) => {
+            return (
+              <StartNftAuctionItem
+                nft={item.attributes?.nft}
+                tokenId={item.attributes?.tokenId}
+                campaignAddress={item.attributes?.campaignAddress}
+                onGoing={true}
+                creator={item.attributes?.creator}
+              />
+            );
+          })}
       </div>
     </>
   );

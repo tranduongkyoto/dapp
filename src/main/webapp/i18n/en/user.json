@@ -8,7 +8,7 @@
     "admin": "Is Admin",
     "create": "Create Date",
     "update": "Update Date",
-    "crypto": "Crypto Campaign WhiteLister",
-    "nft": "NFT Auction WhiteLister"
+    "crypto": "Crypto Campaign BlackLister",
+    "nft": "NFT Auction BlackLister"
   }
 }

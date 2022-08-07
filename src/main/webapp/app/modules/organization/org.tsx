@@ -363,6 +363,7 @@ const Organization = () => {
                         theme="primary"
                         type="button"
                         size="large"
+                        disabled={proposal.status != 0}
                       ></Button>,
                       proposal.status == 0 ? (
                         <Button
@@ -381,7 +382,7 @@ const Organization = () => {
                           theme="primary"
                           type="button"
                           size="large"
-                          disabled={proposal.status == 2}
+                          disabled={proposal.status == 2 || proposal.passed != true}
                         ></Button>
                       ),
                     ],
@@ -488,7 +489,7 @@ const Organization = () => {
               />
             </div>
           </div>
-          <div className="row  justify-content-center main mt-3">
+          {/* <div className="row  justify-content-center main mt-3">
             <div className="col-md-6 donate mt-5">
               <div className="row justify-content-center">
                 <div className="col-md-3 mt-3 text-center">
@@ -521,9 +522,9 @@ const Organization = () => {
                 </div>
               </div>
             </div>
-          </div>
+          </div> */}
           <div className="row  justify-content-center main mt-3">
-            <div className="col-md-8 h4 text-center mt-5">With Draw History</div>
+            <div className="col-md-8 h4 text-center mt-5">Implement History</div>
             <div className="col-md-8">
               <Table
                 columnsConfig="2fr 3fr 2fr 2fr 2fr 2fr"

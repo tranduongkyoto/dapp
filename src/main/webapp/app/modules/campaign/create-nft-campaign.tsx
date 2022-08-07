@@ -60,6 +60,7 @@ const CreateNftCampaign = () => {
       if (res?.status == 1) {
         handleNewNotification('success', `Contract is confirmed with ${res?.confirmations} confirmations. Thank for!`);
         setnftAution(null);
+        window.localStorage.removeItem('nftAution');
         reset();
       }
     } catch (error: any) {

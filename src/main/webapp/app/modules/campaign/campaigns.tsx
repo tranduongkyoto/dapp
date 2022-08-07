@@ -1,6 +1,6 @@
 import React, { Attributes, useState } from 'react';
 import { Link, useHistory, useLocation } from 'react-router-dom';
-import { Input, Button, DatePicker, Select, TabList, Tab, Icon } from 'web3uikit';
+import { Input, Button, DatePicker, Select, TabList, Tab, Icon, Tag } from 'web3uikit';
 import { useMoralis, useMoralisWeb3Api, useWeb3ExecuteFunction, useMoralisQuery } from 'react-moralis';
 import axios from 'axios';
 import { translate } from 'react-jhipster';
@@ -24,23 +24,45 @@ const Campaigns = () => {
   }
   return (
     <>
-      <div className="row main">
-        {data
-          .filter(item => !item.attributes?.isEnd)
-          .map((item, index: number) => {
+      <div>
+        <div className="row justify-content-center">
+          <Tag color="blue" text="Ongoing" fontSize="20px"></Tag>
+        </div>
+        <div className="row main mt-5">
+          {data.map((item, index: number) => {
             return (
-              <div className="col-md-4 mt-5" key={index}>
-                {/* <Link to={`/campaign/${item.attributes?.campaignAddress}`}> */}
+              <div key={index}>
                 <CampaignItem
                   campaignAddress={item.attributes?.campaignAddress}
                   name={item.attributes?.name}
                   goal={item.attributes?.goal}
                   coverImgUrl={item.attributes?.coverImgUrl}
+                  onGoing={true}
                 />
-                {/* </Link> */}
               </div>
             );
           })}
+        </div>
+      </div>
+      <div>
+        <div className="row justify-content-center">
+          <Tag color="grey" text="Ended" fontSize="20px"></Tag>
+        </div>
+        <div className="row main mt-5">
+          {data.map((item, index: number) => {
+            return (
+              <div key={index}>
+                <CampaignItem
+                  campaignAddress={item.attributes?.campaignAddress}
+                  name={item.attributes?.name}
+                  goal={item.attributes?.goal}
+                  coverImgUrl={item.attributes?.coverImgUrl}
+                  onGoing={false}
+                />
+              </div>
+            );
+          })}
+        </div>
       </div>
     </>
   );
