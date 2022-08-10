@@ -1,18 +1,16 @@
-import { useContext, useEffect, useState } from 'react';
-import { useWeb3React, UnsupportedChainIdError } from '@web3-react/core';
-import { default as MoralisType } from 'moralis/types';
 import {
+  Box,
   Flex,
   LogoutIcon,
-  RefreshIcon,
   useModal,
   UserMenu as UIKitUserMenu,
   UserMenuDivider,
   UserMenuItem,
   UserMenuVariant,
-  Box,
 } from '@pancakeswap/uikit';
-import { Button, useWalletModal, ButtonProps } from '@pancakeswap/uikit';
+import { UnsupportedChainIdError, useWeb3React } from '@web3-react/core';
+import { default as MoralisType } from 'moralis/types';
+import { useContext, useEffect, useState } from 'react';
 
 // import Trans from 'components/Trans'
 // import useAuth from 'hooks/useAuth';
@@ -22,13 +20,14 @@ import { Button, useWalletModal, ButtonProps } from '@pancakeswap/uikit';
 import ConnectWalletButton from 'app/components/ConnectWalletButton';
 // import { useTranslation } from 'contexts/Localization';
 // import { nftsBaseUrl } from 'views/Nft/market/constants';
-import WalletModal, { WalletView } from './WalletModal';
-import ProfileUserMenuItem from './ProfileUserMenuItem';
-import WalletUserMenuItem from './WalletUserMenuItem';
-import { useMoralis } from 'react-moralis';
-import React from 'react';
-import { useHistory } from 'react-router-dom';
 import { AppContext } from 'app/provider/appContext';
+import React from 'react';
+import { useMoralis } from 'react-moralis';
+import { useHistory } from 'react-router-dom';
+import ProfileUserMenuItem from './ProfileUserMenuItem';
+import WalletModal, { WalletView } from './WalletModal';
+import WalletUserMenuItem from './WalletUserMenuItem';
+import { ethers } from 'ethers';
 type web3StatusType = 'disconnected' | 'pending' | 'only_web3';
 const UserMenu = () => {
   //   const router = useRouter();
@@ -52,6 +51,8 @@ const UserMenu = () => {
   } = useMoralis();
   const isLoading = false,
     profile = null;
+  const { error } = useWeb3React();
+
   const [onPresentWalletModal] = useModal(<WalletModal initialView={WalletView.WALLET_INFO} />);
   const [onPresentTransactionModal] = useModal(<WalletModal initialView={WalletView.TRANSACTIONS} />);
   const [onPresentWrongNetworkModal] = useModal(<WalletModal initialView={WalletView.WRONG_NETWORK} />);
@@ -59,9 +60,13 @@ const UserMenu = () => {
   const avatarSrc = profile?.nft?.image?.thumbnail;
   const [userMenuText, setUserMenuText] = useState<string>('');
   const [userMenuVariable, setUserMenuVariable] = useState<UserMenuVariant>('default');
-  const isWrongNetwork = false;
+  const isWrongNetwork: boolean = error && error instanceof UnsupportedChainIdError;
   const [web3Status, setWeb3Status] = useState<web3StatusType>('disconnected');
   const { setUser, setIsAdmin } = useContext(AppContext);
+
+  if (error) {
+    console.log(error);
+  }
   useEffect(() => {
     if (typeof window == 'undefined') return;
 
