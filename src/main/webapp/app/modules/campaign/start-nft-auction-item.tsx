@@ -100,6 +100,9 @@ const StartNftAuctionItem: React.FC<INftAuctionProps> = ({ campaignAddress, nft,
   // if (onGoing && status && (status.isEndTime || status.drawed)) {
   //   return <></>;
   // }
+  if (status) {
+    console.log(status);
+  }
   if (status && status.isStart) {
     return <></>;
   }
