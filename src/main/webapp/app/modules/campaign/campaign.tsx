@@ -397,7 +397,7 @@ const Campaign = () => {
                 pageSize={10}
               />
             </div>
-            {status.drawed && isCreator && (
+            {!status.drawed && isCreator && (
               <div className="col-md-6 donate mt-5">
                 <div className="row justify-content-center">
                   <div className="col-md-3 mt-3 text-center">

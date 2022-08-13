@@ -3,15 +3,14 @@ import Loadable from 'react-loadable';
 import { Switch } from 'react-router-dom';
 
 import { AUTHORITIES } from 'app/config/constants';
-import Entities from 'app/entities';
 import Activate from 'app/modules/account/activate/activate';
 import PasswordResetFinish from 'app/modules/account/password-reset/finish/password-reset-finish';
 import PasswordResetInit from 'app/modules/account/password-reset/init/password-reset-init';
 import Register from 'app/modules/account/register/register';
 import Campaign from 'app/modules/campaign/campaign';
 import Home from 'app/modules/home/home';
-import Login from 'app/modules/login/login';
-import Logout from 'app/modules/login/logout';
+// import Login from 'app/modules/login/login';
+// import Logout from 'app/modules/login/logout';
 import PrivateRoute from 'app/shared/auth/private-route';
 import ErrorBoundaryRoute from 'app/shared/error/error-boundary-route';
 import PageNotFound from 'app/shared/error/page-not-found';
@@ -31,7 +30,6 @@ import MintNft from './modules/nft/mint-nft';
 import NftDetail from './modules/nft/nft-details';
 import Nfts from './modules/nft/nfts';
 import ProfileSetting from './modules/profile/profile';
-import Video from './modules/video/video';
 import PrivateRouteCustom from './shared/auth/private-route-custom';
 import MyCampaign from './modules/campaign/my-campaign';
 import Organizations from './modules/organization/organizations';
@@ -53,8 +51,6 @@ const Admin = Loadable({
 const Routes = () => {
   return (
     <Switch>
-      <ErrorBoundaryRoute path="/login" component={Login} />
-      <ErrorBoundaryRoute path="/logout" component={Logout} />
       <ErrorBoundaryRoute path="/account/register" component={Register} />
       <ErrorBoundaryRoute path="/account/activate/:key?" component={Activate} />
       <ErrorBoundaryRoute path="/account/reset/request" component={PasswordResetInit} />
@@ -70,7 +66,6 @@ const Routes = () => {
       <ErrorBoundaryRoute path="/auction/:id" component={NftCampaign} />
       <ErrorBoundaryRoute path="/organization/:id/proposal/:pid" component={Proposal} />
       <ErrorBoundaryRoute path="/organization/:id" component={Organization} />
-      <ErrorBoundaryRoute path="/video" component={Video} />
       <PrivateRouteCustom path="/register-org" component={RegisterOrg} />
       <PrivateRouteCustom path="/your-organization/:id" component={YourOrg} />
       <PrivateRouteCustom path="/nft/mint" component={MintNft} />
@@ -86,7 +81,6 @@ const Routes = () => {
       <PrivateRoute path="/admin" component={Admin} hasAnyAuthorities={[AUTHORITIES.ADMIN]} />
       <PrivateRoute path="/account" component={Account} hasAnyAuthorities={[AUTHORITIES.ADMIN, AUTHORITIES.USER]} />
       <ErrorBoundaryRoute path="/" exact component={Home} />
-      <PrivateRoute path="/" component={Entities} hasAnyAuthorities={[AUTHORITIES.USER]} />
       <ErrorBoundaryRoute component={PageNotFound} />
     </Switch>
   );
