@@ -222,7 +222,7 @@ export default function UserManage() {
           <div className="col-md-8 h1 text-center">{translate('user.title')}</div>
           <div className="col-md-12">
             <Table
-              columnsConfig="0.75fr 1fr 1fr 0.75fr 0.5fr 1fr 1fr 1fr 1fr"
+              columnsConfig="0.75fr 1fr 1fr 0.75fr 1fr 1fr 1fr 1fr 1fr"
               data={
                 userList.length > 1
                   ? userList.map(item => [

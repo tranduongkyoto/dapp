@@ -37,7 +37,7 @@ const NftCampaigns = () => {
     <>
       <div>
         <div className="row justify-content-center">
-          <Tag color="blue" text="Ongoing" fontSize="20px"></Tag>
+          <Tag color="blue" text={translate('global.ongoing')} fontSize="20px"></Tag>
         </div>
         <div className="row main">
           {auction &&
@@ -55,7 +55,7 @@ const NftCampaigns = () => {
       </div>
       <div>
         <div className="row justify-content-center mt-5">
-          <Tag color="blue" text="Ended" fontSize="20px"></Tag>
+          <Tag color="blue" text={translate('global.ended')} fontSize="20px"></Tag>
         </div>
         <div className="row main">
           {auction &&

@@ -1,0 +1,27 @@
+{
+  "org": {
+    "register": "Register",
+    "owner": "Owner",
+    "create": "Create Proposal",
+    "time": "End Time",
+    "vote": "Vote",
+    "voteon": "Vote on Proposal",
+    "count": "Count",
+    "implement": "Implement",
+    "donate": "Donate",
+    "implement-history": "Implement History",
+    "draw": "Withdraw Value",
+    "for": "For",
+    "against": "Against",
+    "choice": "Your Choice",
+    "ongoing": "Ongoing",
+    "wait-count": "Wait Count",
+    "true": "Accepted",
+    "false": "Rejected",
+    "des": "Description",
+    "value": "Value",
+    "up": "Vote Up",
+    "down": "Vote Down",
+    "status": "Status"
+  }
+}

@@ -85,7 +85,7 @@ const Proposal: React.FC<IProposalProps> = ({ setShowProposalModal, proposal, su
       isCentered
       hasFooter={false}
       headerHasBottomBorder={false}
-      title="Vote on Proposal"
+      title={translate('org.vote')}
       onCloseButtonPressed={() => setShowProposalModal(false)}
     >
       <></>
@@ -97,7 +97,7 @@ const Proposal: React.FC<IProposalProps> = ({ setShowProposalModal, proposal, su
       isCentered
       hasFooter={false}
       headerHasBottomBorder={false}
-      title="Vote on Proposal"
+      title={translate('org.vote')}
       onCloseButtonPressed={() => setShowProposalModal(false)}
     >
       <div className="row ">
@@ -112,11 +112,21 @@ const Proposal: React.FC<IProposalProps> = ({ setShowProposalModal, proposal, su
           ></img>
         </div>
         <div className="col-md-8 col-sm-12 mt-2 mb-3">
-          <div className="h4 font-weight-bold">Vote on Proposal #{proposal.id}</div>
+          <div className="h4 font-weight-bold">
+            {translate('org.voteon') + ' '} #{proposal.id}
+          </div>
           <div className="">{proposal.description}</div>
-          <div className="">Withdraw Value {proposal.amount / 1000000000000000000} USD</div>
-          <div>For: {proposal.votesUp}</div>
-          <span>Against: {proposal.votesDown}</span>
+          <div className="">
+            {' '}
+            {translate('org.draw') + ': '} {proposal.amount / 1000000000000000000} USD
+          </div>
+          <div>
+            {translate('org.for') + ': '}
+            {proposal.votesUp}
+          </div>
+          <span>
+            {translate('org.against') + ': '} {proposal.votesDown}
+          </span>
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="mt-3">
               <Controller
@@ -128,8 +138,8 @@ const Proposal: React.FC<IProposalProps> = ({ setShowProposalModal, proposal, su
                     id="radios2"
                     onBlur={field.onBlur}
                     onChange={field.onChange}
-                    items={['For', 'Against']}
-                    title="Your choice"
+                    items={[`${translate('org.for')}`, `${translate('org.against')}`]}
+                    title={translate('org.choice')}
                     validation={{
                       required: true,
                     }}
@@ -150,7 +160,7 @@ const Proposal: React.FC<IProposalProps> = ({ setShowProposalModal, proposal, su
                 border: 'hidden',
               }}
             >
-              Vote
+              {translate('org.vote')}
             </button>
             <button
               type="reset"

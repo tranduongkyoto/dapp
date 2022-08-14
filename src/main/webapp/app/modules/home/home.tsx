@@ -56,21 +56,18 @@ export const Home = (props: IHomeProp) => {
             {' '}
             <Translate contentKey="home.transparent"></Translate>
           </div>
-          <div>Maximum privacy protect for donors</div>
         </div>
         <div className="col-md-4 col-sm-12">
           <img src="content/images/donate.png"></img>
           <div className="h1">
             <Translate contentKey="home.where"></Translate>
           </div>
-          <div>Maximum privacy protect for donors</div>
         </div>
         <div className="col-md-4 col-sm-12">
           <img src="content/images/nftItem.png"></img>
           <div className="h1">
             <Translate contentKey="home.easy"></Translate>
           </div>
-          <div>Maximum privacy protect for donors</div>
         </div>
       </div>
 

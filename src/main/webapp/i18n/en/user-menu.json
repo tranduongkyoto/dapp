@@ -1,0 +1,9 @@
+{
+  "user-menu": {
+    "connect": "Connect Wallet",
+    "disconnect": "Disconnect",
+    "nft": "Your NFT",
+    "update": "Update Profile",
+    "profile": "Your Profile"
+  }
+}

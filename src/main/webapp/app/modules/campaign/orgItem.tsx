@@ -56,7 +56,7 @@ const OrgItem: React.FC<IOrgProps> = ({ organizationAddress, name, description, 
   return (
     <>
       {' '}
-      <div>
+      <div className="mt-5">
         <DivStyled id="nft">
           <Link
             to={`/organization/${organizationAddress}`}

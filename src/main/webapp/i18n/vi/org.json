@@ -1,0 +1,27 @@
+{
+  "org": {
+    "register": "Đăng kí",
+    "owner": "Chủ sở hữu",
+    "create": "Tạo đề xuất",
+    "time": "Thời gian kết thúc",
+    "vote": "Bỏ phiếu",
+    "voteon": "Bỏ phiếu cho đề xuất",
+    "count": "Đếm phiếu",
+    "implement": "Thực hiện",
+    "donate": "Quyên góp",
+    "implement-history": "Lịch sử thực hiện",
+    "draw": "Giá trị rút",
+    "for": "Tán thành",
+    "against": "Phản đối",
+    "choice": "Lựa chọn của bạn",
+    "ongoing": "Đang diễn ra",
+    "wait-count": "Chờ đếm phiếu",
+    "true": "Được chấp nhận",
+    "false": "Bị từ chối",
+    "des": "Mô tả",
+    "value": "Giá trị",
+    "up": "Tán thành",
+    "down": "Phản đối",
+    "status": "Trạng thái"
+  }
+}

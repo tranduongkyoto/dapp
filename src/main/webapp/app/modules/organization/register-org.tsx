@@ -126,7 +126,7 @@ const RegisterOrg = () => {
         >
           {/* <div className=" text-center font-weight-bold ">Create Campaign</div> */}
           <div className="justify-content-center ">
-            <div className="h4 font-weight-bold">Register Organization</div>
+            <div className="h4 font-weight-bold">{translate('org.register')}</div>
             <div>
               <img src={selectedFile} onClick={onBannerClick} className="orgBanner"></img>
               <input type="file" name="file" ref={inputFile} onChange={changeHandler} style={{ display: 'none' }} required />
@@ -193,7 +193,7 @@ const RegisterOrg = () => {
                     value={field.value}
                     onBlur={field.onBlur}
                     onChange={field.onChange}
-                    label="Owner"
+                    label={translate('org.owner')}
                     validation={{
                       required: true,
                       regExp: '^0x[a-fA-F0-9]{40}$',
@@ -265,7 +265,7 @@ const RegisterOrg = () => {
                   border: 'hidden',
                 }}
               >
-                {translate('campaign.crypto.create')}
+                {translate('org.register')}
               </button>
               <button
                 type="reset"

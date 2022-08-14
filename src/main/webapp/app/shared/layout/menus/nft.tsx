@@ -18,11 +18,11 @@ export const Nft = props => {
     >
       <MenuItem icon="user-plus" to="/nft/mint" data-cy="create">
         {/* <Translate contentKey="global.menu.campaign.create">Create Campaign</Translate> */}
-        Mint NFT
+        {translate('global.menu.nft.mint')}
       </MenuItem>
       <MenuItem icon="user-plus" to={`/my-nft/${account}`} data-cy="all">
         {/* <Translate contentKey="global.menu.campaign.all">All Campaigns</Translate> */}
-        My NFT
+        {translate('global.menu.nft.your')}
       </MenuItem>
     </NavDropdown>
   );
