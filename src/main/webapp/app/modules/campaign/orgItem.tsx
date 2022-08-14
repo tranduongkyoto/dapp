@@ -11,7 +11,7 @@ import colors from '../../styles/colors';
 import axios from 'axios';
 const OrgItem: React.FC<IOrgProps> = ({ organizationAddress, name, description, coverImgUrl }) => {
   const [isLoading, setIsLoading] = useState(true);
-  const [balanceOf, setBalanceOf] = useState<number>();
+  const [balanceOf, setBalanceOf] = useState<number>(0);
   const { data, error } = useMoralisQuery('Orgs', query => query.contains('OrganizationAddress', organizationAddress));
   const { Moralis, account, isInitialized } = useMoralis();
   if (data) {
@@ -38,7 +38,7 @@ const OrgItem: React.FC<IOrgProps> = ({ organizationAddress, name, description, 
       }
     };
     getBalanceOf();
-  });
+  }, []);
   if (isLoading) {
     return (
       <div data-testid="nft-metadata-loading">
