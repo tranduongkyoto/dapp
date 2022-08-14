@@ -78,8 +78,8 @@ const Routes = () => {
       <PrivateRouteCustom path="/email/new-camp" component={SendNewCamp} />
       <PrivateRouteCustom path="/admin/user-manage" component={UserManage} hasAnyAuthorities={[AUTHORITIES.ADMIN]} />
       <PrivateRouteCustom path="/dashboard" component={DashBoard} />
-      <PrivateRoute path="/admin" component={Admin} hasAnyAuthorities={[AUTHORITIES.ADMIN]} />
-      <PrivateRoute path="/account" component={Account} hasAnyAuthorities={[AUTHORITIES.ADMIN, AUTHORITIES.USER]} />
+      {/* <PrivateRoute path="/admin" component={Admin} hasAnyAuthorities={[AUTHORITIES.ADMIN]} /> */}
+      {/* <PrivateRoute path="/account" component={Account} hasAnyAuthorities={[AUTHORITIES.ADMIN, AUTHORITIES.USER]} /> */}
       <ErrorBoundaryRoute path="/" exact component={Home} />
       <ErrorBoundaryRoute component={PageNotFound} />
     </Switch>
