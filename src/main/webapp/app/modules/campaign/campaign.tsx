@@ -142,7 +142,7 @@ const Campaign = () => {
   }, [isInitialized, sub]);
   const lastestTxn = () => {
     if (transaction && transaction.length != 0) {
-      const lastest = transaction.filter(item => item.from !== '0x95f82f63b1d3eb775e37d7d2e401700ff395128f')[0];
+      const lastest = transaction.filter(item => item.from !== id).reverse()[0];
       return (
         <div className="row py-3 justify-content-center">
           <div className="col-md-auto col-sm-4">
@@ -275,7 +275,7 @@ const Campaign = () => {
               <div className="h1">{data[0].attributes?.name.toString()}</div>
               <div className="h3">{data[0].attributes?.description}</div>
               {/* <div className="h1">Campaign Start</div> */}
-              <div className="h3">{isEnd ? translate('campaign.crypto.end') : translate('campaign.crypto.progress')}</div>
+              <div className="h3">{status.isEndTime ? translate('campaign.crypto.end') : translate('campaign.crypto.progress')}</div>
               <div>
                 {translate('campaign.crypto.endAt') + ': '}
                 {new Date(parseInt(data[0].attributes?.endTime) * 1000).toString().slice(0, 25)}

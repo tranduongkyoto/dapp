@@ -46,8 +46,8 @@ const MyCampaign = () => {
         </div>
       </div>
       <div>
-        <div className="row justify-content-center">
-          <Tag color="grey" text="Ended" fontSize="20px"></Tag>
+        <div className="row justify-content-center mt-5">
+          <Tag color="blue" text="Ended" fontSize="20px"></Tag>
         </div>
         <div className="row main mt-5">
           {data.map((item, index: number) => {

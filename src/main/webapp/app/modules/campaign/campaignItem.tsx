@@ -123,7 +123,7 @@ const CampaignItem: React.FC<ICampaignProps> = ({ campaignAddress, name, descrip
                 <Tag color="blue" text={(parseInt(goal) / 1000000000000000000).toString()} />
               </div>
               <div className="col-md-3 mt-2">
-                <Tag color="yellow" text={status ? (status.balanceOf / 1000000000000000000).toString() : '0'} />
+                <Tag color="yellow" text={status ? status.balanceOf.toString() : '0'} />
               </div>
             </div>
           </div>
