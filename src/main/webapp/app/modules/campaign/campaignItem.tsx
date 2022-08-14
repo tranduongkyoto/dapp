@@ -97,7 +97,7 @@ const CampaignItem: React.FC<ICampaignProps> = ({ campaignAddress, name, descrip
   }
   return (
     <>
-      <div className="col-md-4">
+      <div className="col-md-4 mt-5">
         <DivStyled id="nft">
           <Link
             to={`/campaign/${campaignAddress}`}

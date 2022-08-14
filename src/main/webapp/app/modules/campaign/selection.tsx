@@ -40,10 +40,6 @@ export default function Selection() {
               {' '}
               <Translate contentKey="campaign.crypto.title"></Translate>
             </div>
-            <div>
-              Bạn có thể gây quỹ và nhận tiền điện tử từ mọi người nếu chiến dịch của bạn gây ấn tượng được với họ. Tất cả mọi thứ sẽ minh
-              bạch và rõ ràng nhờ Blockchain
-            </div>
           </Link>
         </div>
         <div className="col-md-6 col-sm-12 text-center">
@@ -52,10 +48,6 @@ export default function Selection() {
             <div className="h1">
               {' '}
               <Translate contentKey="campaign.nft.title"></Translate>
-            </div>
-            <div>
-              Nếu bạn có NFTs giá trị, bạn có thể bán hoặc cho đấu giá nó. Mọi người sẽ tham gia và bạn nhận lại tiền điện tử nhờ chuyển
-              nhượng NFTs đó.
             </div>
           </Link>
         </div>
