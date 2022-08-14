@@ -291,6 +291,8 @@ const Organization = () => {
 
   if (proposal) {
     console.log(proposal);
+    console.log(proposal.status == 0);
+    console.log(new Date().getTime() < proposal.deadline * 1000);
   }
   return (
     <>
@@ -318,7 +320,7 @@ const Organization = () => {
                   <Button
                     id="test-button-primary"
                     onClick={() => setShowModal(true)}
-                    text="Create Proposal"
+                    text={translate('org.create')}
                     theme="primary"
                     type="button"
                     size="large"
@@ -361,7 +363,7 @@ const Organization = () => {
             <div className="col-md-9 donate mt-5">
               {proposal && proposal.status != 2 && (
                 <Table
-                  columnsConfig="1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr"
+                  columnsConfig="0.5fr 2fr 0.5fr 0.75fr 0.75fr 1fr 1fr 1.5fr"
                   data={[
                     [
                       proposal.id,
@@ -369,15 +371,17 @@ const Organization = () => {
                       proposal.amount / 1000000000000000000,
                       proposal.votesUp,
                       proposal.votesDown,
-                      proposal.status == 0 && new Date().getTime() > proposal.deadline * 1000
-                        ? 'Ongoing'
+                      proposal.status == 0 && new Date().getTime() < proposal.deadline * 1000
+                        ? `${translate('org.ongoing')}`
                         : proposal.status == 1
-                        ? proposal.passed.toString()
-                        : 'Wait count',
+                        ? proposal.passed
+                          ? `${translate('org.true')}`
+                          : `${translate('org.false')}`
+                        : `${translate('org.wait-count')}`,
                       <Button
                         id="test-button-primary"
                         onClick={() => setShowProposalModal(true)}
-                        text="Vote"
+                        text={translate('org.vote')}
                         theme="primary"
                         type="button"
                         size="large"
@@ -387,7 +391,7 @@ const Organization = () => {
                         <Button
                           id="test-button-primary"
                           onClick={() => countVote()}
-                          text="Count"
+                          text={translate('org.count')}
                           theme="primary"
                           type="button"
                           size="large"
@@ -396,7 +400,7 @@ const Organization = () => {
                         <Button
                           id="test-button-primary"
                           onClick={() => withDraw()}
-                          text="Implement"
+                          text={translate('org.implement')}
                           theme="primary"
                           type="button"
                           size="large"
@@ -406,12 +410,12 @@ const Organization = () => {
                     ],
                   ]}
                   header={[
-                    <span>Id</span>,
-                    <span>Description</span>,
-                    <span>Value</span>,
-                    <span>Vote Up</span>,
-                    <span>Vote Down</span>,
-                    <span>Status</span>,
+                    <span>ID</span>,
+                    <span>{translate('org.des')}</span>,
+                    <span>{translate('org.value')}</span>,
+                    <span>{translate('org.up')}</span>,
+                    <span>{translate('org.down')}</span>,
+                    <span>{translate('org.status')}</span>,
                   ]}
                   maxPages={3}
                   noPagination
@@ -477,7 +481,7 @@ const Organization = () => {
                       }}
                       // disabled={isEnd}
                     >
-                      {translate('campaign.crypto.donate')}
+                      {translate('org.donate')}{' '}
                     </button>
                   </form>
                 </div>
@@ -542,7 +546,7 @@ const Organization = () => {
             </div>
           </div> */}
           <div className="row  justify-content-center main mt-3">
-            <div className="col-md-8 h4 text-center mt-5">Implement History</div>
+            <div className="col-md-8 h4 text-center mt-5">{translate('org.implement-history')}</div>
             <div className="col-md-8">
               <Table
                 columnsConfig="2fr 3fr 2fr 2fr 2fr 2fr"

@@ -61,13 +61,13 @@ const CreateProposal: React.FC<ICreateProposalProps> = ({ setShowModal, transact
     console.log(['0x6fD11ff94Ca57389F3bDe9036127404F4D82b81d', '0x8194589111EEbFa77CdB9BF37F07E066fCB5C543']);
     try {
       function onlyUnique(value, index, self) {
+        console.log(self.indexOf(value));
+        console.log(self.indexOf(value) === index);
         return self.indexOf(value) === index;
       }
-      const canVote = transaction
-        .filter(item => item.from != id)
-        .map(item => item.from)
-        .filter(onlyUnique);
+      var canVote = transaction.filter(item => item.from != id).map(item => item.from);
       creator ? canVote.push(creator) : '';
+      canVote = canVote.filter(onlyUnique);
       console.log(id);
       console.log(canVote);
       const Organization = new ethers.Contract(id, abi.abi, provider.getSigner(account));
@@ -110,7 +110,7 @@ const CreateProposal: React.FC<ICreateProposalProps> = ({ setShowModal, transact
       isCentered
       hasFooter={false}
       headerHasBottomBorder={false}
-      title="Create Proposal"
+      title={translate('org.create')}
       onCloseButtonPressed={() => setShowModal(false)}
     >
       <div className="row ">
@@ -125,7 +125,7 @@ const CreateProposal: React.FC<ICreateProposalProps> = ({ setShowModal, transact
           ></img>
         </div>
         <div className="col-md-7 col-sm-12 mt-2 mb-3">
-          <div className="h4 font-weight-bold">Your Proposal</div>
+          <div className="h4 font-weight-bold">{translate('org.create')}</div>
           <form onSubmit={handleSubmit(onSubmit)}>
             <Controller
               name="des"
@@ -188,7 +188,7 @@ const CreateProposal: React.FC<ICreateProposalProps> = ({ setShowModal, transact
                     onBlur={field.onBlur}
                     onChange={field.onChange}
                     items={['1 days', '2 days', '3 days']}
-                    title={translate('campaign.crypto.time')}
+                    title={translate('org.time')}
                     validation={{
                       required: true,
                     }}
