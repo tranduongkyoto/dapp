@@ -76,7 +76,7 @@ const RegisterOrg = () => {
       return;
     } else {
       try {
-        const orgStore = new ethers.Contract('0x9C8d12bd5c0acd1d019125001F72498aF8fa266F', abi.abi, provider.getSigner(account));
+        const orgStore = new ethers.Contract('0x4059d50228a8D77a5828c488bE5181216cB78C4D', abi.abi, provider.getSigner(account));
         const transaction = await orgStore.createOrganization(data?.name, data?.des, theFile, data?.type, data?.to);
         handleNewNotification('success', 'Contract is pending, Please wait! ');
         const res = await transaction.wait();

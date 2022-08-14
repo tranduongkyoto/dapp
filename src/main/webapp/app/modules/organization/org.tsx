@@ -28,11 +28,11 @@ interface ProposalType {
   deadline: number;
   endPrice: number;
   id: number;
-  isProposalForNFT: number;
+  isProposalForNFT: boolean;
   passed: boolean;
   startingPrice: number;
   status: number;
-  token: number;
+  token: string;
   votesDown: number;
   votesUp: number;
 }
@@ -40,7 +40,7 @@ const Organization = () => {
   const { id } = useParams<{ id: string }>();
   const [balanceOf, setBalanceOf] = useState<number>(0);
   const [transaction, setTransaction] = useState<transactionType[]>();
-  const { data, error } = useMoralisQuery('Orgs', query => query.contains('OrganizationAddress', id));
+  const { data, error } = useMoralisQuery('Orgss', query => query.contains('OrganizationAddress', id));
   const { Moralis, account, isInitialized } = useMoralis();
   const { fetch, error: error2, isFetching } = useWeb3Transfer();
   const { handleNewNotification } = useNotificationCustom();
@@ -113,32 +113,50 @@ const Organization = () => {
         console.log(res);
         count = parseInt(res._hex, 16);
         console.log(count);
-        const proposalList = [...Array(count - 1).keys()];
-        console.log(proposalList);
-        Promise.allSettled(proposalList.map(async item => await Organization.Proposals(item + 1))).then(values =>
-          setProposal(
-            values
-              .filter(item => item.status == 'fulfilled')
-              .map(item => item?.value)
-              .map(item => {
-                const obj = {
-                  description: item?.description,
-                  amount: parseInt(item?.amount._hex, 16),
-                  deadline: parseInt(item?.deadline._hex, 16),
-                  endPrice: parseInt(item?.endPrice._hex, 16),
-                  id: parseInt(item?.id._hex, 16),
-                  isProposalForNFT: item?.isProposalForNFT,
-                  passed: item?.passed,
-                  startingPrice: parseInt(item?.startingPrice._hex, 16),
-                  status: parseInt(item?.status._hex, 16),
-                  token: item?.token,
-                  votesDown: parseInt(item?.votesDown._hex, 16),
-                  votesUp: parseInt(item?.votesUp._hex, 16),
-                };
-                return obj;
-              })[count - 2]
-          )
-        );
+        if (count == 1) {
+          setProposal({
+            description: '',
+            amount: 0,
+            deadline: 123,
+            endPrice: 0,
+            id: 1,
+            isProposalForNFT: false,
+            passed: false,
+            startingPrice: 0,
+            status: 2,
+            token: '',
+            votesDown: 0,
+            votesUp: 0,
+          });
+        } else {
+          const proposalList = [...Array(count - 1).keys()];
+          console.log(proposalList);
+          Promise.allSettled(proposalList.map(async item => await Organization.Proposals(item + 1))).then(values => {
+            console.log(values);
+            setProposal(
+              values
+                .filter(item => item.status == 'fulfilled')
+                .map(item => item?.value)
+                .map(item => {
+                  const obj = {
+                    description: item?.description,
+                    amount: parseInt(item?.amount._hex, 16),
+                    deadline: parseInt(item?.deadline._hex, 16),
+                    endPrice: parseInt(item?.endPrice._hex, 16),
+                    id: parseInt(item?.id._hex, 16),
+                    isProposalForNFT: item?.isProposalForNFT,
+                    passed: item?.passed,
+                    startingPrice: parseInt(item?.startingPrice._hex, 16),
+                    status: parseInt(item?.status._hex, 16),
+                    token: item?.token,
+                    votesDown: parseInt(item?.votesDown._hex, 16),
+                    votesUp: parseInt(item?.votesUp._hex, 16),
+                  };
+                  return obj;
+                })[count - 2]
+            );
+          });
+        }
       };
       getTransaction();
       getBalanceOf();
@@ -551,6 +569,7 @@ const Organization = () => {
                 sub={sub}
                 setSub={setSub}
                 balanceOf={balanceOf && balanceOf}
+                creator={data[0].attributes?.creator.toString()}
               />
             )}
           </div>

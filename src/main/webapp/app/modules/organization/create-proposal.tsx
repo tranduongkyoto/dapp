@@ -15,6 +15,7 @@ interface ICreateProposalProps {
   sub: boolean;
   transaction: transactionType[];
   balanceOf: number;
+  creator?: string;
 }
 interface transactionType {
   hash: string;
@@ -24,7 +25,7 @@ interface transactionType {
   timeStamp: string;
   tokenSymbol: string;
 }
-const CreateProposal: React.FC<ICreateProposalProps> = ({ setShowModal, transaction, sub, setSub, balanceOf }) => {
+const CreateProposal: React.FC<ICreateProposalProps> = ({ setShowModal, transaction, sub, setSub, balanceOf, creator }) => {
   const { id } = useParams<{ id: string }>();
   const { handleNewNotification } = useNotificationCustom();
   const {
@@ -37,6 +38,7 @@ const CreateProposal: React.FC<ICreateProposalProps> = ({ setShowModal, transact
   } = useForm({
     mode: 'onTouched',
   });
+  console.log(creator);
   if (transaction) {
     console.log(transaction.map(item => item.from));
   }
@@ -65,6 +67,7 @@ const CreateProposal: React.FC<ICreateProposalProps> = ({ setShowModal, transact
         .filter(item => item.from != id)
         .map(item => item.from)
         .filter(onlyUnique);
+      creator ? canVote.push(creator) : '';
       console.log(id);
       console.log(canVote);
       const Organization = new ethers.Contract(id, abi.abi, provider.getSigner(account));

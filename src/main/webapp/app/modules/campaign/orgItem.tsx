@@ -12,7 +12,7 @@ import axios from 'axios';
 const OrgItem: React.FC<IOrgProps> = ({ organizationAddress, name, description, coverImgUrl }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [balanceOf, setBalanceOf] = useState<number>(0);
-  const { data, error } = useMoralisQuery('Orgs', query => query.contains('OrganizationAddress', organizationAddress));
+  const { data, error } = useMoralisQuery('Orgss', query => query.contains('OrganizationAddress', organizationAddress));
   const { Moralis, account, isInitialized } = useMoralis();
   if (data) {
     console.log(data);

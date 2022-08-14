@@ -9,7 +9,7 @@ import OrgItem from '../campaign/orgItem';
 const Organizations = () => {
   const { Moralis } = useMoralis();
   const [list, setList] = useState<any>();
-  const { data, isLoading, error } = useMoralisQuery('Orgs');
+  const { data, isLoading, error } = useMoralisQuery('Orgss');
   const history = useHistory();
 
   const donate = id => {

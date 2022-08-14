@@ -30,11 +30,11 @@ interface ProposalType {
   deadline: number;
   endPrice: number;
   id: number;
-  isProposalForNFT: number;
+  isProposalForNFT: boolean;
   passed: boolean;
   startingPrice: number;
   status: number;
-  token: number;
+  token: string;
   votesDown: number;
   votesUp: number;
 }
@@ -150,7 +150,7 @@ const Proposal: React.FC<IProposalProps> = ({ setShowProposalModal, proposal, su
                 border: 'hidden',
               }}
             >
-              {translate('campaign.nft.mint.create')}
+              Vote
             </button>
             <button
               type="reset"
