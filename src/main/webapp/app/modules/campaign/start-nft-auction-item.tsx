@@ -46,6 +46,7 @@ const StartNftAuctionItem: React.FC<INftAuctionProps> = ({ campaignAddress, nft,
       const res = await transaction.wait();
       if (res?.status == 1) {
         handleNewNotification('success', `Contract is confirmed with ${res?.confirmations} confirmations. Thank for!`);
+        window.location.reload();
       }
     } catch (error: any) {
       console.log(error);
@@ -103,7 +104,7 @@ const StartNftAuctionItem: React.FC<INftAuctionProps> = ({ campaignAddress, nft,
   if (status) {
     console.log(status);
   }
-  if (status && status.isStart) {
+  if (status && (status.isStart || status.isSell)) {
     return <></>;
   }
   return (
