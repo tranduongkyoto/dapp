@@ -50,12 +50,11 @@ const StartNftAuctionItem: React.FC<INftAuctionProps> = ({ campaignAddress, nft,
       }
     } catch (error: any) {
       console.log(error);
-      handleNewNotification(
-        'error',
-        JSON.parse(JSON.stringify(error))?.error?.message
-          ? JSON.parse(JSON.stringify(error))?.error?.message
-          : JSON.parse(JSON.stringify(error))?.message
-      );
+      var message = JSON.parse(JSON.stringify(error))?.data?.message
+        ? JSON.parse(JSON.stringify(error))?.data?.message
+        : JSON.parse(JSON.stringify(error))?.message;
+      message += '. ' + JSON.parse(JSON.stringify(error))?.reason ? JSON.parse(JSON.stringify(error))?.reason : '';
+      handleNewNotification('error', message.toString());
     }
   };
   useEffect(() => {

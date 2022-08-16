@@ -74,13 +74,12 @@ const Organization = () => {
       }
       reset();
     } catch (error: any) {
-      console.log(error);
-      handleNewNotification(
-        'error',
-        JSON.parse(JSON.stringify(error))?.error?.message
-          ? JSON.parse(JSON.stringify(error))?.error?.message
-          : JSON.parse(JSON.stringify(error))?.message
-      );
+      JSON.parse(JSON.stringify(error));
+      var message = JSON.parse(JSON.stringify(error))?.data?.message
+        ? JSON.parse(JSON.stringify(error))?.data?.message
+        : JSON.parse(JSON.stringify(error))?.message;
+      message += '. ' + JSON.parse(JSON.stringify(error))?.reason ? JSON.parse(JSON.stringify(error))?.reason : '';
+      handleNewNotification('error', message.toString());
     }
   };
 
@@ -253,12 +252,11 @@ const Organization = () => {
       reset();
     } catch (error: any) {
       console.log(JSON.parse(JSON.stringify(error)));
-      handleNewNotification(
-        'error',
-        JSON.parse(JSON.stringify(error))?.error?.message
-          ? JSON.parse(JSON.stringify(error))?.error?.message
-          : JSON.parse(JSON.stringify(error))?.message
-      );
+      var message = JSON.parse(JSON.stringify(error))?.data?.message
+        ? JSON.parse(JSON.stringify(error))?.data?.message
+        : JSON.parse(JSON.stringify(error))?.message;
+      message += '. ' + JSON.parse(JSON.stringify(error))?.reason ? JSON.parse(JSON.stringify(error))?.reason : '';
+      handleNewNotification('error', message.toString());
       reset();
     }
   };
@@ -278,9 +276,13 @@ const Organization = () => {
       console.log(JSON.parse(JSON.stringify(error)));
       handleNewNotification(
         'error',
-        JSON.parse(JSON.stringify(error))?.error?.message
-          ? JSON.parse(JSON.stringify(error))?.error?.message
-          : JSON.parse(JSON.stringify(error))?.message
+        (JSON.parse(JSON.stringify(error))?.data?.message
+          ? JSON.parse(JSON.stringify(error))?.data?.message
+          : JSON.parse(JSON.stringify(error))?.message) +
+          '. ' +
+          JSON.parse(JSON.stringify(error))?.reason
+          ? JSON.parse(JSON.stringify(error))?.reason
+          : ''
       );
       // reset();
     }
@@ -311,7 +313,7 @@ const Organization = () => {
             <div className="col-md-4 col-sm-12 pl-5">
               <div className="h1">{data[0].attributes?.name.toString()}</div>
               <div className="h3">{data[0].attributes?.description}</div>
-              <div className=" font-weight-bold h3">
+              <div className="h3">
                 {translate('campaign.crypto.balance') + ': '}
                 {balanceOf} USD
               </div>

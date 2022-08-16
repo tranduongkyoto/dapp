@@ -1,6 +1,8 @@
 import { NFT } from 'app/components/NFT';
 import { Tab, TabList } from 'app/components/Tabs';
 import { AppContext } from 'app/provider/appContext';
+import axios from 'axios';
+import { ethers } from 'ethers';
 import React, { useContext, useEffect, useState } from 'react';
 import { translate } from 'react-jhipster';
 import { useMoralis, useNFTBalances, useNFTTransfers, useERC20Transfers } from 'react-moralis';
@@ -40,8 +42,19 @@ export function Profile() {
   const { getNFTBalances, data, error } = useNFTBalances();
   const { getNFTTransfers, data: nftTransfer, error: nftTransferErr, isFetching } = useNFTTransfers();
   const { fetchERC20Transfers, data: erc20Transfer, error: erc20TransferErr } = useERC20Transfers();
-
+  const provider = new ethers.providers.Web3Provider(window.ethereum, 'any');
+  const [bnb, setBnb] = useState<string>();
+  const [balanceOf, setBalanceOf] = useState<string>();
   useEffect(() => {
+    const getBalanceOf = async () => {
+      const data = await axios.get(
+        `https://api-testnet.bscscan.com/api?module=account&action=tokenbalance&contractaddress=0x7ef95a0FEE0Dd31b22626fA2e10Ee6A223F8a684&address=${id}&tag=latest&apikey=FH674SA8K1BFH2SFB7KXYZXFB5GS63IXM4`
+      );
+      //console.log(data);
+      if (data?.data?.result) {
+        setBalanceOf((parseInt(data?.data?.result) / 1000000000000000000).toString());
+      }
+    };
     const getNFTData = async () => {
       console.log(id);
       await getNFTBalances({
@@ -56,7 +69,10 @@ export function Profile() {
           address: id,
         },
       });
+      const bnb = await provider.getBalance(id);
+      setBnb((parseInt(bnb?._hex, 16) / 1000000000000000000).toString().slice(0, 4));
     };
+    getBalanceOf();
     getNFTData();
   }, []);
   if (data) {
@@ -154,15 +170,15 @@ export function Profile() {
         <div className="col-md-5 tran-lastest">
           <div className="row py-3 justify-content-center">
             <div className="col-md-auto col-sm-4 text-danger mx-auto">
-              <div className=" text-center">ETH</div>
+              <div className=" text-center">BNB</div>
               <div>
-                <Tag color="red" text="3.2"></Tag>
+                <Tag color="red" text={bnb ? bnb : '0'}></Tag>
               </div>
             </div>
             <div className="col-md-auto col-sm-4 text-success mx-auto">
               <div className=" text-center">USDT</div>
               <div>
-                <Tag color="green" text="1000"></Tag>
+                <Tag color="green" text={balanceOf ? balanceOf.slice(0, 4) : '0'}></Tag>
               </div>
             </div>
             <div className="col-md-auto col-sm-4 text-primary mx-auto">

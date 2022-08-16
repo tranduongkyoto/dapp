@@ -31,15 +31,13 @@ const Campaigns = () => {
         <div className="row main mt-5">
           {data.map((item, index: number) => {
             return (
-              <div key={index}>
-                <CampaignItem
-                  campaignAddress={item.attributes?.campaignAddress}
-                  name={item.attributes?.name}
-                  goal={item.attributes?.goal}
-                  coverImgUrl={item.attributes?.coverImgUrl}
-                  onGoing={true}
-                />
-              </div>
+              <CampaignItem
+                campaignAddress={item.attributes?.campaignAddress}
+                name={item.attributes?.name}
+                goal={item.attributes?.goal}
+                coverImgUrl={item.attributes?.coverImgUrl}
+                onGoing={true}
+              />
             );
           })}
         </div>
@@ -51,15 +49,13 @@ const Campaigns = () => {
         <div className="row main mt-5">
           {data.map((item, index: number) => {
             return (
-              <div key={index}>
-                <CampaignItem
-                  campaignAddress={item.attributes?.campaignAddress}
-                  name={item.attributes?.name}
-                  goal={item.attributes?.goal}
-                  coverImgUrl={item.attributes?.coverImgUrl}
-                  onGoing={false}
-                />
-              </div>
+              <CampaignItem
+                campaignAddress={item.attributes?.campaignAddress}
+                name={item.attributes?.name}
+                goal={item.attributes?.goal}
+                coverImgUrl={item.attributes?.coverImgUrl}
+                onGoing={false}
+              />
             );
           })}
         </div>

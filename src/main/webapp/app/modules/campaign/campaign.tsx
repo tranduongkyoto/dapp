@@ -232,9 +232,11 @@ const Campaign = () => {
       console.log(JSON.parse(JSON.stringify(error)));
       handleNewNotification(
         'error',
-        JSON.parse(JSON.stringify(error))?.error?.message
-          ? JSON.parse(JSON.stringify(error))?.error?.message
-          : JSON.parse(JSON.stringify(error))?.message
+        JSON.parse(JSON.stringify(error))?.data?.message
+          ? JSON.parse(JSON.stringify(error))?.data?.message
+          : JSON.parse(JSON.stringify(error))?.message + '. ' + JSON.parse(JSON.stringify(error))?.reason
+          ? JSON.parse(JSON.stringify(error))?.reason
+          : ''
       );
     }
   };
@@ -276,12 +278,12 @@ const Campaign = () => {
               <div className="h1">{data[0].attributes?.name.toString()}</div>
               <div className="h3">{data[0].attributes?.description}</div>
               {/* <div className="h1">Campaign Start</div> */}
-              <div className="h3">{isEnd ? translate('campaign.crypto.end') : translate('campaign.crypto.progress')}</div>
+              <div className="h3">{isEnd || status.drawed ? translate('campaign.crypto.end') : translate('campaign.crypto.progress')}</div>
               <div>
                 {translate('campaign.crypto.endAt') + ': '}
                 {new Date(parseInt(data[0].attributes?.endTime) * 1000).toString().slice(0, 25)}
               </div>
-              <div className=" font-weight-bold h3">
+              <div className="h3">
                 {translate('campaign.crypto.balance') + ': '}
                 {+balanceOf ? balanceOf : 0} USD
               </div>

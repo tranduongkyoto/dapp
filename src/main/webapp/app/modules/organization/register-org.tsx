@@ -85,17 +85,18 @@ const RegisterOrg = () => {
           handleNewNotification('success', `Contract is confirmed with ${res?.confirmations} confirmations. Thank for your donation!`);
         }
         reset();
+        setSelectedFile(defaultImgs[2]);
+        setTheFile(null);
       } catch (error: any) {
         console.log(JSON.parse(JSON.stringify(error)));
-        handleNewNotification(
-          'error',
-          JSON.parse(JSON.stringify(error))?.error?.message
-            ? JSON.parse(JSON.stringify(error))?.error?.message
-            : JSON.parse(JSON.stringify(error))?.message
-        );
+        var message = JSON.parse(JSON.stringify(error))?.data?.message
+          ? JSON.parse(JSON.stringify(error))?.data?.message
+          : JSON.parse(JSON.stringify(error))?.message;
+        message += '. ' + JSON.parse(JSON.stringify(error))?.reason ? JSON.parse(JSON.stringify(error))?.reason : '';
+        handleNewNotification('error', message.toString());
       }
-      setSelectedFile(defaultImgs[2]);
-      setTheFile(null);
+      //setSelectedFile(defaultImgs[2]);
+      //setTheFile(null);
     }
   };
   return (

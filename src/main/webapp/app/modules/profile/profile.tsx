@@ -41,7 +41,7 @@ export default function ProfileSetting() {
       .save({
         username: data.name,
         email: data.email,
-        phoneNumber: data.phone,
+        phoneNumber: data.tel,
         work: data.work,
         isUpdateProfile: true,
       })

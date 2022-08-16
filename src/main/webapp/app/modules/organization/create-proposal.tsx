@@ -92,12 +92,11 @@ const CreateProposal: React.FC<ICreateProposalProps> = ({ setShowModal, transact
       reset();
     } catch (error: any) {
       console.log(JSON.parse(JSON.stringify(error)));
-      handleNewNotification(
-        'error',
-        JSON.parse(JSON.stringify(error))?.error?.message
-          ? JSON.parse(JSON.stringify(error))?.error?.message
-          : JSON.parse(JSON.stringify(error))?.message
-      );
+      var message = JSON.parse(JSON.stringify(error))?.data?.message
+        ? JSON.parse(JSON.stringify(error))?.data?.message
+        : JSON.parse(JSON.stringify(error))?.message;
+      message += '. ' + JSON.parse(JSON.stringify(error))?.reason ? JSON.parse(JSON.stringify(error))?.reason : '';
+      handleNewNotification('error', message.toString());
     }
   };
   console.log(balanceOf);

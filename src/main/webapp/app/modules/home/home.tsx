@@ -31,7 +31,7 @@ export const Home = (props: IHomeProp) => {
               </button>
             </div>
             <div className="col-sm-12 col-md-6 text-left pt-5">
-              <button className="btn btn-lg btn-info btn-border">
+              <button className="btn btn-lg btn-info btn-border" onClick={() => history.push('/campaigns')}>
                 <Translate contentKey="home.donate"></Translate>
               </button>
             </div>
