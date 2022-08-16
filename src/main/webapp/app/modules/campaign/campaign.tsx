@@ -296,6 +296,11 @@ const Campaign = () => {
                 style={{
                   //maxWidth: '50%',
                   height: 'auto',
+                  maxWidth: '250px',
+                  maxHeight: '250px',
+                  minWidth: '200px',
+                  minHeight: '200px',
+                  objectFit: 'cover',
                 }}
                 alt=""
                 src={`${data[0].attributes?.coverImgUrl}`}
