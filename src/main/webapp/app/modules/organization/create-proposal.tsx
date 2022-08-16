@@ -1,13 +1,15 @@
 import { Radios } from 'app/components/Radios';
 import { useNotificationCustom } from 'app/web3utils/notification';
 import { ethers } from 'ethers';
-import React from 'react';
+import React, { useRef, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { translate } from 'react-jhipster';
 import { useMoralis } from 'react-moralis';
 import { useHistory, useParams } from 'react-router-dom';
 import { Input, Modal } from 'web3uikit';
 import * as abi from '../contract/Organization.json';
+import './registerOrg.scss';
+import { defaultImgs } from '../../shared/util/defaultImgs';
 
 interface ICreateProposalProps {
   setShowModal: (e: boolean) => void;
@@ -26,8 +28,11 @@ interface transactionType {
   tokenSymbol: string;
 }
 const CreateProposal: React.FC<ICreateProposalProps> = ({ setShowModal, transaction, sub, setSub, balanceOf, creator }) => {
+  const inputFile = useRef(null);
   const { id } = useParams<{ id: string }>();
   const { handleNewNotification } = useNotificationCustom();
+  const [selectedFile, setSelectedFile] = useState(defaultImgs[2]);
+  const [theFile, setTheFile] = useState<any>();
   const {
     register,
     handleSubmit,
@@ -45,58 +50,80 @@ const CreateProposal: React.FC<ICreateProposalProps> = ({ setShowModal, transact
   const { Moralis, account, isInitialized } = useMoralis();
   const provider = new ethers.providers.Web3Provider(window.ethereum);
   const history = useHistory();
+  const onBannerClick = () => {
+    inputFile.current.click();
+  };
+
+  const changeHandler = async event => {
+    const img = event.target.files[0];
+    setSelectedFile(URL.createObjectURL(img));
+    const imgFile = img;
+    const file = new Moralis.File(imgFile.name, imgFile);
+    await file.saveIPFS();
+    const coverImgUrl = 'https://ipfs.moralis.io:2053/ipfs/' + file.name().slice(0, file.name().length - 4);
+    setTheFile(coverImgUrl);
+  };
   const onSubmit = async (data, e) => {
-    const obj = {
-      des: data?.des,
-      canVote: transaction.map(item => item.from),
-      token: '0x7ef95a0FEE0Dd31b22626fA2e10Ee6A223F8a684',
-      amount: Moralis.Units.Token(data.value, 18),
-      endTime: parseInt(data?.endTime) + 1,
-      NFT: false,
-      startingPrice: 0,
-      endPrice: 0,
-    };
-    console.log(data);
-    console.log(obj);
-    console.log(['0x6fD11ff94Ca57389F3bDe9036127404F4D82b81d', '0x8194589111EEbFa77CdB9BF37F07E066fCB5C543']);
-    try {
-      function onlyUnique(value, index, self) {
-        console.log(self.indexOf(value));
-        console.log(self.indexOf(value) === index);
-        return self.indexOf(value) === index;
+    if (!theFile) {
+      handleNewNotification('error', 'Please select image for Proposal');
+      return;
+    } else {
+      console.log(theFile);
+      const obj = {
+        des: data?.des,
+        canVote: transaction.map(item => item.from),
+        token: '0x7ef95a0FEE0Dd31b22626fA2e10Ee6A223F8a684',
+        amount: Moralis.Units.Token(data.value, 18),
+        endTime: parseInt(data?.endTime) + 1,
+        NFT: false,
+        startingPrice: 0,
+        endPrice: 0,
+      };
+      console.log(data);
+      console.log(obj);
+      console.log(['0x6fD11ff94Ca57389F3bDe9036127404F4D82b81d', '0x8194589111EEbFa77CdB9BF37F07E066fCB5C543']);
+      try {
+        function onlyUnique(value, index, self) {
+          console.log(self.indexOf(value));
+          console.log(self.indexOf(value) === index);
+          return self.indexOf(value) === index;
+        }
+        var canVote = transaction.filter(item => item.from != id).map(item => item.from);
+        creator ? canVote.push(creator) : '';
+        canVote = canVote.filter(onlyUnique);
+        console.log(id);
+        console.log(canVote);
+        const Organization = new ethers.Contract(id, abi.abi, provider.getSigner(account));
+        console.log(Organization);
+        const transaction2 = await Organization.createProposal(
+          theFile,
+          data?.des,
+          canVote,
+          '0x7ef95a0FEE0Dd31b22626fA2e10Ee6A223F8a684',
+          Moralis.Units.Token(data?.value, 18),
+          parseInt(data?.endTime) + 1,
+          false,
+          0,
+          0
+        );
+        handleNewNotification('success', 'Contract is pending, Please wait! ');
+        console.log(provider.getSigner());
+        const res = await transaction2.wait();
+        if (res?.status == 1) {
+          handleNewNotification('success', `Contract is confirmed with ${res?.confirmations} confirmations. Thank for your donation!`);
+          setSub(!sub);
+        }
+        reset();
+        setSelectedFile(defaultImgs[2]);
+        setTheFile(null);
+      } catch (error: any) {
+        console.log(JSON.parse(JSON.stringify(error)));
+        var message = JSON.parse(JSON.stringify(error))?.data?.message
+          ? JSON.parse(JSON.stringify(error))?.data?.message
+          : JSON.parse(JSON.stringify(error))?.message;
+        message += '. ' + JSON.parse(JSON.stringify(error))?.reason ? JSON.parse(JSON.stringify(error))?.reason : '';
+        handleNewNotification('error', message.toString());
       }
-      var canVote = transaction.filter(item => item.from != id).map(item => item.from);
-      creator ? canVote.push(creator) : '';
-      canVote = canVote.filter(onlyUnique);
-      console.log(id);
-      console.log(canVote);
-      const Organization = new ethers.Contract(id, abi.abi, provider.getSigner(account));
-      console.log(Organization);
-      const transaction2 = await Organization.createProposal(
-        data?.des,
-        canVote,
-        '0x7ef95a0FEE0Dd31b22626fA2e10Ee6A223F8a684',
-        Moralis.Units.Token(data?.value, 18),
-        parseInt(data?.endTime) + 1,
-        false,
-        0,
-        0
-      );
-      handleNewNotification('success', 'Contract is pending, Please wait! ');
-      console.log(provider.getSigner());
-      const res = await transaction2.wait();
-      if (res?.status == 1) {
-        handleNewNotification('success', `Contract is confirmed with ${res?.confirmations} confirmations. Thank for your donation!`);
-        setSub(!sub);
-      }
-      reset();
-    } catch (error: any) {
-      console.log(JSON.parse(JSON.stringify(error)));
-      var message = JSON.parse(JSON.stringify(error))?.data?.message
-        ? JSON.parse(JSON.stringify(error))?.data?.message
-        : JSON.parse(JSON.stringify(error))?.message;
-      message += '. ' + JSON.parse(JSON.stringify(error))?.reason ? JSON.parse(JSON.stringify(error))?.reason : '';
-      handleNewNotification('error', message.toString());
     }
   };
   console.log(balanceOf);
@@ -123,8 +150,12 @@ const CreateProposal: React.FC<ICreateProposalProps> = ({ setShowModal, transact
             src="content/images/bluezoneApp.png"
           ></img>
         </div>
-        <div className="col-md-7 col-sm-12 mt-2 mb-3">
+        <div className="col-md-7 col-sm-12 mb-3">
           <div className="h4 font-weight-bold">{translate('org.create')}</div>
+          <div>
+            <img src={selectedFile} onClick={onBannerClick} className="proposal"></img>
+            <input type="file" name="file" ref={inputFile} onChange={changeHandler} style={{ display: 'none' }} required />
+          </div>
           <form onSubmit={handleSubmit(onSubmit)}>
             <Controller
               name="des"
@@ -146,7 +177,7 @@ const CreateProposal: React.FC<ICreateProposalProps> = ({ setShowModal, transact
                   }}
                   type="text"
                   style={{
-                    marginTop: '30px',
+                    marginTop: '20px',
                   }}
                 />
               )}
@@ -162,7 +193,7 @@ const CreateProposal: React.FC<ICreateProposalProps> = ({ setShowModal, transact
                   value={field.value}
                   onBlur={field.onBlur}
                   onChange={field.onChange}
-                  label="Value"
+                  label={translate('campaign.crypto.amount')}
                   validation={{
                     required: true,
                     numberMin: 1,
@@ -170,7 +201,7 @@ const CreateProposal: React.FC<ICreateProposalProps> = ({ setShowModal, transact
                   }}
                   type="number"
                   style={{
-                    marginTop: '30px',
+                    marginTop: '20px',
                   }}
                 />
               )}
@@ -198,7 +229,7 @@ const CreateProposal: React.FC<ICreateProposalProps> = ({ setShowModal, transact
 
             <button
               type="submit"
-              className="mt-4"
+              className="mt-1"
               style={{
                 borderRadius: '15px',
                 width: '100px',
@@ -212,7 +243,7 @@ const CreateProposal: React.FC<ICreateProposalProps> = ({ setShowModal, transact
             </button>
             <button
               type="reset"
-              className=" ml-2 mt-4"
+              className=" ml-2 mt-1"
               style={{
                 borderRadius: '15px',
                 width: '100px',

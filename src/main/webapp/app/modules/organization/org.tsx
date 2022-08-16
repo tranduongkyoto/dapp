@@ -23,6 +23,7 @@ interface transactionType {
   tokenSymbol: string;
 }
 interface ProposalType {
+  imageLink?: string;
   description: string;
   amount: number;
   deadline: number;
@@ -40,7 +41,7 @@ const Organization = () => {
   const { id } = useParams<{ id: string }>();
   const [balanceOf, setBalanceOf] = useState<number>(0);
   const [transaction, setTransaction] = useState<transactionType[]>();
-  const { data, error } = useMoralisQuery('Orgss', query => query.contains('OrganizationAddress', id));
+  const { data, error } = useMoralisQuery('Orgsss', query => query.contains('OrganizationAddress', id));
   const { Moralis, account, isInitialized } = useMoralis();
   const { fetch, error: error2, isFetching } = useWeb3Transfer();
   const { handleNewNotification } = useNotificationCustom();
@@ -114,6 +115,7 @@ const Organization = () => {
         console.log(count);
         if (count == 1) {
           setProposal({
+            imageLink: '',
             description: '',
             amount: 0,
             deadline: 123,
@@ -138,6 +140,7 @@ const Organization = () => {
                 .map(item => item?.value)
                 .map(item => {
                   const obj = {
+                    imageLink: item?.imageLink,
                     description: item?.description,
                     amount: parseInt(item?.amount._hex, 16),
                     deadline: parseInt(item?.deadline._hex, 16),
@@ -274,16 +277,11 @@ const Organization = () => {
       // reset();
     } catch (error: any) {
       console.log(JSON.parse(JSON.stringify(error)));
-      handleNewNotification(
-        'error',
-        (JSON.parse(JSON.stringify(error))?.data?.message
-          ? JSON.parse(JSON.stringify(error))?.data?.message
-          : JSON.parse(JSON.stringify(error))?.message) +
-          '. ' +
-          JSON.parse(JSON.stringify(error))?.reason
-          ? JSON.parse(JSON.stringify(error))?.reason
-          : ''
-      );
+      var message = JSON.parse(JSON.stringify(error))?.data?.message
+        ? JSON.parse(JSON.stringify(error))?.data?.message
+        : JSON.parse(JSON.stringify(error))?.message;
+      message += '. ' + JSON.parse(JSON.stringify(error))?.reason ? JSON.parse(JSON.stringify(error))?.reason : '';
+      handleNewNotification('error', message.toString());
       // reset();
     }
   };
@@ -427,6 +425,23 @@ const Organization = () => {
                 />
               )}
             </div>
+            {proposal && proposal.status != 2 && proposal.imageLink != '' && (
+              <>
+                <div className="col-md-8 col-sm-12 mt-4 mb-4 text-center">
+                  <div className="h5">{translate('org.image') + proposal.id}</div>
+                  <img
+                    style={{
+                      width: '600px',
+                      height: '400px',
+                      borderRadius: '20px',
+                      objectFit: 'cover',
+                    }}
+                    alt=""
+                    src={`${proposal.imageLink}`}
+                  ></img>
+                </div>
+              </>
+            )}
           </div>
           <div className="row  justify-content-center main mt-2">
             <div className="col-md-6 donate mt-5">
