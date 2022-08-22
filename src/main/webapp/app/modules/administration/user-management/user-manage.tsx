@@ -135,12 +135,11 @@ export default function UserManage() {
       }
     } catch (error: any) {
       console.log(error);
-      handleNewNotification(
-        'error',
-        JSON.parse(JSON.stringify(error))?.error?.message
-          ? JSON.parse(JSON.stringify(error))?.error?.message
-          : JSON.parse(JSON.stringify(error))?.message
-      );
+      var message = JSON.parse(JSON.stringify(error))?.data?.message
+        ? JSON.parse(JSON.stringify(error))?.data?.message
+        : JSON.parse(JSON.stringify(error))?.message;
+      message += '. ' + JSON.parse(JSON.stringify(error))?.reason ? JSON.parse(JSON.stringify(error))?.reason : '';
+      handleNewNotification('error', message.toString());
     }
   };
   const addNft = async (add: string) => {
@@ -155,12 +154,11 @@ export default function UserManage() {
       }
     } catch (error: any) {
       console.log(error);
-      handleNewNotification(
-        'error',
-        JSON.parse(JSON.stringify(error))?.error?.message
-          ? JSON.parse(JSON.stringify(error))?.error?.message
-          : JSON.parse(JSON.stringify(error))?.message
-      );
+      var message = JSON.parse(JSON.stringify(error))?.data?.message
+        ? JSON.parse(JSON.stringify(error))?.data?.message
+        : JSON.parse(JSON.stringify(error))?.message;
+      message += '. ' + JSON.parse(JSON.stringify(error))?.reason ? JSON.parse(JSON.stringify(error))?.reason : '';
+      handleNewNotification('error', message.toString());
     }
   };
   const removeCampaign = async (add: string) => {
@@ -175,12 +173,11 @@ export default function UserManage() {
       }
     } catch (error: any) {
       console.log(error);
-      handleNewNotification(
-        'error',
-        JSON.parse(JSON.stringify(error))?.error?.message
-          ? JSON.parse(JSON.stringify(error))?.error?.message
-          : JSON.parse(JSON.stringify(error))?.message
-      );
+      var message = JSON.parse(JSON.stringify(error))?.data?.message
+        ? JSON.parse(JSON.stringify(error))?.data?.message
+        : JSON.parse(JSON.stringify(error))?.message;
+      message += '. ' + JSON.parse(JSON.stringify(error))?.reason ? JSON.parse(JSON.stringify(error))?.reason : '';
+      handleNewNotification('error', message.toString());
     }
   };
   const removeNft = async (add: string) => {
@@ -195,12 +192,11 @@ export default function UserManage() {
       }
     } catch (error: any) {
       console.log(error);
-      handleNewNotification(
-        'error',
-        JSON.parse(JSON.stringify(error))?.error?.message
-          ? JSON.parse(JSON.stringify(error))?.error?.message
-          : JSON.parse(JSON.stringify(error))?.message
-      );
+      var message = JSON.parse(JSON.stringify(error))?.data?.message
+        ? JSON.parse(JSON.stringify(error))?.data?.message
+        : JSON.parse(JSON.stringify(error))?.message;
+      message += '. ' + JSON.parse(JSON.stringify(error))?.reason ? JSON.parse(JSON.stringify(error))?.reason : '';
+      handleNewNotification('error', message.toString());
     }
   };
   if (!userList) {
@@ -222,7 +218,7 @@ export default function UserManage() {
           <div className="col-md-8 h1 text-center">{translate('user.title')}</div>
           <div className="col-md-12">
             <Table
-              columnsConfig="0.75fr 1fr 1fr 0.75fr 0.5fr 1fr 1fr 1fr 1fr"
+              columnsConfig="0.75fr 1fr 1fr 0.75fr 1fr 1fr 1fr 1fr 1fr"
               data={
                 userList.length > 1
                   ? userList.map(item => [

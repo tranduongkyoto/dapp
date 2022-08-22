@@ -21,10 +21,10 @@ export const Campaign = props => {
         <Translate contentKey="global.menu.campaign.startnft"></Translate>
       </MenuItem>
       <MenuItem icon="user-plus" to={`/your-nft-auction/${account}`} data-cy="all">
-        Your NFT Auction
+        {translate('global.menu.campaign.auction')}
       </MenuItem>
       <MenuItem icon="user-plus" to={`/your-campaign/${account}`} data-cy="all">
-        Your Campaign
+        {translate('global.menu.campaign.campaign')}
       </MenuItem>
     </NavDropdown>
   );

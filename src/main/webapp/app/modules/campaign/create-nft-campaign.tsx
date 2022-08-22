@@ -64,13 +64,12 @@ const CreateNftCampaign = () => {
         reset();
       }
     } catch (error: any) {
-      console.log(error);
-      handleNewNotification(
-        'error',
-        JSON.parse(JSON.stringify(error))?.error?.message
-          ? JSON.parse(JSON.stringify(error))?.error?.message
-          : JSON.parse(JSON.stringify(error))?.message
-      );
+      console.log(JSON.parse(JSON.stringify(error)));
+      var message = JSON.parse(JSON.stringify(error))?.data?.message
+        ? JSON.parse(JSON.stringify(error))?.data?.message
+        : JSON.parse(JSON.stringify(error))?.message;
+      message += '. ' + JSON.parse(JSON.stringify(error))?.reason ? JSON.parse(JSON.stringify(error))?.reason : '';
+      handleNewNotification('error', message.toString());
     }
   };
   useEffect(() => {
@@ -107,7 +106,7 @@ const CreateNftCampaign = () => {
   return (
     <>
       <div className="row">
-        <div className="col-md-3 col-sm-12">
+        <div className="col-md-4 col-sm-12">
           <img
             style={{
               maxWidth: '90%',
@@ -118,7 +117,7 @@ const CreateNftCampaign = () => {
           ></img>
         </div>
         <div
-          className="col-md-9 col-sm-12"
+          className="col-md-8 col-sm-12"
           style={{
             backgroundColor: 'white',
             borderRadius: '16px',

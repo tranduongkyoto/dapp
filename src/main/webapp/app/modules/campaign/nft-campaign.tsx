@@ -66,16 +66,14 @@ export default function NftCampaign() {
         auction.set('sellPrice', '');
         await auction.save();
       }
+      window.location.reload();
     } catch (error: any) {
       console.log(JSON.parse(JSON.stringify(error)));
-      handleNewNotification(
-        'error',
-        JSON.parse(JSON.stringify(error))?.error?.message
-          ? JSON.parse(JSON.stringify(error))?.error?.message
-          : JSON.parse(JSON.stringify(error))?.reason
-          ? JSON.parse(JSON.stringify(error))?.reason
-          : JSON.parse(JSON.stringify(error))?.message
-      );
+      var message = JSON.parse(JSON.stringify(error))?.data?.message
+        ? JSON.parse(JSON.stringify(error))?.data?.message
+        : JSON.parse(JSON.stringify(error))?.message;
+      message += '. ' + JSON.parse(JSON.stringify(error))?.reason ? JSON.parse(JSON.stringify(error))?.reason : '';
+      handleNewNotification('error', message.toString());
     }
   };
 
@@ -95,18 +93,18 @@ export default function NftCampaign() {
     };
     getData();
   });
-  useEffect(() => {
-    const getNFTData = async () => {
-      console.log(id);
-      await getNFTTransfers({
-        params: {
-          chain: 'bsc testnet',
-          address: id,
-        },
-      });
-    };
-    getNFTData();
-  }, []);
+  // useEffect(() => {
+  //   const getNFTData = async () => {
+  //     console.log(id);
+  //     await getNFTTransfers({
+  //       params: {
+  //         chain: 'bsc testnet',
+  //         address: id,
+  //       },
+  //     });
+  //   };
+  //   getNFTData();
+  // }, []);
 
   const approve = async () => {
     const nftAuction = new ethers.Contract(id, abi.abi, provider.getSigner());
@@ -122,12 +120,11 @@ export default function NftCampaign() {
       }
     } catch (error: any) {
       console.log(JSON.parse(JSON.stringify(error)));
-      handleNewNotification(
-        'error',
-        JSON.parse(JSON.stringify(error))?.error?.message
-          ? JSON.parse(JSON.stringify(error))?.error?.message
-          : JSON.parse(JSON.stringify(error))?.message
-      );
+      var message = JSON.parse(JSON.stringify(error))?.data?.message
+        ? JSON.parse(JSON.stringify(error))?.data?.message
+        : JSON.parse(JSON.stringify(error))?.message;
+      message += '. ' + JSON.parse(JSON.stringify(error))?.reason ? JSON.parse(JSON.stringify(error))?.reason : '';
+      handleNewNotification('error', message.toString());
     }
   };
 
@@ -156,12 +153,11 @@ export default function NftCampaign() {
       }
     } catch (error: any) {
       console.log(JSON.parse(JSON.stringify(error)));
-      handleNewNotification(
-        'error',
-        JSON.parse(JSON.stringify(error))?.error?.message
-          ? JSON.parse(JSON.stringify(error))?.error?.message
-          : JSON.parse(JSON.stringify(error))?.message
-      );
+      var message = JSON.parse(JSON.stringify(error))?.data?.message
+        ? JSON.parse(JSON.stringify(error))?.data?.message
+        : JSON.parse(JSON.stringify(error))?.message;
+      message += '. ' + JSON.parse(JSON.stringify(error))?.reason ? JSON.parse(JSON.stringify(error))?.reason : '';
+      handleNewNotification('error', message.toString());
     }
   };
   return (
@@ -271,7 +267,7 @@ export default function NftCampaign() {
                     onClick={() => {
                       history.push('/email/new-camp');
                     }}
-                    text="Send Email For User"
+                    text={translate('campaign.nft.email')}
                     theme="primary"
                     type="button"
                     size="large"

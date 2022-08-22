@@ -31,7 +31,10 @@
       "email": "Send Email for user",
       "amount": "Amount",
       "recent": "Recent Donation",
-      "no": "No data"
+      "no": "No data",
+      "draw": "Withdraw",
+      "drawed": "Drawed",
+      "history": "Withdraw History"
     },
     "nft": {
       "title": "NFT Auction",
@@ -73,7 +76,8 @@
         "start": "Create",
         "clear": "Clear"
       },
-      "start": "Start"
+      "start": "Start",
+      "email": "Send Email for user"
     }
   }
 }

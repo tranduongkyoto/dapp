@@ -28,6 +28,7 @@ import ProfileUserMenuItem from './ProfileUserMenuItem';
 import WalletModal, { WalletView } from './WalletModal';
 import WalletUserMenuItem from './WalletUserMenuItem';
 import { ethers } from 'ethers';
+import { translate } from 'react-jhipster';
 type web3StatusType = 'disconnected' | 'pending' | 'only_web3';
 const UserMenu = () => {
   //   const router = useRouter();
@@ -134,21 +135,13 @@ const UserMenu = () => {
   const UserMenuItems = () => {
     return (
       <>
-        <WalletUserMenuItem isWrongNetwork={isWrongNetwork} onPresentWalletModal={onClickWalletMenu} />
+        {/* <WalletUserMenuItem isWrongNetwork={isWrongNetwork} onPresentWalletModal={onClickWalletMenu} />
         <UserMenuItem as="button" disabled={isWrongNetwork} onClick={onPresentTransactionModal}>
           {'Recent Transactions'}
-          {/* {hasPendingTransactions && <RefreshIcon spin />} */}
         </UserMenuItem>
-        <UserMenuDivider />
-        <UserMenuItem
-          as="button"
-          disabled={isWrongNetwork}
-          onClick={
-            () => history.push(`/my-nft/${account}`)
-            //router.push(`${nftsBaseUrl}/profile/${account.toLowerCase()}`)
-          }
-        >
-          {'Your NFTs'}
+        <UserMenuDivider /> */}
+        <UserMenuItem as="button" disabled={isWrongNetwork} onClick={() => history.push(`/my-nft/${account}`)}>
+          {translate('user-menu.nft')}
         </UserMenuItem>
         <ProfileUserMenuItem
           isLoading={isLoading}
@@ -168,7 +161,7 @@ const UserMenu = () => {
           }}
         >
           <Flex alignItems="center" justifyContent="space-between" width="100%">
-            {'Disconnect'}
+            {translate('user-menu.disconnect')}
             <LogoutIcon />
           </Flex>
         </UserMenuItem>
@@ -179,8 +172,8 @@ const UserMenu = () => {
   if (!account || (isInitialized && !isAuthenticated)) {
     return (
       <ConnectWalletButton scale="sm">
-        <Box display={['none', , , 'block']}>Connect Wallet</Box>
-        <Box display={['block', , , 'none']}>Connect</Box>
+        <Box display={['none', , , 'block']}> {translate('user-menu.connect')}</Box>
+        {/* <Box display={['block', , , 'none']}>Connect</Box> */}
       </ConnectWalletButton>
     );
   }

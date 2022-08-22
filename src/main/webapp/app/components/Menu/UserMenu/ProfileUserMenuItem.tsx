@@ -6,6 +6,7 @@ import { useWeb3React } from '@web3-react/core';
 // import { useRouter } from 'next/router';
 import React from 'react';
 import { useHistory } from 'react-router-dom';
+import { translate } from 'react-jhipster';
 
 interface ProfileUserMenuItemProps {
   isLoading: boolean;
@@ -48,7 +49,7 @@ const ProfileUserMenuItem: React.FC<ProfileUserMenuItemProps> = ({ isLoading, ha
     return (
       <UserMenuItem as="button" disabled={disabled} onClick={handleNoProfileClick}>
         <Flex alignItems="center" justifyContent="space-between" width="100%">
-          {'Update Profile'}
+          {translate('user-menu.update')}
           <Dot />
         </Flex>
       </UserMenuItem>
@@ -59,11 +60,11 @@ const ProfileUserMenuItem: React.FC<ProfileUserMenuItemProps> = ({ isLoading, ha
     <>
       <UserMenuItem as="button" disabled={disabled} onClick={handleNoProfileClick}>
         <Flex alignItems="center" justifyContent="space-between" width="100%">
-          {'Update Profile'}
+          {translate('user-menu.update')}
         </Flex>
       </UserMenuItem>
       <UserMenuItem as="button" disabled={disabled} onClick={handleClick}>
-        {'Your Profile'}
+        {translate('user-menu.profile')}
       </UserMenuItem>
     </>
   );

@@ -30,11 +30,11 @@ interface ProposalType {
   deadline: number;
   endPrice: number;
   id: number;
-  isProposalForNFT: number;
+  isProposalForNFT: boolean;
   passed: boolean;
   startingPrice: number;
   status: number;
-  token: number;
+  token: string;
   votesDown: number;
   votesUp: number;
 }
@@ -70,12 +70,11 @@ const Proposal: React.FC<IProposalProps> = ({ setShowProposalModal, proposal, su
       reset();
     } catch (error: any) {
       console.log(JSON.parse(JSON.stringify(error)));
-      handleNewNotification(
-        'error',
-        JSON.parse(JSON.stringify(error))?.error?.message
-          ? JSON.parse(JSON.stringify(error))?.error?.message
-          : JSON.parse(JSON.stringify(error))?.message
-      );
+      var message = JSON.parse(JSON.stringify(error))?.data?.message
+        ? JSON.parse(JSON.stringify(error))?.data?.message
+        : JSON.parse(JSON.stringify(error))?.message;
+      message += '. ' + JSON.parse(JSON.stringify(error))?.reason ? JSON.parse(JSON.stringify(error))?.reason : '';
+      handleNewNotification('error', message.toString());
       reset();
     }
   };
@@ -85,7 +84,7 @@ const Proposal: React.FC<IProposalProps> = ({ setShowProposalModal, proposal, su
       isCentered
       hasFooter={false}
       headerHasBottomBorder={false}
-      title="Vote on Proposal"
+      title={translate('org.vote')}
       onCloseButtonPressed={() => setShowProposalModal(false)}
     >
       <></>
@@ -97,7 +96,7 @@ const Proposal: React.FC<IProposalProps> = ({ setShowProposalModal, proposal, su
       isCentered
       hasFooter={false}
       headerHasBottomBorder={false}
-      title="Vote on Proposal"
+      title={translate('org.vote')}
       onCloseButtonPressed={() => setShowProposalModal(false)}
     >
       <div className="row ">
@@ -112,11 +111,21 @@ const Proposal: React.FC<IProposalProps> = ({ setShowProposalModal, proposal, su
           ></img>
         </div>
         <div className="col-md-8 col-sm-12 mt-2 mb-3">
-          <div className="h4 font-weight-bold">Vote on Proposal #{proposal.id}</div>
+          <div className="h4 font-weight-bold">
+            {translate('org.voteon') + ' '} #{proposal.id}
+          </div>
           <div className="">{proposal.description}</div>
-          <div className="">Withdraw Value {proposal.amount / 1000000000000000000} USD</div>
-          <div>For: {proposal.votesUp}</div>
-          <span>Against: {proposal.votesDown}</span>
+          <div className="">
+            {' '}
+            {translate('org.draw') + ': '} {proposal.amount / 1000000000000000000} USD
+          </div>
+          <div>
+            {translate('org.for') + ': '}
+            {proposal.votesUp}
+          </div>
+          <span>
+            {translate('org.against') + ': '} {proposal.votesDown}
+          </span>
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="mt-3">
               <Controller
@@ -128,8 +137,8 @@ const Proposal: React.FC<IProposalProps> = ({ setShowProposalModal, proposal, su
                     id="radios2"
                     onBlur={field.onBlur}
                     onChange={field.onChange}
-                    items={['For', 'Against']}
-                    title="Your choice"
+                    items={[`${translate('org.for')}`, `${translate('org.against')}`]}
+                    title={translate('org.choice')}
                     validation={{
                       required: true,
                     }}
@@ -150,7 +159,7 @@ const Proposal: React.FC<IProposalProps> = ({ setShowProposalModal, proposal, su
                 border: 'hidden',
               }}
             >
-              {translate('campaign.nft.mint.create')}
+              {translate('org.vote')}
             </button>
             <button
               type="reset"

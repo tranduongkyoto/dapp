@@ -2,15 +2,33 @@
   "global": {
     "title": "Dapp",
     "browsehappy": "You are using an <strong>outdated</strong> browser. Please <a href=\"http://browsehappy.com/?locale=en\">upgrade your browser</a> to improve your experience.",
+    "ongoing": "Ongoing",
+    "ended": "Ended",
     "menu": {
       "home": "Home",
+      "donation": {
+        "main": "Donation",
+        "crypto": "Crypto",
+        "org": "Organization",
+        "nft": "Buy NFT"
+      },
+      "org": {
+        "main": "Organization",
+        "register": "Register",
+        "your": "Your Organization"
+      },
+      "nft": {
+        "mint": "Mint NFT",
+        "your": "My NFT"
+      },
+
       "dashboard": "Dashboard",
       "campaign": {
         "main": "Campaign",
         "create": "Create",
-        "all": "All Campaigns",
         "startnft": "Start NFT Auction",
-        "nft": "NFT Auctions"
+        "auction": "Your NFT Auction",
+        "campaign": "Your Campaign"
       },
       "campaigns": "Campaigns",
       "jhipster-needle-menu-add-element": "JHipster will add additional menu entries here (do not translate!)",

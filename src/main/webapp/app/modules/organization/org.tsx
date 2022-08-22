@@ -23,16 +23,17 @@ interface transactionType {
   tokenSymbol: string;
 }
 interface ProposalType {
+  imageLink?: string;
   description: string;
   amount: number;
   deadline: number;
   endPrice: number;
   id: number;
-  isProposalForNFT: number;
+  isProposalForNFT: boolean;
   passed: boolean;
   startingPrice: number;
   status: number;
-  token: number;
+  token: string;
   votesDown: number;
   votesUp: number;
 }
@@ -40,7 +41,7 @@ const Organization = () => {
   const { id } = useParams<{ id: string }>();
   const [balanceOf, setBalanceOf] = useState<number>(0);
   const [transaction, setTransaction] = useState<transactionType[]>();
-  const { data, error } = useMoralisQuery('Orgs', query => query.contains('OrganizationAddress', id));
+  const { data, error } = useMoralisQuery('Orgsss', query => query.contains('OrganizationAddress', id));
   const { Moralis, account, isInitialized } = useMoralis();
   const { fetch, error: error2, isFetching } = useWeb3Transfer();
   const { handleNewNotification } = useNotificationCustom();
@@ -74,13 +75,12 @@ const Organization = () => {
       }
       reset();
     } catch (error: any) {
-      console.log(error);
-      handleNewNotification(
-        'error',
-        JSON.parse(JSON.stringify(error))?.error?.message
-          ? JSON.parse(JSON.stringify(error))?.error?.message
-          : JSON.parse(JSON.stringify(error))?.message
-      );
+      JSON.parse(JSON.stringify(error));
+      var message = JSON.parse(JSON.stringify(error))?.data?.message
+        ? JSON.parse(JSON.stringify(error))?.data?.message
+        : JSON.parse(JSON.stringify(error))?.message;
+      message += '. ' + JSON.parse(JSON.stringify(error))?.reason ? JSON.parse(JSON.stringify(error))?.reason : '';
+      handleNewNotification('error', message.toString());
     }
   };
 
@@ -113,32 +113,52 @@ const Organization = () => {
         console.log(res);
         count = parseInt(res._hex, 16);
         console.log(count);
-        const proposalList = [...Array(count - 1).keys()];
-        console.log(proposalList);
-        Promise.allSettled(proposalList.map(async item => await Organization.Proposals(item + 1))).then(values =>
-          setProposal(
-            values
-              .filter(item => item.status == 'fulfilled')
-              .map(item => item?.value)
-              .map(item => {
-                const obj = {
-                  description: item?.description,
-                  amount: parseInt(item?.amount._hex, 16),
-                  deadline: parseInt(item?.deadline._hex, 16),
-                  endPrice: parseInt(item?.endPrice._hex, 16),
-                  id: parseInt(item?.id._hex, 16),
-                  isProposalForNFT: item?.isProposalForNFT,
-                  passed: item?.passed,
-                  startingPrice: parseInt(item?.startingPrice._hex, 16),
-                  status: parseInt(item?.status._hex, 16),
-                  token: item?.token,
-                  votesDown: parseInt(item?.votesDown._hex, 16),
-                  votesUp: parseInt(item?.votesUp._hex, 16),
-                };
-                return obj;
-              })[count - 2]
-          )
-        );
+        if (count == 1) {
+          setProposal({
+            imageLink: '',
+            description: '',
+            amount: 0,
+            deadline: 123,
+            endPrice: 0,
+            id: 1,
+            isProposalForNFT: false,
+            passed: false,
+            startingPrice: 0,
+            status: 2,
+            token: '',
+            votesDown: 0,
+            votesUp: 0,
+          });
+        } else {
+          const proposalList = [...Array(count - 1).keys()];
+          console.log(proposalList);
+          Promise.allSettled(proposalList.map(async item => await Organization.Proposals(item + 1))).then(values => {
+            console.log(values);
+            setProposal(
+              values
+                .filter(item => item.status == 'fulfilled')
+                .map(item => item?.value)
+                .map(item => {
+                  const obj = {
+                    imageLink: item?.imageLink,
+                    description: item?.description,
+                    amount: parseInt(item?.amount._hex, 16),
+                    deadline: parseInt(item?.deadline._hex, 16),
+                    endPrice: parseInt(item?.endPrice._hex, 16),
+                    id: parseInt(item?.id._hex, 16),
+                    isProposalForNFT: item?.isProposalForNFT,
+                    passed: item?.passed,
+                    startingPrice: parseInt(item?.startingPrice._hex, 16),
+                    status: parseInt(item?.status._hex, 16),
+                    token: item?.token,
+                    votesDown: parseInt(item?.votesDown._hex, 16),
+                    votesUp: parseInt(item?.votesUp._hex, 16),
+                  };
+                  return obj;
+                })[count - 2]
+            );
+          });
+        }
       };
       getTransaction();
       getBalanceOf();
@@ -235,12 +255,11 @@ const Organization = () => {
       reset();
     } catch (error: any) {
       console.log(JSON.parse(JSON.stringify(error)));
-      handleNewNotification(
-        'error',
-        JSON.parse(JSON.stringify(error))?.error?.message
-          ? JSON.parse(JSON.stringify(error))?.error?.message
-          : JSON.parse(JSON.stringify(error))?.message
-      );
+      var message = JSON.parse(JSON.stringify(error))?.data?.message
+        ? JSON.parse(JSON.stringify(error))?.data?.message
+        : JSON.parse(JSON.stringify(error))?.message;
+      message += '. ' + JSON.parse(JSON.stringify(error))?.reason ? JSON.parse(JSON.stringify(error))?.reason : '';
+      handleNewNotification('error', message.toString());
       reset();
     }
   };
@@ -258,12 +277,11 @@ const Organization = () => {
       // reset();
     } catch (error: any) {
       console.log(JSON.parse(JSON.stringify(error)));
-      handleNewNotification(
-        'error',
-        JSON.parse(JSON.stringify(error))?.error?.message
-          ? JSON.parse(JSON.stringify(error))?.error?.message
-          : JSON.parse(JSON.stringify(error))?.message
-      );
+      var message = JSON.parse(JSON.stringify(error))?.data?.message
+        ? JSON.parse(JSON.stringify(error))?.data?.message
+        : JSON.parse(JSON.stringify(error))?.message;
+      message += '. ' + JSON.parse(JSON.stringify(error))?.reason ? JSON.parse(JSON.stringify(error))?.reason : '';
+      handleNewNotification('error', message.toString());
       // reset();
     }
   };
@@ -273,6 +291,8 @@ const Organization = () => {
 
   if (proposal) {
     console.log(proposal);
+    console.log(proposal.status == 0);
+    console.log(new Date().getTime() < proposal.deadline * 1000);
   }
   return (
     <>
@@ -291,7 +311,7 @@ const Organization = () => {
             <div className="col-md-4 col-sm-12 pl-5">
               <div className="h1">{data[0].attributes?.name.toString()}</div>
               <div className="h3">{data[0].attributes?.description}</div>
-              <div className=" font-weight-bold h3">
+              <div className="h3">
                 {translate('campaign.crypto.balance') + ': '}
                 {balanceOf} USD
               </div>
@@ -300,7 +320,7 @@ const Organization = () => {
                   <Button
                     id="test-button-primary"
                     onClick={() => setShowModal(true)}
-                    text="Create Proposal"
+                    text={translate('org.create')}
                     theme="primary"
                     type="button"
                     size="large"
@@ -343,7 +363,7 @@ const Organization = () => {
             <div className="col-md-9 donate mt-5">
               {proposal && proposal.status != 2 && (
                 <Table
-                  columnsConfig="1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr"
+                  columnsConfig="0.5fr 2fr 0.5fr 0.75fr 0.75fr 1fr 1fr 1.5fr"
                   data={[
                     [
                       proposal.id,
@@ -351,15 +371,17 @@ const Organization = () => {
                       proposal.amount / 1000000000000000000,
                       proposal.votesUp,
                       proposal.votesDown,
-                      proposal.status == 0 && new Date().getTime() > proposal.deadline * 1000
-                        ? 'Ongoing'
+                      proposal.status == 0 && new Date().getTime() < proposal.deadline * 1000
+                        ? `${translate('org.ongoing')}`
                         : proposal.status == 1
-                        ? proposal.passed.toString()
-                        : 'Wait count',
+                        ? proposal.passed
+                          ? `${translate('org.true')}`
+                          : `${translate('org.false')}`
+                        : `${translate('org.wait-count')}`,
                       <Button
                         id="test-button-primary"
                         onClick={() => setShowProposalModal(true)}
-                        text="Vote"
+                        text={translate('org.vote')}
                         theme="primary"
                         type="button"
                         size="large"
@@ -369,7 +391,7 @@ const Organization = () => {
                         <Button
                           id="test-button-primary"
                           onClick={() => countVote()}
-                          text="Count"
+                          text={translate('org.count')}
                           theme="primary"
                           type="button"
                           size="large"
@@ -378,7 +400,7 @@ const Organization = () => {
                         <Button
                           id="test-button-primary"
                           onClick={() => withDraw()}
-                          text="Implement"
+                          text={translate('org.implement')}
                           theme="primary"
                           type="button"
                           size="large"
@@ -388,12 +410,12 @@ const Organization = () => {
                     ],
                   ]}
                   header={[
-                    <span>Id</span>,
-                    <span>Description</span>,
-                    <span>Value</span>,
-                    <span>Vote Up</span>,
-                    <span>Vote Down</span>,
-                    <span>Status</span>,
+                    <span>ID</span>,
+                    <span>{translate('org.des')}</span>,
+                    <span>{translate('org.value')}</span>,
+                    <span>{translate('org.up')}</span>,
+                    <span>{translate('org.down')}</span>,
+                    <span>{translate('org.status')}</span>,
                   ]}
                   maxPages={3}
                   noPagination
@@ -403,6 +425,23 @@ const Organization = () => {
                 />
               )}
             </div>
+            {proposal && proposal.status != 2 && proposal.imageLink != '' && (
+              <>
+                <div className="col-md-8 col-sm-12 mt-4 mb-4 text-center">
+                  <div className="h5">{translate('org.image') + proposal.id}</div>
+                  <img
+                    style={{
+                      width: '600px',
+                      height: '400px',
+                      borderRadius: '20px',
+                      objectFit: 'cover',
+                    }}
+                    alt=""
+                    src={`${proposal.imageLink}`}
+                  ></img>
+                </div>
+              </>
+            )}
           </div>
           <div className="row  justify-content-center main mt-2">
             <div className="col-md-6 donate mt-5">
@@ -459,7 +498,7 @@ const Organization = () => {
                       }}
                       // disabled={isEnd}
                     >
-                      {translate('campaign.crypto.donate')}
+                      {translate('org.donate')}{' '}
                     </button>
                   </form>
                 </div>
@@ -524,7 +563,7 @@ const Organization = () => {
             </div>
           </div> */}
           <div className="row  justify-content-center main mt-3">
-            <div className="col-md-8 h4 text-center mt-5">Implement History</div>
+            <div className="col-md-8 h4 text-center mt-5">{translate('org.implement-history')}</div>
             <div className="col-md-8">
               <Table
                 columnsConfig="2fr 3fr 2fr 2fr 2fr 2fr"
@@ -551,6 +590,7 @@ const Organization = () => {
                 sub={sub}
                 setSub={setSub}
                 balanceOf={balanceOf && balanceOf}
+                creator={data[0].attributes?.creator.toString()}
               />
             )}
           </div>

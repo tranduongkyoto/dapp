@@ -76,7 +76,7 @@ const RegisterOrg = () => {
       return;
     } else {
       try {
-        const orgStore = new ethers.Contract('0x9C8d12bd5c0acd1d019125001F72498aF8fa266F', abi.abi, provider.getSigner(account));
+        const orgStore = new ethers.Contract('0xfd791740f644856Af21Df9a6A525067789F9E8AB', abi.abi, provider.getSigner(account));
         const transaction = await orgStore.createOrganization(data?.name, data?.des, theFile, data?.type, data?.to);
         handleNewNotification('success', 'Contract is pending, Please wait! ');
         const res = await transaction.wait();
@@ -85,17 +85,18 @@ const RegisterOrg = () => {
           handleNewNotification('success', `Contract is confirmed with ${res?.confirmations} confirmations. Thank for your donation!`);
         }
         reset();
+        setSelectedFile(defaultImgs[2]);
+        setTheFile(null);
       } catch (error: any) {
         console.log(JSON.parse(JSON.stringify(error)));
-        handleNewNotification(
-          'error',
-          JSON.parse(JSON.stringify(error))?.error?.message
-            ? JSON.parse(JSON.stringify(error))?.error?.message
-            : JSON.parse(JSON.stringify(error))?.message
-        );
+        var message = JSON.parse(JSON.stringify(error))?.data?.message
+          ? JSON.parse(JSON.stringify(error))?.data?.message
+          : JSON.parse(JSON.stringify(error))?.message;
+        message += '. ' + JSON.parse(JSON.stringify(error))?.reason ? JSON.parse(JSON.stringify(error))?.reason : '';
+        handleNewNotification('error', message.toString());
       }
-      setSelectedFile(defaultImgs[2]);
-      setTheFile(null);
+      //setSelectedFile(defaultImgs[2]);
+      //setTheFile(null);
     }
   };
   return (
@@ -126,7 +127,7 @@ const RegisterOrg = () => {
         >
           {/* <div className=" text-center font-weight-bold ">Create Campaign</div> */}
           <div className="justify-content-center ">
-            <div className="h4 font-weight-bold">Register Organization</div>
+            <div className="h4 font-weight-bold">{translate('org.register')}</div>
             <div>
               <img src={selectedFile} onClick={onBannerClick} className="orgBanner"></img>
               <input type="file" name="file" ref={inputFile} onChange={changeHandler} style={{ display: 'none' }} required />
@@ -193,7 +194,7 @@ const RegisterOrg = () => {
                     value={field.value}
                     onBlur={field.onBlur}
                     onChange={field.onChange}
-                    label="Owner"
+                    label={translate('org.owner')}
                     validation={{
                       required: true,
                       regExp: '^0x[a-fA-F0-9]{40}$',
@@ -265,7 +266,7 @@ const RegisterOrg = () => {
                   border: 'hidden',
                 }}
               >
-                {translate('campaign.crypto.create')}
+                {translate('org.register')}
               </button>
               <button
                 type="reset"

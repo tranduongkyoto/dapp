@@ -21,7 +21,7 @@ interface StatusType {
 const CampaignItem: React.FC<ICampaignProps> = ({ campaignAddress, name, description, coverImgUrl, goal, onGoing }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [isLoading2, setIsLoading2] = useState(true);
-  const [balanceOf, setBalanceOf] = useState<number>();
+  const [balanceOf, setBalanceOf] = useState<number>(0);
   const { data, error } = useMoralisQuery('Camp', query => query.contains('campaignAddress', campaignAddress));
   const { Moralis, account, isInitialized } = useMoralis();
   const provider = new ethers.providers.Web3Provider(window.ethereum);
@@ -45,7 +45,7 @@ const CampaignItem: React.FC<ICampaignProps> = ({ campaignAddress, name, descrip
       //console.log(data);
       if (data?.data?.result) {
         if (data?.data?.result == '0') {
-          if (!balanceOf) setBalanceOf(0);
+          setBalanceOf(0);
           if (isLoading) setIsLoading(false);
         } else {
           if (!balanceOf) setBalanceOf(parseInt(data?.data?.result) / 1000000000000000000);
@@ -73,7 +73,7 @@ const CampaignItem: React.FC<ICampaignProps> = ({ campaignAddress, name, descrip
         console.log(JSON.parse(JSON.stringify(error)));
       }
     };
-    getBalanceOf();
+    //getBalanceOf();
     getStatus();
   }, []);
   if (isLoading || isLoading2) {
@@ -97,7 +97,7 @@ const CampaignItem: React.FC<ICampaignProps> = ({ campaignAddress, name, descrip
   }
   return (
     <>
-      <div className="col-md-4">
+      <div className="col-md-4 mt-5">
         <DivStyled id="nft">
           <Link
             to={`/campaign/${campaignAddress}`}
@@ -123,7 +123,7 @@ const CampaignItem: React.FC<ICampaignProps> = ({ campaignAddress, name, descrip
                 <Tag color="blue" text={(parseInt(goal) / 1000000000000000000).toString()} />
               </div>
               <div className="col-md-3 mt-2">
-                <Tag color="yellow" text={balanceOf && balanceOf.toString()} />
+                <Tag color="yellow" text={status ? status.balanceOf.toString() : '0'} />
               </div>
             </div>
           </div>

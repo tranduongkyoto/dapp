@@ -46,15 +46,15 @@ const StartNftAuctionItem: React.FC<INftAuctionProps> = ({ campaignAddress, nft,
       const res = await transaction.wait();
       if (res?.status == 1) {
         handleNewNotification('success', `Contract is confirmed with ${res?.confirmations} confirmations. Thank for!`);
+        window.location.reload();
       }
     } catch (error: any) {
       console.log(error);
-      handleNewNotification(
-        'error',
-        JSON.parse(JSON.stringify(error))?.error?.message
-          ? JSON.parse(JSON.stringify(error))?.error?.message
-          : JSON.parse(JSON.stringify(error))?.message
-      );
+      var message = JSON.parse(JSON.stringify(error))?.data?.message
+        ? JSON.parse(JSON.stringify(error))?.data?.message
+        : JSON.parse(JSON.stringify(error))?.message;
+      message += '. ' + JSON.parse(JSON.stringify(error))?.reason ? JSON.parse(JSON.stringify(error))?.reason : '';
+      handleNewNotification('error', message.toString());
     }
   };
   useEffect(() => {
@@ -103,7 +103,7 @@ const StartNftAuctionItem: React.FC<INftAuctionProps> = ({ campaignAddress, nft,
   if (status) {
     console.log(status);
   }
-  if (status && status.isStart) {
+  if (status && (status.isStart || status.isSell)) {
     return <></>;
   }
   return (

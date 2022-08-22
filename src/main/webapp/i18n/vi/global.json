@@ -2,15 +2,33 @@
   "global": {
     "title": "Dapp",
     "browsehappy": "Bạn đang sử dụng một trình duyệt <strong>quá cũ</strong>. Vui lòng <a href=\"http://browsehappy.com/?locale=en\">nâng cấp trình duyệt</a> của bạn để có trải nghiệm tốt nhất.",
+    "ongoing": "Đang diễn ra",
+    "ended": "Đã kết thúc",
     "menu": {
       "home": "Trang chủ",
+      "donation": {
+        "main": "Quyên góp",
+        "crypto": "Tiền điện tử",
+        "org": "Tổ chức",
+        "nft": "Mua NFT"
+      },
+      "org": {
+        "main": "Tổ chức",
+        "register": "Đăng kí",
+        "your": "Tổ chức của bạn"
+      },
+      "nft": {
+        "mint": "Đúc NFT",
+        "your": "NFT của bạn"
+      },
+
       "dashboard": "Thống kê",
       "campaign": {
         "main": "Chiến dịch",
         "create": "Tạo mới",
-        "all": "Tất cả chiến dịch",
         "startnft": "Bắt đầu đấu giá",
-        "nft": "Tham gia đấu giá"
+        "auction": "Cuộc đấu giá của bạn",
+        "campaign": "Chiến dịch của bạn"
       },
       "campaigns": "Chiến dịch",
       "jhipster-needle-menu-add-element": "JHipster will add additional menu entries here (do not translate!)",

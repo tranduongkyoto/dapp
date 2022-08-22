@@ -10,7 +10,7 @@ const YourOrg = () => {
   const { Moralis } = useMoralis();
   const [list, setList] = useState<any>();
   const { id } = useParams<{ id: string }>();
-  const { data, isLoading, error } = useMoralisQuery('Orgs', query => query.contains('creator', id));
+  const { data, isLoading, error } = useMoralisQuery('Orgsss', query => query.contains('creator', id));
   const history = useHistory();
 
   const donate = id => {

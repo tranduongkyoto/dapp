@@ -72,12 +72,11 @@ const Campaign = () => {
       reset();
     } catch (error: any) {
       console.log(error);
-      handleNewNotification(
-        'error',
-        JSON.parse(JSON.stringify(error))?.error?.message
-          ? JSON.parse(JSON.stringify(error))?.error?.message
-          : JSON.parse(JSON.stringify(error))?.message
-      );
+      var message = JSON.parse(JSON.stringify(error))?.data?.message
+        ? JSON.parse(JSON.stringify(error))?.data?.message
+        : JSON.parse(JSON.stringify(error))?.message;
+      message += '. ' + JSON.parse(JSON.stringify(error))?.reason ? JSON.parse(JSON.stringify(error))?.reason : '';
+      handleNewNotification('error', message.toString());
     }
   };
 
@@ -142,7 +141,7 @@ const Campaign = () => {
   }, [isInitialized, sub]);
   const lastestTxn = () => {
     if (transaction && transaction.length != 0) {
-      const lastest = transaction.filter(item => item.from !== '0x95f82f63b1d3eb775e37d7d2e401700ff395128f')[0];
+      const lastest = transaction.filter(item => item.from !== id).reverse()[0];
       return (
         <div className="row py-3 justify-content-center">
           <div className="col-md-auto col-sm-4">
@@ -230,12 +229,11 @@ const Campaign = () => {
       reset();
     } catch (error: any) {
       console.log(JSON.parse(JSON.stringify(error)));
-      handleNewNotification(
-        'error',
-        JSON.parse(JSON.stringify(error))?.error?.message
-          ? JSON.parse(JSON.stringify(error))?.error?.message
-          : JSON.parse(JSON.stringify(error))?.message
-      );
+      var message = JSON.parse(JSON.stringify(error))?.data?.message
+        ? JSON.parse(JSON.stringify(error))?.data?.message
+        : JSON.parse(JSON.stringify(error))?.message;
+      message += '. ' + JSON.parse(JSON.stringify(error))?.reason ? JSON.parse(JSON.stringify(error))?.reason : '';
+      handleNewNotification('error', message.toString());
     }
   };
   var isEnd = false;
@@ -255,6 +253,7 @@ const Campaign = () => {
     console.log(isEnd);
     console.log(isCreator);
   }
+  console.log(status);
   return (
     <>
       {data.length === 0 ? (
@@ -275,12 +274,12 @@ const Campaign = () => {
               <div className="h1">{data[0].attributes?.name.toString()}</div>
               <div className="h3">{data[0].attributes?.description}</div>
               {/* <div className="h1">Campaign Start</div> */}
-              <div className="h3">{isEnd ? translate('campaign.crypto.end') : translate('campaign.crypto.progress')}</div>
+              <div className="h3">{isEnd || status.drawed ? translate('campaign.crypto.end') : translate('campaign.crypto.progress')}</div>
               <div>
                 {translate('campaign.crypto.endAt') + ': '}
                 {new Date(parseInt(data[0].attributes?.endTime) * 1000).toString().slice(0, 25)}
               </div>
-              <div className=" font-weight-bold h3">
+              <div className="h3">
                 {translate('campaign.crypto.balance') + ': '}
                 {+balanceOf ? balanceOf : 0} USD
               </div>
@@ -295,6 +294,11 @@ const Campaign = () => {
                 style={{
                   //maxWidth: '50%',
                   height: 'auto',
+                  maxWidth: '250px',
+                  maxHeight: '250px',
+                  minWidth: '200px',
+                  minHeight: '200px',
+                  objectFit: 'cover',
                 }}
                 alt=""
                 src={`${data[0].attributes?.coverImgUrl}`}
@@ -313,7 +317,7 @@ const Campaign = () => {
                     theme="primary"
                     type="button"
                     size="large"
-                    disabled={status.isEndTime || status.drawed}
+                    disabled={isEnd || status.drawed}
                   ></Button>
                 </div>
               </>
@@ -368,9 +372,9 @@ const Campaign = () => {
                         border: 'hidden',
                         marginLeft: '20px',
                         fontWeight: 'bold',
-                        opacity: `${status.isEndTime || status.drawed ? '50%' : 'none'}`,
+                        opacity: `${isEnd || status.drawed ? '50%' : 'none'}`,
                       }}
-                      disabled={status.isEndTime || status.drawed}
+                      disabled={isEnd || status.drawed}
                     >
                       {translate('campaign.crypto.donate')}
                     </button>
@@ -397,7 +401,7 @@ const Campaign = () => {
                 pageSize={10}
               />
             </div>
-            {status.drawed && isCreator && (
+            {isEnd && isCreator && (
               <div className="col-md-6 donate mt-5">
                 <div className="row justify-content-center">
                   <div className="col-md-3 mt-3 text-center">
@@ -411,7 +415,7 @@ const Campaign = () => {
                       <Button
                         id="test-button-primary"
                         onClick={() => withDraw()}
-                        text="With Draw"
+                        text={translate('campaign.crypto.draw')}
                         theme="primary"
                         type="button"
                         size="large"
@@ -420,7 +424,7 @@ const Campaign = () => {
                       <Button
                         id="test-button-primary"
                         //onClick={}
-                        text="Drawed"
+                        text={translate('campaign.crypto.drawed')}
                         theme="primary"
                         type="button"
                         size="large"
@@ -433,8 +437,8 @@ const Campaign = () => {
             )}
             {status.drawed && (
               <>
-                <div className="col-md-8 h1 text-center">With Draw History</div>
-                <div className="col-md-8 mt-5">
+                <div className="col-md-8 h1 text-center mt-5">{translate('campaign.crypto.history')}</div>
+                <div className="col-md-8">
                   <Table
                     columnsConfig="2fr 3fr 2fr 2fr 2fr 2fr"
                     data={withDrawDataTable}

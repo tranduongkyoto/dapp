@@ -7,12 +7,18 @@ import MenuItem from './menu-item';
 export const Organization = props => {
   const { Moralis, account, isInitialized } = useMoralis();
   return (
-    <NavDropdown icon="th-list" name="Organization" id="entity-menu" data-cy="entity" style={{ maxHeight: '80vh', overflow: 'auto' }}>
+    <NavDropdown
+      icon="th-list"
+      name={translate('global.menu.org.main')}
+      id="entity-menu"
+      data-cy="entity"
+      style={{ maxHeight: '80vh', overflow: 'auto' }}
+    >
       <MenuItem icon="user-plus" to="/register-org" data-cy="create">
-        Register Organization
+        {translate('global.menu.org.register')}
       </MenuItem>
       <MenuItem icon="user-plus" to={`/your-organization/${account}`} data-cy="all">
-        Your Organization
+        {translate('global.menu.org.your')}
       </MenuItem>
     </NavDropdown>
   );

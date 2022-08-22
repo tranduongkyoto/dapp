@@ -31,7 +31,10 @@
       "email": "Gửi email cho những nhà quyên góp lớn",
       "amount": "Giá trị",
       "recent": "Quyên góp gần đây",
-      "no": "Không có dữ liệu"
+      "no": "Không có dữ liệu",
+      "draw": "Rút",
+      "drawed": "Đã rút",
+      "history": "Lịch sử rút tiền"
     },
     "nft": {
       "title": "Đấu giá NFT của bạn",
@@ -66,14 +69,15 @@
         "clear": "Làm mới",
         "add": "Tới trang tạo đấu giá"
       },
-      "auction": "Bán",
+      "auction": "Đấu giá",
       "modal": {
         "title": "Đấu giá NFT",
         "setting": "Đặt giá",
         "start": "Bắt đầu",
         "clear": "Làm mới"
       },
-      "start": "Bắt đầu"
+      "start": "Bắt đầu",
+      "email": "Gửi Email mời"
     }
   }
 }
